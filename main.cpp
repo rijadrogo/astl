@@ -38,10 +38,6 @@ namespace r
 
 constexpr auto is_even(const int &x) -> bool { return (x % 2 == 0); }
 
-constexpr auto is_odd_then_even(const int &x, const int &y) -> bool
-{
-    return (!is_even(x) && is_even(y));
-}
 namespace loom = astl;
 
 auto main() -> int

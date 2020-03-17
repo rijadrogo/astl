@@ -1,9 +1,7 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/astl.dir/main.cpp.obj"
-  "astl.exe"
-  "astl.exe.manifest"
+  "CMakeFiles/astl.dir/main.cpp.o"
+  "astl"
   "astl.pdb"
-  "libastl.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

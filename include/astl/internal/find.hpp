@@ -9,6 +9,7 @@
 #include <cstring>
 #include <type_traits>
 #include <utility>
+#include <climits>
 
 #include "astl/functional.hpp"
 #include "astl/iterator.hpp"
