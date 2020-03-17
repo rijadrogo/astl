@@ -4,18 +4,21 @@ project(astl CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-
-if(MSVC)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         set(CMAKE_CXX_FLAGS "/std:c++latest /IC:/Users/User/CLionProjects/astl/include /W4 /EHsc \
                 /Zc:__cplusplus /permissive-")
-else()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -Wall -Wextra -Wno-attributes -Wduplicated-cond \
                 -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wdouble-promotion \
                 -Wno-unknown-pragmas -Wreorder -Wzero-as-null-pointer-constant -fdiagnostics-show-template-tree \
                 -I/${PROJECT_SOURCE_DIR}/include -Wsuggest-attribute=pure \
                 -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-final-types -Wsuggest-final-methods \
                 -Wsuggest-override")
-
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -Wall -Wextra -Wno-attributes  \
+                 -Wnull-dereference -Wdouble-promotion \
+                -Wno-unknown-pragmas -Wreorder -Wzero-as-null-pointer-constant -fdiagnostics-show-template-tree \
+                -I/${PROJECT_SOURCE_DIR}/include")
 endif()
 
 
@@ -53,4 +56,4 @@ set(ASTL_INTERNAL_FILES include/astl/internal/accumulate.hpp include/astl/intern
 
 
 
-add_executable(astl main.cpp ${ASTL_INTERNAL_FILES} ${ASTL_FILES} slot_map.hpp)
+add_executable(astl main.cpp ${ASTL_INTERNAL_FILES} ${ASTL_FILES})

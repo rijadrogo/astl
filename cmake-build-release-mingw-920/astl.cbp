@@ -320,9 +320,6 @@
 		<Unit filename="C:/Users/User/CLionProjects/astl/main.cpp">
 			<Option target="astl"/>
 		</Unit>
-		<Unit filename="C:/Users/User/CLionProjects/astl/slot_map.hpp">
-			<Option target="astl"/>
-		</Unit>
 		<Unit filename="C:/Users/User/CLionProjects/astl/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
