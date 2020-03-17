@@ -324,9 +324,6 @@
 		<Unit filename="/home/riki/CLionProjects/astl/main.cpp">
 			<Option target="astl"/>
 		</Unit>
-		<Unit filename="/home/riki/CLionProjects/astl/slot_map.hpp">
-			<Option target="astl"/>
-		</Unit>
 		<Unit filename="/home/riki/CLionProjects/astl/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

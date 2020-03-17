@@ -271,7 +271,7 @@ template <typename R, typename UnaryPredicate>
 // requires UnaryPredicate, returns bool argument value_type(R)
 ASTL_NODISCARD auto has_n_items(R r, range_diff_type<R> n, UnaryPredicate pred) -> bool
 {
-    return i::has_n_items(adl::begin(r), adl::end(r), astl::pass_fn(pred));
+    return i::has_n_items(adl::begin(r), adl::end(r), n, astl::pass_fn(pred));
 }
 
 template <typename R, typename UnaryPredicate, typename P>
@@ -286,7 +286,7 @@ template <typename R, typename UnaryPredicate>
 // requires UnaryPredicate, returns bool argument value_type(R)
 ASTL_NODISCARD auto has_n_items_or_more(R r, range_diff_type<R> n, UnaryPredicate pred) -> bool
 {
-    return i::has_n_items(adl::begin(r), adl::end(r), astl::pass_fn(pred));
+    return i::has_n_items(adl::begin(r), adl::end(r), n, astl::pass_fn(pred));
 }
 
 template <typename R, typename UnaryPredicate, typename P>
