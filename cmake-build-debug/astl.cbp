@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="astl"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="C:/Users/User/CLionProjects/astl/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="C:/Users/User/CLionProjects/astl/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="astl">
+				<Option output="C:/Users/User/CLionProjects/astl/cmake-build-debug/astl.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/User/CLionProjects/astl/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0/x86_64-w64-mingw32"/>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/include"/>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/include-fixed"/>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 astl"/>
+					<CompileFile command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="astl/fast">
+				<Option output="C:/Users/User/CLionProjects/astl/cmake-build-debug/astl.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/User/CLionProjects/astl/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0"/>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0/x86_64-w64-mingw32"/>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../include/c++/9.2.0/backward"/>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/include"/>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/include-fixed"/>
+					<Add directory="c:\mingwstl\mingw\bin\../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 astl/fast"/>
+					<CompileFile command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="C:/Users/User/CLionProjects/astl/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGWSTL/MinGW/bin/mingw32-make.exe -f &quot;C:/Users/User/CLionProjects/astl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/algorithm.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/concat_ranges.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/count_iterator.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/ebo_base.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/enumerate_range.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/filter_iterator.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/functional.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/accumulate.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/adjacent_difference.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/adjacent_find.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/all_of.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/any_of.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/binary_search.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/clamp.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/compiler.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/copy.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/count.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/destroy.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/dynamic_programing.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/equal.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/equal_range.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/erase_if.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/fill.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/find.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/for_each.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/gather.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/heap.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/inner_product.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/inplace_merge.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/iota.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/is_contained.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/is_palindrome.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/lexicographical_compare.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/lower_bound.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/max.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/merge.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/min.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/minmax_element.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/mismatch.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/move.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/none_of.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/partial_sum.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/partition.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/permutation.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/permutation_combinations.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/prefix_suffix.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/reduce.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/remove.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/replace.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/reverse.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/rotate.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/scan.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/search.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/select.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/set_algos.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/shift.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/slide.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/sort.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/stable_partition.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/swap.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/transform.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/trim.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/unique.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/internal/upper_bound.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/iterator.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/iterator_adaptors.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/iterator_function_adaptors.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/iterator_range.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/map_iterator.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/memory.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/optional.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/pointee_iterator.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/pointer_iterator.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/range_access.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/ref_iter.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/temporary_buffer.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/utility.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/astl/zip.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/include/function_ref.hpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/main.cpp">
+			<Option target="astl"/>
+		</Unit>
+		<Unit filename="C:/Users/User/CLionProjects/astl/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

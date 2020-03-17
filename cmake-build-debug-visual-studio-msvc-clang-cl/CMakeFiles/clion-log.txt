@@ -1,0 +1,4 @@
+"C:\Program Files\JetBrains\CLion 201.5616.31\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_C_COMPILER=C:/Program Files (x86)/Microsoft Visual Studio/2019/Preview/VC/Tools/Llvm/bin/clang-cl.exe" "-DCMAKE_CXX_COMPILER=C:/Program Files (x86)/Microsoft Visual Studio/2019/Preview/VC/Tools/Llvm/bin/clang-cl.exe" -G "CodeBlocks - NMake Makefiles" C:\Users\User\CLionProjects\astl
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/User/CLionProjects/astl/cmake-build-debug-visual-studio-msvc-clang-cl

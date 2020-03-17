@@ -1,0 +1,7 @@
+[
+{
+  "directory": "C:/Users/User/CLionProjects/astl/cmake-build-debug-visual-studio-msvc-clang-cl",
+  "command": "C:\\PROGRA~2\\MICROS~1\\2019\\Preview\\VC\\Tools\\Llvm\\bin\\clang-cl.exe  /nologo -TP   /std:c++latest /IC:/Users/User/CLionProjects/astl/include /W4 /EHsc                 /Zc:__cplusplus /permissive- /MDd /Zi /Ob0 /Od /RTC1   -std:c++latest /FoCMakeFiles\\astl.dir\\main.cpp.obj /FdCMakeFiles\\astl.dir\\ -c C:\\Users\\User\\CLionProjects\\astl\\main.cpp",
+  "file": "C:/Users/User/CLionProjects/astl/main.cpp"
+}
+]

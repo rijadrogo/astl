@@ -1,0 +1,3 @@
+C:/Users/User/CLionProjects/astl/cmake-build-debug-visual-studio-msvc-clang-cl/CMakeFiles/rebuild_cache.dir
+C:/Users/User/CLionProjects/astl/cmake-build-debug-visual-studio-msvc-clang-cl/CMakeFiles/astl.dir
+C:/Users/User/CLionProjects/astl/cmake-build-debug-visual-studio-msvc-clang-cl/CMakeFiles/edit_cache.dir

@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/User/CLionProjects/astl/main.cpp
+iterator
+-
+algorithm
+-
+array
+-
+cassert
+-
+cmath
+-
+slot_map.hpp
+C:/Users/User/CLionProjects/astl/slot_map.hpp
+functional
+-
+iostream
+-
+variant
+-
+astl/algorithm.hpp
+C:/Users/User/CLionProjects/astl/astl/algorithm.hpp
+astl/iterator_adaptors.hpp
+C:/Users/User/CLionProjects/astl/astl/iterator_adaptors.hpp
+
+C:/Users/User/CLionProjects/astl/slot_map.hpp
+type_traits
+-
+utility
+-
+vector
+-
+stdexcept
+-
+

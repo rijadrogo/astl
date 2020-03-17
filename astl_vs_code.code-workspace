@@ -1,0 +1,74 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"workbench.colorTheme": "Community Material Theme Palenight High Contrast",
+		"clang.diagnostics.cxxopts": [
+			"-IC:/Users/User/CLionProjects/astl/include",
+			"-std=c++17"
+		],
+		"cppcheck.allowInlineSuppressions": true,
+		"cppcheck.includePaths": [
+			"C:/Users/User/CLionProjects/astl/include"
+		],
+		"cppcheck.language": "c++",
+		"files.associations": {
+			"*.cpp": "cpp",
+			"*.hpp": "cpp",
+			"*.h": "cpp",
+			"*.hxx": "cpp",
+			"variant": "cpp",
+			"forward_list": "cpp",
+			"algorithm": "cpp",
+			"cctype": "cpp",
+			"cmath": "cpp",
+			"concepts": "cpp",
+			"cstddef": "cpp",
+			"cstdint": "cpp",
+			"cstdio": "cpp",
+			"cstdlib": "cpp",
+			"cstring": "cpp",
+			"cwchar": "cpp",
+			"exception": "cpp",
+			"functional": "cpp",
+			"initializer_list": "cpp",
+			"ios": "cpp",
+			"iosfwd": "cpp",
+			"iostream": "cpp",
+			"istream": "cpp",
+			"iterator": "cpp",
+			"limits": "cpp",
+			"list": "cpp",
+			"memory": "cpp",
+			"new": "cpp",
+			"numeric": "cpp",
+			"ostream": "cpp",
+			"stdexcept": "cpp",
+			"streambuf": "cpp",
+			"string": "cpp",
+			"system_error": "cpp",
+			"tuple": "cpp",
+			"type_traits": "cpp",
+			"typeinfo": "cpp",
+			"unordered_map": "cpp",
+			"unordered_set": "cpp",
+			"utility": "cpp",
+			"vector": "cpp",
+			"xfacet": "cpp",
+			"xhash": "cpp",
+			"xiosbase": "cpp",
+			"xlocale": "cpp",
+			"xlocinfo": "cpp",
+			"xlocnum": "cpp",
+			"xmemory": "cpp",
+			"xstddef": "cpp",
+			"xstring": "cpp",
+			"xtr1common": "cpp",
+			"xutility": "cpp",
+			"array": "cpp"
+		}
+	}
+}

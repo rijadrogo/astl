@@ -1,0 +1,49 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build and run",
+            "type": "shell",
+            "command": "clang-cl main.cpp /permissive- /W4 /Zc:wchar_t /Zi /Od /sdl- /Gd /MDd /std:c++latest /Zc:inline /IC:/Users/User/CLionProjects/astl/include /IC:/Users/User/Desktop/boost_1_68_0 && main.exe",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "clang-cl main.cpp /permissive- /W4 /Zc:wchar_t /Zi /Od /sdl- /Gd /MDd /std:c++latest /Zc:inline /IC:/Users/User/CLionProjects/astl/include /IC:/Users/User/Desktop/boost_1_68_0"
+        },
+        {
+            "label": "clang format",
+            "type": "shell",
+            "command": "clang-format ${file} -i",
+            "problemMatcher": []
+        },
+        {
+            "label": "clang tidy",
+            "type": "shell",
+            "command": "clang-tidy ${file} -p ${cwd}/build/ -header-filter=.*",
+            "problemMatcher": []
+        },
+        {
+            "label": "clang tidy fix",
+            "type": "shell",
+            "command": "clang-tidy ${file} -p ${cwd}/build/ -header-filter=.* -fix -format-style=file"
+        },
+        {
+            "label": "cppcheck",
+            "type": "shell",
+            "command": "cppcheck main.cpp --language=c++  --project=${cwd}/build/compile_commands.json"
+        },
+        {
+            "label": "run",
+            "type": "shell",
+            "command": "${cwd}/build/astl.exe",
+            "problemMatcher": []
+        }
+    ]
+}

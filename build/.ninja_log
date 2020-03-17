@@ -1,0 +1,20 @@
+# ninja log v5
+1	300	590949995	build.ninja	237b702968a4b279
+1	3633	591232010	CMakeFiles/astl.dir/main.cpp.obj	cf28482f81b1aa28
+3653	6455	591232012	astl.exe	f18a5b7d4de9b27c
+1	1876	591232040	CMakeFiles/astl.dir/main.cpp.obj	cf28482f81b1aa28
+1877	2859	591232040	astl.exe	f18a5b7d4de9b27c
+1	2825	591381835	CMakeFiles/astl.dir/main.cpp.obj	cf28482f81b1aa28
+2825	5845	591381836	astl.exe	f18a5b7d4de9b27c
+1	10146	591455375	CMakeFiles/astl.dir/main.cpp.obj	cf28482f81b1aa28
+10160	12904	591455377	astl.exe	f18a5b7d4de9b27c
+0	149	601137465	build.ninja	237b702968a4b279
+1	1484	601137466	CMakeFiles/astl.dir/main.cpp.obj	cf28482f81b1aa28
+2	199	601137537	build.ninja	237b702968a4b279
+2	163	601137582	build.ninja	237b702968a4b279
+1	1800	601137583	CMakeFiles/astl.dir/main.cpp.obj	cf28482f81b1aa28
+1801	2655	601137584	astl.exe	4518cf4275f417a
+0	1474	601137753	CMakeFiles/astl.dir/main.cpp.obj	cf28482f81b1aa28
+1474	1713	601137754	astl.exe	4518cf4275f417a
+1	1420	601139857	CMakeFiles/astl.dir/main.cpp.obj	cf28482f81b1aa28
+1420	1813	601139857	astl.exe	4518cf4275f417a
