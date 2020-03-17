@@ -16,7 +16,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
                 -Wsuggest-override")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -Wall -Wextra -Wno-attributes  \
-                 -Wnull-dereference -Wdouble-promotion \
+                -fsanitize=address -fsanitize=undefined -Wnull-dereference -Wdouble-promotion \
                 -Wno-unknown-pragmas -Wreorder -Wzero-as-null-pointer-constant -fdiagnostics-show-template-tree \
                 -I/${PROJECT_SOURCE_DIR}/include")
 endif()
