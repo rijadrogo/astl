@@ -141,7 +141,7 @@ auto merge_adaptive_n(FwdIt first1, N size1, FwdIt first2, N size2, Comparator c
     using T = iter_value_type<FwdIt>;
     inline_temporary_buffer<T> buffer(size1, *first1);
     auto c(astl::pass_fn(comp));
-    if (buffer.size() == 0) return i::merge_inplace_n(first1, size1, first2, size2, c);
+    if (buffer.size() == 0) return i::merge_inplace_n_no_buffer(first1, size1, first2, size2, c);
 
     return i::merge_adaptive_n(first1, size1, first2, size2, c, buffer.begin(), buffer.size());
 }
@@ -303,8 +303,8 @@ auto merge_unique(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2, FwdI
 
 template <typename FwdIt1, typename FwdIt2, typename FwdIt3, typename Comparator, typename Equal,
           typename P1, typename P2>
-auto merge_unique(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2, FwdIt3 dest, Comparator comp,
-                  Equal eq, P1 p1, P2 p2) -> FwdIt3
+auto merge_unique(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2, FwdIt3 dest,
+                  Comparator comp, Equal eq, P1 p1, P2 p2) -> FwdIt3
 {
     auto proj1(astl::pass_fn(p1));
     auto proj2(astl::pass_fn(p2));
