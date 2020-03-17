@@ -2,3 +2,6 @@
 -- Configuring done
 -- Generating done
 -- Build files have been written to: C:/Users/User/CLionProjects/astl/cmake-build-debug-visual-studio-msvc-clang-cl
+
+Problems were encountered while collecting compiler information:
+	clang-cl: error: invalid argument '/MDd' not allowed with '-fsanitize=address'
