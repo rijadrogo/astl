@@ -1,7 +1,7 @@
 [
 {
   "directory": "C:/Users/User/CLionProjects/astl/cmake-build-release-mingw-920",
-  "command": "C:\\MinGWSTL\\MinGW\\bin\\g++.exe     -std=c++2a -Wall -Wextra -Wno-attributes -Wduplicated-cond                 -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wdouble-promotion                 -Wno-unknown-pragmas -Wreorder -Wzero-as-null-pointer-constant -fdiagnostics-show-template-tree                 -I/C:/Users/User/CLionProjects/astl/include -Wsuggest-attribute=pure                 -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-final-types -Wsuggest-final-methods                 -Wsuggest-override -O3 -DNDEBUG   -std=gnu++2a -o CMakeFiles\\astl.dir\\main.cpp.obj -c C:\\Users\\User\\CLionProjects\\astl\\main.cpp",
+  "command": "C:\\MinGWSTL\\MinGW\\bin\\g++.exe     -std=c++2a -Wall -Wextra -Wno-attributes -Wduplicated-cond                 -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wdouble-promotion                 -Wno-unknown-pragmas -Wreorder -Wzero-as-null-pointer-constant -fdiagnostics-show-template-tree                 -IC:/Users/User/CLionProjects/astl/include -Wsuggest-attribute=pure                 -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-final-types -Wsuggest-final-methods                 -Wsuggest-override -O3 -DNDEBUG   -std=gnu++2a -o CMakeFiles\\astl.dir\\main.cpp.obj -c C:\\Users\\User\\CLionProjects\\astl\\main.cpp",
   "file": "C:/Users/User/CLionProjects/astl/main.cpp"
 }
 ]

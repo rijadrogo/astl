@@ -11,7 +11,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -Wall -Wextra -Wno-attributes -Wduplicated-cond \
                 -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wdouble-promotion \
                 -Wno-unknown-pragmas -Wreorder -Wzero-as-null-pointer-constant -fdiagnostics-show-template-tree \
-                -I/${PROJECT_SOURCE_DIR}/include -Wsuggest-attribute=pure \
+                -I${PROJECT_SOURCE_DIR}/include -Wsuggest-attribute=pure \
                 -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-final-types -Wsuggest-final-methods \
                 -Wsuggest-override")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
