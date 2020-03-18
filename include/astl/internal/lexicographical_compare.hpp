@@ -141,11 +141,6 @@ auto lex_3way_compare_unchecked(InIt1 first1, InIt1 last1, InIt2 first2, InIt2 l
     return num1 == num2 ? real_ans : (num2 < num1 ? 1 : -1);
 }
 
-} // namespace internal_lexcomp
-
-namespace i
-{
-
 // Libcpp doesn't optimise to memcmp if possible for std::lexicographical_compare
 #if defined(_LIBCPP_VERSION)
 template <typename InIt1, typename InIt2, typename Comparator>
@@ -166,124 +161,128 @@ template <typename InIt1, typename InIt2>
 ASTL_NODISCARD auto lexicographical_compare(InIt1 first1, InIt1 last1, InIt2 first2, InIt2 last2)
     -> bool
 {
-    return i::lexicographical_compare(first1, last1, first2, last2, std::equal_to{});
+    return internal_lexcomp::lexicographical_compare(first1, last1, first2, last2, std::equal_to{});
 }
 #else  // !defined(_LIBCPP_VERSION)
 using std::lexicographical_compare; // NOLINT(misc-unused-using-decls)
 #endif // defined(_LIBCPP_VERSION)
-template <typename InIt1, typename InIt2, typename Comparator, typename P1, typename P2>
-ASTL_NODISCARD auto lexicographical_compare(InIt1 first1, InIt1 last1, InIt2 first2, InIt2 last2,
-                                            Comparator comp, P1 p1, P2 p2) -> bool
-{
-    return std::lexicographical_compare(
-        first1, last1, first2, last2,
-        astl::lockstep(astl::pass_fn(comp), astl::pass_fn(p1), astl::pass_fn(p2)));
-}
 
-template <typename InIt1, typename InIt2, typename Comparator>
-// requires InIt1 InputIterator
-// requires InIt2 InputIterator
-// requires Comparator function, returns bool, two arguments value_type(InIt1), value_type(InIt2)
-ASTL_NODISCARD auto lexicographical_compare_3way(InIt1 first1, InIt1 last1, InIt2 first2,
-                                                 InIt2 last2, Comparator comp) -> int
-{
-    return internal_lexcomp::lex_3way_compare_unchecked(
-        first1, last1, first2, last2, astl::pass_fn(comp),
-        internal_lexcomp::lex_compare_memcmp_classify(first1, first2, comp));
-}
+} // namespace internal_lexcomp
 
-template <typename InIt1, typename InIt2>
-// requires InIt1 InputIterator
-// requires InIt2 InputIterator
-ASTL_NODISCARD auto lexicographical_compare_3way(InIt1 first1, InIt1 last1, InIt2 first2,
-                                                 InIt2 last2) -> int
+namespace i
 {
-    return i::lexicographical_compare_3way(first1, last1, first2, last2, std::less{});
-}
 
-template <typename InIt1, typename InIt2, typename Comparator, typename P1, typename P2>
-ASTL_NODISCARD auto lexicographical_compare_3way(InIt1 first1, InIt1 last1, InIt2 first2,
-                                                 InIt2 last2, Comparator comp, P1 p1, P2 p2) -> int
-{
-    return i::lexicographical_compare_3way(
-        first1, last1, first2, last2,
-        astl::lockstep(astl::pass_fn(comp), astl::pass_fn(p1), astl::pass_fn(p2)));
-}
+inline constexpr struct {
 
-template <typename InIt1, typename N1, typename InIt2, typename N2, typename Comparator>
-// requires InIt1 InputIterator
-// requires N1 integral type
-// requires InIt2 InputIterator
-// requires N2 integral type
-// requires Comparator function, returns bool, arguments value_type(InIt1), value_type(InIt2)
-ASTL_NODISCARD auto lexicographical_compare_3way_n(InIt1 first1, N1 n1, InIt2 first2, N2 n2,
-                                                   Comparator comp) -> int
-{
-    if constexpr (is_random_access_it_v<InIt1, InIt2>) {
-        return i::lexicographical_compare_3way(first1, first1 + n1, first2, first2 + n2,
-                                               astl::pass_fn(comp));
+    template <typename InIt1, typename InIt2, typename Comparator = std::less<>>
+    ASTL_NODISCARD auto operator()(InIt1 first1, InIt1 last1, InIt2 first2, InIt2 last2,
+                                   Comparator comp = Comparator{}) const -> bool
+    {
+        return internal_lexcomp::lexicographical_compare(first1, last1, first2, last2,
+                                                         astl::pass_fn(comp));
     }
-    else {
-        // order [first1, n1) vs. [first2, n2) using comp, no special optimization
-        while (n1 != N1(0) && n2 != N2(0)) {
-            // something to compare, do it
-            if (comp(*first1, *first2)) return -1;
 
-            if (comp(*first2, *first1)) return 1;
+    template <typename InIt1, typename InIt2, typename Comparator, typename P1, typename P2>
+    ASTL_NODISCARD auto operator()(InIt1 first1, InIt1 last1, InIt2 first2, InIt2 last2,
+                                   Comparator comp, P1 p1, P2 p2) const -> bool
+    {
+        return std::lexicographical_compare(
+            first1, last1, first2, last2,
+            astl::lockstep(astl::pass_fn(comp), astl::pass_fn(p1), astl::pass_fn(p2)));
+    }
 
-            --n1;
-            --n2;
-            ++first1;
-            ++first2;
+} lexicographical_compare{};
+
+inline constexpr struct {
+
+    template <typename InIt1, typename InIt2, typename Comparator = std::less<>>
+    // requires InIt1 InputIterator
+    // requires InIt2 InputIterator
+    // requires Comparator function, returns bool, two arguments value_type(InIt1), value_type(InIt2)
+    ASTL_NODISCARD auto operator()(InIt1 first1, InIt1 last1, InIt2 first2, InIt2 last2,
+                                   Comparator comp = Comparator{}) const -> int
+    {
+        return internal_lexcomp::lex_3way_compare_unchecked(
+            first1, last1, first2, last2, astl::pass_fn(comp),
+            internal_lexcomp::lex_compare_memcmp_classify(first1, first2, comp));
+    }
+
+    template <typename InIt1, typename InIt2, typename Comparator, typename P1, typename P2>
+    ASTL_NODISCARD auto operator()(InIt1 first1, InIt1 last1, InIt2 first2, InIt2 last2,
+                                   Comparator comp, P1 p1, P2 p2) const -> int
+    {
+        return (*this)(first1, last1, first2, last2,
+                       astl::lockstep(astl::pass_fn(comp), astl::pass_fn(p1), astl::pass_fn(p2)));
+    }
+
+} lexicographical_compare_3way{};
+
+inline constexpr struct {
+
+    template <typename InIt1, typename N1, typename InIt2, typename N2,
+              typename Comparator = std::less<>>
+    // requires InIt1 InputIterator
+    // requires N1 integral type
+    // requires InIt2 InputIterator
+    // requires N2 integral type
+    // requires Comparator function, returns bool, arguments value_type(InIt1), value_type(InIt2)
+    ASTL_NODISCARD auto operator()(InIt1 first1, N1 n1, InIt2 first2, N2 n2,
+                                   Comparator comp = Comparator{}) const -> int
+    {
+        if constexpr (is_random_access_it_v<InIt1, InIt2>) {
+            return i::lexicographical_compare_3way(first1, first1 + n1, first2, first2 + n2,
+                                                   astl::pass_fn(comp));
         }
-        return n2 == N2(0) ? !(n1 == N1(0)) : -1;
+        else {
+            // order [first1, n1) vs. [first2, n2) using comp, no special optimization
+            while (n1 != N1(0) && n2 != N2(0)) {
+                // something to compare, do it
+                if (comp(*first1, *first2)) return -1;
+
+                if (comp(*first2, *first1)) return 1;
+
+                --n1;
+                --n2;
+                ++first1;
+                ++first2;
+            }
+            return n2 == N2(0) ? !(n1 == N1(0)) : -1;
+        }
     }
-}
 
-template <typename InIt1, typename N1, typename InIt2, typename N2>
-// requires InIt1 InputIterator
-// requires N1 integral type
-// requires InIt2 InputIterator
-// requires N2 integral type
-ASTL_NODISCARD auto lexicographical_compare_3way_n(InIt1 first1, N1 n1, InIt2 first2, N2 n2) -> int
-{
-    return i::lexicographical_compare_3way_n(first1, n1, first2, n2, std::less{});
-}
+    template <typename InIt1, typename N, typename InIt2, typename Comparator, typename P1,
+              typename P2>
+    ASTL_NODISCARD auto operator()(InIt1 first1, N n1, InIt2 first2, N n2, Comparator comp, P1 p1,
+                                   P2 p2) const -> int
+    {
+        return (*this)(first1, n1, first2, n2,
+                       astl::lockstep(astl::pass_fn(comp), astl::pass_fn(p1), astl::pass_fn(p2)));
+    }
 
-template <typename InIt1, typename N, typename InIt2, typename Comparator, typename P1, typename P2>
-ASTL_NODISCARD auto lexicographical_compare_3way_n(InIt1 first1, N n1, InIt2 first2, N n2,
-                                                   Comparator comp, P1 p1, P2 p2) -> int
-{
-    return i::lexicographical_compare_3way_n(
-        first1, n1, first2, n2,
-        astl::lockstep(astl::pass_fn(comp), astl::pass_fn(p1), astl::pass_fn(p2)));
-}
+} lexicographical_compare_3way_n{};
 
-template <typename InIt1, typename N1, typename InIt2, typename N2, typename Comparator>
-ASTL_NODISCARD auto lexicographical_compare_n(InIt1 first1, N1 n1, InIt2 first2, N2 n2,
-                                              Comparator comp) -> bool
-{
-    // order [first1, n1) vs. [first2, n2) using comp
-    auto res(i::lexicographical_compare_3way_n(first1, n1, first2, n2, astl::pass_fn(comp)));
-    return res != 0 ? res < 0 : n1 < n2;
-}
+inline constexpr struct {
+    template <typename InIt1, typename N1, typename InIt2, typename N2,
+              typename Comparator = std::less<>>
+    ASTL_NODISCARD auto operator()(InIt1 first1, N1 n1, InIt2 first2, N2 n2,
+                                   Comparator comp = Comparator{}) const -> bool
+    {
+        // order [first1, n1) vs. [first2, n2) using comp
+        auto res(i::lexicographical_compare_3way_n(first1, n1, first2, n2, astl::pass_fn(comp)));
+        return res != 0 ? res < 0 : n1 < n2;
+    }
 
-template <typename InIt1, typename N1, typename InIt2, typename N2>
-ASTL_NODISCARD auto lexicographical_compare_n(InIt1 first1, N1 n1, InIt2 first2, N2 n2) -> bool
-{
-    return i::lexicographical_compare_n(first1, n1, first2, n2, std::less{});
-}
+    template <typename InIt1, typename N1, typename InIt2, typename N2, typename Comparator,
+              typename P1, typename P2>
+    ASTL_NODISCARD auto operator()(InIt1 first1, N1 n1, InIt2 first2, N2 n2, Comparator comp, P1 p1,
+                                   P2 p2) const -> bool
+    {
+        // order [first1, n1) vs. [first2, n2) using comp
+        return (*this)(first1, n1, first2, n2,
+                       astl::lockstep(astl::pass_fn(comp), astl::pass_fn(p1), astl::pass_fn(p2)));
+    }
+} lexicographical_compare_n{};
 
-template <typename InIt1, typename N1, typename InIt2, typename N2, typename Comparator,
-          typename P1, typename P2>
-ASTL_NODISCARD auto lexicographical_compare_n(InIt1 first1, N1 n1, InIt2 first2, N2 n2,
-                                              Comparator comp, P1 p1, P2 p2) -> bool
-{
-    // order [first1, n1) vs. [first2, n2) using comp
-    return i::lexicographical_compare_n(
-        first1, n1, first2, n2,
-        astl::lockstep(astl::pass_fn(comp), astl::pass_fn(p1), astl::pass_fn(p2)));
-}
 } // namespace i
 
 namespace r

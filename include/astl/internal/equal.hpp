@@ -89,7 +89,7 @@ template <typename InIt1, typename InIt2>
 // requires InIt2 InputIterator
 ASTL_NODISCARD auto equal(InIt1 first1, InIt1 last1, InIt2 first2) -> bool
 {
-    return i::equal(first1, last1, first2, std::equal_to<>{});
+    return equal_internal::equal(first1, last1, first2, std::equal_to<>{});
 }
 
 template <typename InIt1, typename InIt2, typename BinaryPredicate>
@@ -125,7 +125,7 @@ template <typename InIt1, typename InIt2>
 // requires InIt2 InputIterator
 ASTL_NODISCARD auto equal(InIt1 first1, InIt1 last1, InIt2 first2, InIt2 last2) -> bool
 {
-    return i::equal(first1, last1, first2, last2, std::equal_to<>{});
+    return equal_internal::equal(first1, last1, first2, last2, std::equal_to<>{});
 }
 
 #else  // !defined(_LIBCPP_VERSION)
