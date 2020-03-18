@@ -143,7 +143,7 @@ inline constexpr struct {
 
 namespace internal_a_adjacent
 {
-template <int N> struct all_of_adjacent_t {
+template <int N, bool Range> struct all_of_adjacent_t {
     template <typename FwdIt, typename NaryPred>
     ASTL_NODISCARD auto operator()(FwdIt first, FwdIt last, NaryPred fn) const ->
         typename std::enable_if<(N > 0), bool>::type
@@ -161,10 +161,30 @@ template <int N> struct all_of_adjacent_t {
             astl::distance(first, last));
     }
 };
+
+template <int N> struct all_of_adjacent_t<N, true> {
+    template <typename R, typename NaryPred>
+    ASTL_NODISCARD auto operator()(R &&r, NaryPred pred) const ->
+        typename std::enable_if<(N > 0), bool>::type
+    {
+        return internal_all_of::all_of_adjacent1<N>(adl::begin(r), astl::pass_fn(pred),
+                                                    astl::size_or_distance(r));
+    }
+
+    template <typename R, typename NaryPred, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, NaryPred pred, P p) const ->
+        typename std::enable_if<(N > 0), bool>::type
+    {
+        return internal_all_of::all_of_adjacent1<N>(
+            adl::begin(r), astl::combine(astl::pass_fn(pred), astl::pass_fn(p)),
+            astl::size_or_distance(r));
+    }
+};
+
 } // namespace internal_a_adjacent
 
 template <int N>
-inline constexpr auto all_of_adjacent = internal_a_adjacent::all_of_adjacent_t<N>{};
+inline constexpr auto all_of_adjacent = internal_a_adjacent::all_of_adjacent_t<N, false>{};
 
 inline constexpr struct {
     template <typename InIt, typename E>
@@ -208,276 +228,251 @@ inline constexpr struct {
     }
 } all_of_equal_n{};
 
-template <typename InIt, typename N>
-// requires InIt ForwardIterator
-// requires N integral type
-ASTL_NODISCARD auto all_of_n(InIt first, N n) -> bool
-{
-    return i::all_of_equal_n(first, n, true);
-}
-
-template <typename InIt, typename N, typename UnaryPredicate>
-// requires InIt InputIterator
-// requires N integral type
-// requires UnaryPredicate, returns bool, argument value_type(InIt)
-ASTL_NODISCARD auto all_of_n(InIt first, N n, UnaryPredicate pred) -> bool
-{
-    return i::find_if_not_n(first, n, astl::pass_fn(pred)).second == 0;
-}
-
-template <typename InIt, typename N, typename UnaryPredicate, typename P>
-ASTL_NODISCARD auto all_of_n(InIt first, N n, UnaryPredicate pred, P p) -> bool
-{
-    return i::all_of_n(first, n, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
-
-template <typename InIt, typename BinaryPredicate>
-// requires InIt InputIterator
-// requires BinaryPredicate, returns bool, two arguments value_type(InIt)
-ASTL_NODISCARD auto all_same(InIt first, InIt last, BinaryPredicate pred) -> bool
-{
-    if (first == last) return true;
-
-    if constexpr (is_forward_it_v<InIt>) { // Forward Iterator
-        return i::find_if_not(astl::next(first), last, astl::bind2nd(astl::pass_fn(pred), *first))
-            == last;
+inline constexpr struct {
+    template <typename InIt, typename N>
+    // requires InIt ForwardIterator
+    // requires N integral type
+    ASTL_NODISCARD auto operator()(InIt first, N n) const -> bool
+    {
+        return i::all_of_equal_n(first, n, true);
     }
-    else { // Input Iterator
-        auto val(*first);
-        return i::find_if_not(astl::next(first), last, astl::bind2nd(astl::pass_fn(pred), val))
-            == last;
+
+    template <typename InIt, typename N, typename UnaryPredicate>
+    // requires InIt InputIterator
+    // requires N integral type
+    // requires UnaryPredicate, returns bool, argument value_type(InIt)
+    ASTL_NODISCARD auto operator()(InIt first, N n, UnaryPredicate pred) const -> bool
+    {
+        return i::find_if_not_n(first, n, astl::pass_fn(pred)).second == 0;
     }
-}
 
-template <typename InIt>
-// requires InIt InputIterator
-ASTL_NODISCARD auto all_same(InIt first, InIt last) -> bool
-{
-    return i::all_same(first, last, std::equal_to{});
-}
-
-template <typename InIt, typename BinaryPredicate, typename P>
-ASTL_NODISCARD auto all_same(InIt first, InIt last, BinaryPredicate pred, P p) -> bool
-{
-    return i::all_same(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
-
-template <typename InIt, typename N, typename Comparator>
-// requires InIt InputIterator
-// requires N integral type
-// requires Comparator, returns bool, two arguments value_type(InIt)
-ASTL_NODISCARD auto all_same_n(InIt first, N n, Comparator pred) -> bool
-{
-    if (n == N(0)) return true;
-
-    if constexpr (is_forward_it_v<InIt>) { // Forward Iterator
-        return i::find_if_not_n(astl::next(first), --n, astl::bind2nd(astl::pass_fn(pred), *first))
-                   .second
-            == n;
+    template <typename InIt, typename N, typename UnaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(InIt first, N n, UnaryPredicate pred, P p) const -> bool
+    {
+        return (*this)(first, n, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
     }
-    else { // Input Iterator
-        auto val(*first);
-        return i::find_if_not_n(astl::next(first), --n, astl::bind2nd(astl::pass_fn(pred), val))
-                   .second
-            == n;
+
+} all_of_n{};
+
+inline constexpr struct {
+
+    template <typename InIt, typename BinaryPredicate = std::equal_to<>>
+    // requires InIt InputIterator
+    // requires BinaryPredicate, returns bool, two arguments value_type(InIt)
+    ASTL_NODISCARD auto all_same(InIt first, InIt last, BinaryPredicate pred = BinaryPredicate{})
+        -> bool
+    {
+        if (first == last) return true;
+
+        if constexpr (is_forward_it_v<InIt>) { // Forward Iterator
+            return i::find_if_not(astl::next(first), last,
+                                  astl::bind2nd(astl::pass_fn(pred), *first))
+                == last;
+        }
+        else { // Input Iterator
+            auto val(*first);
+            return i::find_if_not(astl::next(first), last, astl::bind2nd(astl::pass_fn(pred), val))
+                == last;
+        }
     }
-}
 
-template <typename InIt, typename N>
-// requires InIt InputIterator
-// requires N integral type
-ASTL_NODISCARD auto all_same_n(InIt first, N n) -> bool
-{
-    return i::all_same_n(first, n, std::equal_to{});
-}
+    template <typename InIt, typename BinaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(InIt first, InIt last, BinaryPredicate pred, P p) const -> bool
+    {
+        return (*this)(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} all_same{};
 
-template <typename InIt, typename N, typename Comparator, typename P>
-ASTL_NODISCARD auto all_same_n(InIt first, N n, Comparator comp, P p) -> bool
-{
-    return i::all_same_n(first, n, astl::combine(astl::pass_fn(comp), astl::pass_fn(p)));
-}
+inline constexpr struct {
+
+    template <typename InIt, typename N, typename BinaryPredicate = std::equal_to<>>
+    // requires InIt InputIterator
+    // requires N integral type
+    // requires BinaryPredicate, returns bool, two arguments value_type(InIt)
+    ASTL_NODISCARD auto operator()(InIt first, N n, BinaryPredicate pred = BinaryPredicate{}) const
+        -> bool
+    {
+        if (n == N(0)) return true;
+
+        if constexpr (is_forward_it_v<InIt>) { // Forward Iterator
+            return i::find_if_not_n(astl::next(first), --n,
+                                    astl::bind2nd(astl::pass_fn(pred), *first))
+                       .second
+                == n;
+        }
+        else { // Input Iterator
+            auto val(*first);
+            return i::find_if_not_n(astl::next(first), --n, astl::bind2nd(astl::pass_fn(pred), val))
+                       .second
+                == n;
+        }
+    }
+
+    template <typename InIt, typename N, typename Comparator, typename P>
+    ASTL_NODISCARD auto operator()(InIt first, N n, Comparator comp, P p) const -> bool
+    {
+        return (*this)(first, n, astl::combine(astl::pass_fn(comp), astl::pass_fn(p)));
+    }
+} all_same_n{};
 } // namespace i
 
 namespace r
 {
-template <typename R, typename BinaryPredicate>
-// requires R ForwardIterator range
-// requires BinaryPredicate, returns bool, two arguments value_type(R)
-ASTL_NODISCARD auto all_different(R &&r, BinaryPredicate pred) -> bool
-{
-    return i::all_different(adl::begin(r), adl::end(r), astl::pass_fn(pred));
-}
 
-template <typename R>
-// requires R ForwardIterator range
-ASTL_NODISCARD auto all_different(R &&r) -> bool
-{
-    return r::all_different(r, std::equal_to{});
-}
+inline constexpr struct {
 
-template <typename R, typename BinaryPredicate, typename P>
-ASTL_NODISCARD auto all_different(R &&r, BinaryPredicate pred, P p) -> bool
-{
-    return i::all_different(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p));
-}
+    template <typename R, typename BinaryPredicate = std::equal_to<>>
+    // requires R ForwardIterator range
+    // requires BinaryPredicate, returns bool, two arguments value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, BinaryPredicate pred = BinaryPredicate{}) const -> bool
+    {
+        return i::all_different(adl::begin(r), adl::end(r), astl::pass_fn(pred));
+    }
 
-template <typename R, typename N, typename BinaryPredicate>
-// requires R ForwardIterator range
-// requires N integral type
-// requires BinaryPredicate, returns bool, two arguments value_type(R)
-ASTL_NODISCARD auto all_different_n(R &&r, N n, BinaryPredicate pred) -> bool
-{
-    return i::all_different_n(adl::begin(r), n, astl::pass_fn(pred));
-}
+    template <typename R, typename BinaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, BinaryPredicate pred, P p) const -> bool
+    {
+        return i::all_different(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p));
+    }
 
-template <typename R, typename N>
-// requires R ForwardIterator range
-// requires N integral type
-ASTL_NODISCARD auto all_different_n(R &&r, N n) -> bool
-{
-    return r::all_different_n(r, n, std::equal_to{});
-}
+} all_different{};
 
-template <typename R, typename N, typename BinaryPredicate, typename P>
-ASTL_NODISCARD auto all_different_n(R &&r, N n, BinaryPredicate pred, P p) -> bool
-{
-    return i::all_different_n(adl::begin(r), n, astl::pass_fn(pred), astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename N, typename BinaryPredicate = std::equal_to<>>
+    // requires R ForwardIterator range
+    // requires N integral type
+    // requires BinaryPredicate, returns bool, two arguments value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, N n, BinaryPredicate pred = BinaryPredicate{}) const
+        -> bool
+    {
+        return i::all_different_n(adl::begin(r), n, astl::pass_fn(pred));
+    }
 
-template <typename R>
-// requires R InputIterator range
-ASTL_NODISCARD auto all_of(R &&r) -> bool
-{
-    return i::all_of(adl::begin(r), adl::end(r));
-}
+    template <typename R, typename N, typename BinaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, N n, BinaryPredicate pred, P p) const -> bool
+    {
+        return i::all_different_n(adl::begin(r), n, astl::pass_fn(pred), astl::pass_fn(p));
+    }
+} all_different_n{};
 
-template <typename R, typename UnaryPredicate>
-// requires R InputIterator range
-// requires C, returns bool, argument value_type(R)
-ASTL_NODISCARD auto all_of(R &&r, UnaryPredicate pred) -> bool
-{
-    return i::all_of(adl::begin(r), adl::end(r), astl::pass_fn(pred));
-}
+inline constexpr struct {
+    template <typename R>
+    // requires R InputIterator range
+    ASTL_NODISCARD auto operator()(R &&r) const -> bool
+    {
+        return i::all_of(adl::begin(r), adl::end(r));
+    }
 
-template <typename R, typename UnaryPredicate, typename P>
-ASTL_NODISCARD auto all_of(R &&r, UnaryPredicate pred, P p) -> bool
-{
-    return i::all_of(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p));
-}
+    template <typename R, typename UnaryPredicate>
+    // requires R InputIterator range
+    // requires C, returns bool, argument value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, UnaryPredicate pred) const -> bool
+    {
+        return i::all_of(adl::begin(r), adl::end(r), astl::pass_fn(pred));
+    }
 
-template <int N, typename R, typename NaryPred>
-ASTL_NODISCARD auto all_of_adjacent(R &&r, NaryPred pred) ->
-    typename std::enable_if<(N > 0), bool>::type
-{
-    return internal_all_of::all_of_adjacent1<N>(adl::begin(r), astl::pass_fn(pred),
-                                                astl::size_or_distance(r));
-}
+    template <typename R, typename UnaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, UnaryPredicate pred, P p) const -> bool
+    {
+        return i::all_of(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p));
+    }
+} all_of{};
 
-template <int N, typename R, typename NaryPred, typename P>
-ASTL_NODISCARD auto all_of_adjacent(R &&r, NaryPred pred, P p) ->
-    typename std::enable_if<(N > 0), bool>::type
-{
-    return internal_all_of::all_of_adjacent1<N>(
-        adl::begin(r), astl::combine(astl::pass_fn(pred), astl::pass_fn(p)),
-        astl::size_or_distance(r));
-}
+template <int N>
+inline constexpr auto all_of_adjacent = i::internal_a_adjacent::all_of_adjacent_t<N, true>{};
 
-template <typename R, typename E>
-// requires R InputIterator range
-// requires E, equality comparable with value_type(R)
-ASTL_NODISCARD auto all_of_equal(R &&r, E &&elem) -> bool
-{
-    return i::all_of(adl::begin(r), adl::end(r), elem);
-}
+inline constexpr struct {
+    template <typename R, typename E>
+    // requires R InputIterator range
+    // requires E, equality comparable with value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, E &&elem) const -> bool
+    {
+        return i::all_of(adl::begin(r), adl::end(r), elem);
+    }
 
-template <typename R, typename E, typename P>
-ASTL_NODISCARD auto all_of_equal(R &&r, E &&elem, P p) -> bool
-{
-    return i::all_of(adl::begin(r), adl::end(r), elem, astl::pass_fn(p));
-}
+    template <typename R, typename E, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, E &&elem, P p) const -> bool
+    {
+        return i::all_of(adl::begin(r), adl::end(r), elem, astl::pass_fn(p));
+    }
+} all_of_equal{};
 
-template <typename R, typename N, typename E>
-// requires R InputIterator range
-// requires N integral type
-// requires E, equality comparable with value_type(R)
-ASTL_NODISCARD auto all_of_equal_n(R &&r, N n, E &&e) -> bool
-{
-    return i::all_of_equal_n(adl::begin(r), n, e);
-}
+inline constexpr struct {
+    template <typename R, typename N, typename E>
+    // requires R InputIterator range
+    // requires N integral type
+    // requires E, equality comparable with value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, N n, E &&e) const -> bool
+    {
+        return i::all_of_equal_n(adl::begin(r), n, e);
+    }
 
-template <typename R, typename N, typename E, typename P>
-ASTL_NODISCARD auto all_of_equal_n(R &&r, N n, E &&e, P p) -> bool
-{
-    return i::all_of_equal_n(adl::begin(r), n, e, astl::pass_fn(p));
-}
+    template <typename R, typename N, typename E, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, N n, E &&e, P p) const -> bool
+    {
+        return i::all_of_equal_n(adl::begin(r), n, e, astl::pass_fn(p));
+    }
+} all_of_equal_n{};
 
-template <typename R, typename N>
-// requires R InputIterator range
-// requires N integral type
-ASTL_NODISCARD auto all_of_n(R &&r, N n) -> bool
-{
-    return i::all_of_n(adl::begin(r), n);
-}
+inline constexpr struct {
+    template <typename R, typename N>
+    // requires R InputIterator range
+    // requires N integral type
+    ASTL_NODISCARD auto operator()(R &&r, N n) const -> bool
+    {
+        return i::all_of_n(adl::begin(r), n);
+    }
 
-template <typename R, typename N, typename UnaryPredicate>
-// requires R InputIterator range
-// requires N integral type
-// requires UnaryPredicate, returns bool, argument value_type(R)
-ASTL_NODISCARD auto all_of_n(R &&r, N n, UnaryPredicate pred) -> bool
-{
-    return i::all_of_n(adl::begin(r), n, astl::pass_fn(pred));
-}
+    template <typename R, typename N, typename UnaryPredicate>
+    // requires R InputIterator range
+    // requires N integral type
+    // requires UnaryPredicate, returns bool, argument value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, N n, UnaryPredicate pred) const -> bool
+    {
+        return i::all_of_n(adl::begin(r), n, astl::pass_fn(pred));
+    }
 
-template <typename R, typename N, typename UnaryPredicate, typename P>
-ASTL_NODISCARD auto all_of_n(R &&r, N n, UnaryPredicate pred, P p) -> bool
-{
-    return i::all_of_n(adl::begin(r), n, astl::pass_fn(pred), astl::pass_fn(p));
-}
+    template <typename R, typename N, typename UnaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, N n, UnaryPredicate pred, P p) const -> bool
+    {
+        return i::all_of_n(adl::begin(r), n, astl::pass_fn(pred), astl::pass_fn(p));
+    }
+} all_of_n{};
 
-template <typename R>
-// requires R InputIterator range
-// requires BinaryPredicate, returns bool, two arguments value_type(R)
-ASTL_NODISCARD auto all_same(R &&r) -> bool
-{
-    return i::all_same(adl::begin(r), adl::end(r), std::equal_to{});
-}
+inline constexpr struct {
+    template <typename R, typename BinaryPredicate = std::equal_to<>>
+    // requires R InputIterator range
+    // requires BinaryPredicate, returns bool, two arguments value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, BinaryPredicate pred = BinaryPredicate{}) const -> bool
+    {
+        return i::all_same(adl::begin(r), adl::end(r), astl::pass_fn(pred));
+    }
 
-template <typename R, typename BinaryPredicate>
-// requires R InputIterator range
-// requires BinaryPredicate, returns bool, two arguments value_type(R)
-ASTL_NODISCARD auto all_same(R &&r, BinaryPredicate pred) -> bool
-{
-    return i::all_same(adl::begin(r), adl::end(r), astl::pass_fn(pred));
-}
+    template <typename R, typename BinaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, BinaryPredicate pred, P p) const -> bool
+    {
+        return i::all_same(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p));
+    }
+} all_same{};
 
-template <typename R, typename BinaryPredicate, typename P>
-ASTL_NODISCARD auto all_same(R &&r, BinaryPredicate pred, P p) -> bool
-{
-    return i::all_same(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename N, typename BinaryPredicate = std::equal_to<>>
+    // requires R InputIterator range
+    // requires N integral type
+    // requires BinaryPredicate, returns bool, two arguments value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, N n, BinaryPredicate pred = BinaryPredicate{}) const
+        -> bool
+    {
+        return i::all_same_n(adl::begin(r), n, astl::pass_fn(pred));
+    }
 
-template <typename R, typename N>
-// requires R InputIterator range
-// requires N integral type
-ASTL_NODISCARD auto all_same_n(R &&r, N n) -> bool
-{
-    return i::all_same_n(adl::begin(r), n, std::equal_to{});
-}
+    template <typename R, typename N, typename BinaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, N n, BinaryPredicate pred, P p) const -> bool
+    {
+        return i::all_same_n(adl::begin(r), n, astl::pass_fn(pred), astl::pass_fn(p));
+    }
+} all_same_n{};
 
-template <typename R, typename N, typename BinaryPredicate>
-// requires R InputIterator range
-// requires N integral type
-// requires BinaryPredicate, returns bool, two arguments value_type(R)
-ASTL_NODISCARD auto all_same_n(R &&r, N n, BinaryPredicate pred) -> bool
-{
-    return i::all_same_n(adl::begin(r), n, astl::pass_fn(pred));
-}
-
-template <typename R, typename N, typename BinaryPredicate, typename P>
-ASTL_NODISCARD auto all_same_n(R &&r, N n, BinaryPredicate pred, P p) -> bool
-{
-    return i::all_same_n(adl::begin(r), n, astl::pass_fn(pred), astl::pass_fn(p));
-}
 } // namespace r
 } // namespace astl
 
