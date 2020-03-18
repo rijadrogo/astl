@@ -513,7 +513,7 @@ public:
 
 }// namespace internal_zip
 
-/// zip iterator for two or more iteratable types.
+/// zip iterator for two or more iterable types.
 template <typename R, typename... Rs,
           bool HasSize = internal_zip::has_all_size<void, R, Rs...>::value>
 ASTL_NODISCARD auto zip(R &&t, Rs &&... args)
