@@ -287,139 +287,109 @@ inline constexpr struct {
 
 namespace r
 {
-template <typename R1, typename R2>
-// requires R1 InputIterator range
-// requires R2 InputIterator range
-ASTL_NODISCARD auto lexicographical_compare(R1 &&r1, R2 &&r2) -> bool
-{
-    return i::lexicographical_compare(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2));
-}
 
-template <typename R1, typename R2, typename Comparator>
-// requires R1 InputIterator range
-// requires R2 InputIterator range
-// requires Comparator function, returns bool, takes two arguments of type
-// value_type(R1)
-//                                                               and
-//                                                               value_type(R2)
-ASTL_NODISCARD auto lexicographical_compare(R1 &&r1, R2 &&r2, Comparator comp) -> bool
-{
-    return i::lexicographical_compare(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
-                                      astl::pass_fn(comp));
-}
+inline constexpr struct {
+    template <typename R1, typename R2, typename Comparator = std::less<>>
+    // requires R1 InputIterator range
+    // requires R2 InputIterator range
+    // requires Comparator function, returns bool, takes two arguments of type
+    // value_type(R1)
+    //                                                               and
+    //                                                               value_type(R2)
+    ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, Comparator comp = Comparator{}) const -> bool
+    {
+        return i::lexicographical_compare(adl::begin(r1), adl::end(r1), adl::begin(r2),
+                                          adl::end(r2), astl::pass_fn(comp));
+    }
 
-template <typename R1, typename R2, typename Comparator, typename P1, typename P2>
-ASTL_NODISCARD auto lexicographical_compare(R1 &&r1, R2 &&r2, Comparator comp, P1 p1, P2 p2) -> bool
-{
-    return i::lexicographical_compare(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
-                                      astl::pass_fn(comp), astl::pass_fn(p1), astl::pass_fn(p2));
-}
+    template <typename R1, typename R2, typename Comparator, typename P1, typename P2>
+    ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, Comparator comp, P1 p1, P2 p2) const -> bool
+    {
+        return i::lexicographical_compare(adl::begin(r1), adl::end(r1), adl::begin(r2),
+                                          adl::end(r2), astl::pass_fn(comp), astl::pass_fn(p1),
+                                          astl::pass_fn(p2));
+    }
+} lexicographical_compare{};
 
-template <typename R1, typename R2>
-// requires R1 InputIterator range
-// requires R2 InputIterator range
-ASTL_NODISCARD auto lexicographical_compare_3way(R1 &&r1, R2 &&r2) -> int
-{
-    return i::lexicographical_compare_3way(adl::begin(r1), adl::end(r1), adl::begin(r2),
-                                           adl::end(r2));
-}
+inline constexpr struct {
+    template <typename R1, typename R2, typename Comparator = std::less<>>
+    // requires R1 InputIterator range
+    // requires R2 InputIterator range
+    // requires Comparator function, returns bool, takes two arguments of type
+    // value_type(R1)
+    //                                                               and
+    //                                                               value_type(R2)
+    ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, Comparator comp = Comparator{}) const -> int
+    {
+        return i::lexicographical_compare_3way(adl::begin(r1), adl::end(r1), adl::begin(r2),
+                                               adl::end(r2), astl::pass_fn(comp));
+    }
 
-template <typename R1, typename R2, typename Comparator>
-// requires R1 InputIterator range
-// requires R2 InputIterator range
-// requires Comparator function, returns bool, takes two arguments of type
-// value_type(R1)
-//                                                               and
-//                                                               value_type(R2)
-ASTL_NODISCARD auto lexicographical_compare_3way(R1 &&r1, R2 &&r2, Comparator comp) -> int
-{
-    return i::lexicographical_compare_3way(adl::begin(r1), adl::end(r1), adl::begin(r2),
-                                           adl::end(r2), astl::pass_fn(comp));
-}
+    template <typename R1, typename R2, typename Comparator, typename P1, typename P2>
+    ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, Comparator comp, P1 p1, P2 p2) const -> int
+    {
+        return i::lexicographical_compare_3way(adl::begin(r1), adl::end(r1), adl::begin(r2),
+                                               adl::end(r2), astl::pass_fn(comp), astl::pass_fn(p1),
+                                               astl::pass_fn(p2));
+    }
+} lexicographical_compare_3way{};
 
-template <typename R1, typename R2, typename Comparator, typename P1, typename P2>
-ASTL_NODISCARD auto lexicographical_compare_3way(R1 &&r1, R2 &&r2, Comparator comp, P1 p1, P2 p2)
-    -> int
-{
-    return i::lexicographical_compare_3way(adl::begin(r1), adl::end(r1), adl::begin(r2),
-                                           adl::end(r2), astl::pass_fn(comp), astl::pass_fn(p1),
-                                           astl::pass_fn(p2));
-}
+inline constexpr struct {
 
-template <typename R1, typename N1, typename R2, typename N2>
-// requires R1 InputIterator range
-// requires N1 integral type
-// requires R2 InputIterator range
-// requires N2 integral type
-// requires Comparator function, returns bool, takes two arguments of type
-// value_type(R1)
-//                                                               and
-//                                                               value_type(R2)
-ASTL_NODISCARD auto lexicographical_compare_3way_n(R1 &&r1, N1 n1, R2 &&r2, N2 n2) -> int
-{
-    return i::lexicographical_compare_3way(adl::begin(r1), n1, adl::begin(r2), n2);
-}
+    template <typename R1, typename N1, typename R2, typename N2, typename Comparator>
+    // requires R1 InputIterator range
+    // requires N1 integral type
+    // requires R2 InputIterator range
+    // requires N2 integral type
+    // requires Comparator function, returns bool, takes two arguments of type
+    // value_type(R1)
+    //                                                               and
+    //                                                               value_type(R2)
+    ASTL_NODISCARD auto operator()(R1 &&r1, N1 n1, R2 &&r2, N2 n2, Comparator comp) const -> int
+    {
+        return i::lexicographical_compare_3way(adl::begin(r1), n1, adl::begin(r2), n2,
+                                               astl::pass_fn(comp));
+    }
 
-template <typename R1, typename N1, typename R2, typename N2, typename Comparator>
-// requires R1 InputIterator range
-// requires N1 integral type
-// requires R2 InputIterator range
-// requires N2 integral type
-// requires Comparator function, returns bool, takes two arguments of type
-// value_type(R1)
-//                                                               and
-//                                                               value_type(R2)
-ASTL_NODISCARD auto lexicographical_compare_3way_n(R1 &&r1, N1 n1, R2 &&r2, N2 n2, Comparator comp)
-    -> int
-{
-    return i::lexicographical_compare_3way(adl::begin(r1), n1, adl::begin(r2), n2,
-                                           astl::pass_fn(comp));
-}
+    template <typename R1, typename N1, typename R2, typename N2, typename Comparator, typename P1,
+              typename P2>
+    ASTL_NODISCARD auto operator()(R1 &&r1, N1 n1, R2 &&r2, N2 n2, Comparator comp, P1 p1,
+                                   P2 p2) const -> int
+    {
+        return i::lexicographical_compare_3way_n(adl::begin(r1), n1, adl::begin(r2), n2,
+                                                 astl::pass_fn(comp), astl::pass_fn(p1),
+                                                 astl::pass_fn(p2));
+    }
 
-template <typename R1, typename N1, typename R2, typename N2, typename Comparator, typename P1,
-          typename P2>
-ASTL_NODISCARD auto lexicographical_compare_3way_n(R1 &&r1, N1 n1, R2 &&r2, N2 n2, Comparator comp,
-                                                   P1 p1, P2 p2) -> int
-{
-    return i::lexicographical_compare_3way_n(adl::begin(r1), n1, adl::begin(r2), n2,
-                                             astl::pass_fn(comp), astl::pass_fn(p1),
-                                             astl::pass_fn(p2));
-}
+} lexicographical_compare_3way_n{};
 
-template <typename R1, typename N1, typename R2, typename N2>
-// requires R1 InputIterator range
-// requires N1 integral type
-// requires R2 InputIterator range
-// requires N2 integral type
-ASTL_NODISCARD auto lexicographical_compare_n(R1 &&r1, N1 n1, R2 &&r2, N2 n2) -> bool
-{
-    return i::lexicographical_compare_n(adl::begin(r1), n1, adl::begin(r2), n2);
-}
+inline constexpr struct {
+    template <typename R1, typename N1, typename R2, typename N2, typename Comparator>
+    // requires R1 InputIterator range
+    // requires N1 integral type
+    // requires R2 InputIterator range
+    // requires N2 integral type
+    // requires Comparator function, returns bool, takes two arguments of type
+    // value_type(R1)
+    //                                                               and
+    //                                                               value_type(R2)
+    ASTL_NODISCARD auto operator()(R1 &&r1, N1 n1, R2 &&r2, N2 n2, Comparator comp) const -> bool
+    {
+        return i::lexicographical_compare_n(adl::begin(r1), n1, adl::begin(r2), n2,
+                                            astl::pass_fn(comp));
+    }
 
-template <typename R1, typename N1, typename R2, typename N2, typename Comparator>
-// requires R1 InputIterator range
-// requires N1 integral type
-// requires R2 InputIterator range
-// requires N2 integral type
-// requires Comparator function, returns bool, takes two arguments of type
-// value_type(R1)
-//                                                               and
-//                                                               value_type(R2)
-ASTL_NODISCARD auto lexicographical_compare_n(R1 &&r1, N1 n1, R2 &&r2, N2 n2, Comparator comp)
-    -> bool
-{
-    return i::lexicographical_compare_n(adl::begin(r1), n1, adl::begin(r2), n2,
-                                        astl::pass_fn(comp));
-}
+    template <typename R1, typename N1, typename R2, typename N2, typename Comparator, typename P1,
+              typename P2>
+    ASTL_NODISCARD auto operator()(R1 &&r1, N1 n1, R2 &&r2, N2 n2, Comparator comp, P1 p1,
+                                   P2 p2) const -> bool
+    {
+        return i::lexicographical_compare_n(adl::begin(r1), n1, adl::begin(r2), n2,
+                                            astl::pass_fn(comp), astl::pass_fn(p1),
+                                            astl::pass_fn(p2));
+    }
+} lexicographical_compare_n{};
 
-template <typename R1, typename N1, typename R2, typename N2, typename Comparator, typename P1,
-          typename P2>
-ASTL_NODISCARD auto lexicographical_compare_n(R1 &&r1, N1 n1, R2 &&r2, N2 n2, Comparator comp,
-                                              P1 p1, P2 p2) -> bool
-{
-    return i::lexicographical_compare_n(adl::begin(r1), n1, adl::begin(r2), n2, astl::pass_fn(comp),
-                                        astl::pass_fn(p1), astl::pass_fn(p2));
-}
 } // namespace r
 } // namespace astl
 // ReSharper restore CppInconsistentNaming
