@@ -260,10 +260,11 @@ template <typename F, typename T> struct unwrap_ref {
 namespace i
 {
 
-template <typename FwdIt, typename EqualityComparable>
+template <typename FwdIt, typename EqualityComparable = std::equal_to<>>
 // requires FwdIt ForwardIterator
 // requires EqualityComparable, returns bool, two arguments of value_type(FwdIt)
-ASTL_NODISCARD auto first_non_repeating_element(FwdIt first, FwdIt last, EqualityComparable pred)
+ASTL_NODISCARD auto first_non_repeating_element(FwdIt first, FwdIt last,
+                                                EqualityComparable pred = EqualityComparable{})
     -> FwdIt
 {
     if (first == last) return last;
@@ -306,14 +307,6 @@ ASTL_NODISCARD auto first_non_repeating_element(FwdIt first, FwdIt last, Equalit
     }
 }
 
-template <typename FwdIt>
-// requires FwdIt ForwardIterator
-// requires EqualityComparable, returns bool, two arguments of value_type(FwdIt)
-ASTL_NODISCARD auto first_non_repeating_element(FwdIt first, FwdIt last) -> FwdIt
-{
-    return i::first_non_repeating_element(first, last, std::equal_to{});
-}
-
 template <typename FwdIt, typename EqualityComparable, typename P>
 ASTL_NODISCARD auto first_non_repeating_element(FwdIt first, FwdIt last, EqualityComparable pred,
                                                 P p) -> FwdIt
@@ -321,11 +314,11 @@ ASTL_NODISCARD auto first_non_repeating_element(FwdIt first, FwdIt last, Equalit
     return i::first_non_repeating_element(first, last, astl::pass_fn(astl::combine(pred, p)));
 }
 
-template <typename FwdIt, typename EqualityComparable>
+template <typename FwdIt, typename EqualityComparable = std::equal_to<>>
 // requires FwdIt ForwardIterator
 // requires EqualityComparable, returns bool, two arguments of value_type(FwdIt)
-ASTL_NODISCARD auto first_repeating_element(FwdIt first, FwdIt last, EqualityComparable pred)
-    -> FwdIt
+ASTL_NODISCARD auto first_repeating_element(FwdIt first, FwdIt last,
+                                            EqualityComparable pred = EqualityComparable{}) -> FwdIt
 {
 
     if (first == last) return last;
@@ -365,14 +358,6 @@ ASTL_NODISCARD auto first_repeating_element(FwdIt first, FwdIt last, EqualityCom
     }
 }
 
-template <typename FwdIt>
-// requires FwdIt ForwardIterator
-
-ASTL_NODISCARD auto first_repeating_element(FwdIt first, FwdIt last) -> FwdIt
-{
-    return i::first_repeating_element(first, last, std::equal_to{});
-}
-
 template <typename FwdIt, typename EqualityComparable, typename P>
 ASTL_NODISCARD auto first_repeating_element(FwdIt first, FwdIt last, EqualityComparable pred, P p)
     -> FwdIt
@@ -380,28 +365,18 @@ ASTL_NODISCARD auto first_repeating_element(FwdIt first, FwdIt last, EqualityCom
     return i::first_repeating_element(first, last, astl::pass_fn(astl::combine(pred, p)));
 }
 
-template <typename FwdIt1, typename FwdIt2, typename BinaryPredicate>
+template <typename FwdIt1, typename FwdIt2, typename BinaryPredicate = std::equal_to<>>
 // requires FwdIt1 ForwardIterator
 // requires FwdIt2 ForwardIterator
 // requires BinaryPredicate, returns bool, arguments ValueType(FwdIt1) and
 //                                              ValueType(FwdIt2)
 ASTL_NODISCARD auto longest_common_subarray(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2,
-                                            FwdIt2 last2, BinaryPredicate pred)
+                                            FwdIt2 last2, BinaryPredicate pred = BinaryPredicate{})
     -> optional<iter_diff_type<FwdIt1>>
 {
     return internal_dp::longest_common_subarray1(first1, astl::distance(first1, last1), first2,
                                                  astl::distance(first2, last2),
                                                  astl::pass_fn(pred));
-}
-
-template <typename FwdIt1, typename FwdIt2>
-// requires FwdIt1 ForwardIterator
-// requires FwdIt2 ForwardIterator
-ASTL_NODISCARD auto longest_common_subarray(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2,
-                                            FwdIt2 last2) -> optional<iter_diff_type<FwdIt1>>
-{
-    return internal_dp::longest_common_subarray1(first1, astl::distance(first1, last1), first2,
-                                                 astl::distance(first2, last2), std::equal_to{});
 }
 
 template <typename FwdIt1, typename FwdIt2, typename BinaryPredicate, typename P1, typename P2>
@@ -459,28 +434,17 @@ ASTL_NODISCARD auto longest_common_subarray_buffered(FwdIt1 first1, FwdIt1 last1
 
 // Subsequence is a sequence that appears in the same relative order, but not
 // necessarily contiguous.
-template <typename FwdIt1, typename FwdIt2, typename BinaryPredicate>
+template <typename FwdIt1, typename FwdIt2, typename BinaryPredicate = std::equal_to<>>
 // requires FwdIt1 ForwardIterator
 // requires FwdIt2 ForwardIterator
 // requires BinaryPredicate, returns bool, arguments ValueType(FwdIt1) and
 // ValueType(FwdIt2)
 ASTL_NODISCARD auto longest_common_subseq(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
-                                          BinaryPredicate pred) -> iter_diff_type<FwdIt1>
-{
-    return internal_dp::longest_common_subseq1(first1, astl::distance(first1, last1), first2,
-                                               astl::distance(first2, last2), astl::pass_fn(pred));
-}
-
-// Subsequence is a sequence that appears in the same relative order, but not
-// necessarily contiguous.
-template <typename FwdIt1, typename FwdIt2>
-// requires FwdIt1 ForwardIterator
-// requires FwdIt2 ForwardIterator
-ASTL_NODISCARD auto longest_common_subseq(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2)
+                                          BinaryPredicate pred = BinaryPredicate{})
     -> iter_diff_type<FwdIt1>
 {
     return internal_dp::longest_common_subseq1(first1, astl::distance(first1, last1), first2,
-                                               astl::distance(first2, last2), std::equal_to{});
+                                               astl::distance(first2, last2), astl::pass_fn(pred));
 }
 
 // Subsequence is a sequence that appears in the same relative order, but not
@@ -496,10 +460,11 @@ ASTL_NODISCARD auto longest_common_subseq(FwdIt1 first1, FwdIt1 last1, FwdIt2 fi
 }
 
 // Time Complexity: O(n)
-template <typename BidiIt, typename BinaryPredicate>
+template <typename BidiIt, typename BinaryPredicate = std::equal_to<>>
 // requires BidiIt BidirectionalIterator
 // requires BinaryPredicate, returns bool, two arguments of ValueType(BidiIt)
-ASTL_NODISCARD auto longest_subarray(BidiIt first, BidiIt last, BinaryPredicate pred)
+ASTL_NODISCARD auto longest_subarray(BidiIt first, BidiIt last,
+                                     BinaryPredicate pred = BinaryPredicate{})
     -> std::pair<BidiIt, BidiIt>
 {
     iter_diff_type<BidiIt> max(0);
@@ -510,7 +475,7 @@ ASTL_NODISCARD auto longest_subarray(BidiIt first, BidiIt last, BinaryPredicate 
         ++first;
         ++max;
         while (first != last) {
-            if (pred(*first, *trailer)) { ++len; }
+            if (pred(*first, *trailer)) ++len;
             else {
                 if (max < len) {
                     max = len;
@@ -526,13 +491,6 @@ ASTL_NODISCARD auto longest_subarray(BidiIt first, BidiIt last, BinaryPredicate 
     return std::make_pair((max == 1 ? last : astl::prev(end, max)), end);
 }
 
-template <typename BidiIt>
-// requires BidiIt BidirectionalIterator
-ASTL_NODISCARD auto longest_subarray(BidiIt first, BidiIt last) -> std::pair<BidiIt, BidiIt>
-{
-    return i::longest_subarray(first, last, std::equal_to{});
-}
-
 template <typename BidiIt, typename BinaryPredicate, typename P>
 ASTL_NODISCARD auto longest_subarray(BidiIt first, BidiIt last, BinaryPredicate pred, P p)
     -> std::pair<BidiIt, BidiIt>
@@ -540,20 +498,14 @@ ASTL_NODISCARD auto longest_subarray(BidiIt first, BidiIt last, BinaryPredicate 
     return i::longest_subarray(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
 }
 
-template <typename FwdIt, typename BinaryPredicate>
+template <typename FwdIt, typename BinaryPredicate = std::equal_to<>>
 // requires FwdIt ForwardIterator
 // requires BinaryPredicate, returns bool, two arguments of ValueType(FwdIt)
-ASTL_NODISCARD auto longest_subseq(FwdIt first, FwdIt last, BinaryPredicate pred)
+ASTL_NODISCARD auto longest_subseq(FwdIt first, FwdIt last,
+                                   BinaryPredicate pred = BinaryPredicate{})
     -> iter_diff_type<FwdIt>
 {
     return internal_dp::longest_subseq1(first, astl::distance(first, last), astl::pass_fn(pred));
-}
-
-template <typename FwdIt>
-// requires FwdIt ForwardIterator
-ASTL_NODISCARD auto longest_subseq(FwdIt first, FwdIt last) -> iter_diff_type<FwdIt>
-{
-    return i::longest_subseq(first, last, std::equal_to{});
 }
 
 template <typename FwdIt, typename BinaryPredicate, typename P>
@@ -564,10 +516,11 @@ ASTL_NODISCARD auto longest_subseq(FwdIt first, FwdIt last, BinaryPredicate pred
                                         astl::distance(first, last), astl::pass_fn(pred));
 }
 
-template <typename FwdIt, typename BinaryPredicate>
+template <typename FwdIt, typename BinaryPredicate = std::equal_to<>>
 // requires FwdIt ForwardIterator
 // requires BinaryPredicate, returns bool, two arguments of value_type(FwdIt)
-ASTL_NODISCARD auto most_frequent_element(FwdIt first, FwdIt last, BinaryPredicate pred)
+ASTL_NODISCARD auto most_frequent_element(FwdIt first, FwdIt last,
+                                          BinaryPredicate pred = BinaryPredicate{})
     -> optional<astl::iter_value_type<FwdIt>>
 {
     if (first == last) return nullopt;
@@ -610,14 +563,6 @@ ASTL_NODISCARD auto most_frequent_element(FwdIt first, FwdIt last, BinaryPredica
     }
 }
 
-template <typename FwdIt>
-// requires FwdIt ForwardIterator
-ASTL_NODISCARD auto most_frequent_element(FwdIt first, FwdIt last)
-    -> optional<astl::iter_value_type<FwdIt>>
-{
-    return i::most_frequent_element(first, last, std::equal_to{});
-}
-
 template <typename FwdIt, typename BinaryPredicate, typename P>
 ASTL_NODISCARD auto most_frequent_element(FwdIt first, FwdIt last, BinaryPredicate pred, P p)
     -> optional<astl::iter_value_type<FwdIt>>
@@ -626,11 +571,11 @@ ASTL_NODISCARD auto most_frequent_element(FwdIt first, FwdIt last, BinaryPredica
                                     astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
 }
 
-template <typename FwdIt, typename BinaryPredicate>
+template <typename FwdIt, typename BinaryPredicate = std::equal_to<>>
 // requires FwdIt ForwardIterator
 // requires BinaryPredicate, returns bool, two arguments of value_type(FwdIt)
 ASTL_NODISCARD auto nth_most_frequent_element(FwdIt first, FwdIt last, iter_diff_type<FwdIt> n,
-                                              BinaryPredicate pred)
+                                              BinaryPredicate pred = BinaryPredicate{})
     -> optional<astl::iter_value_type<FwdIt>>
 {
     if (first == last) return nullopt;
@@ -666,14 +611,6 @@ ASTL_NODISCARD auto nth_most_frequent_element(FwdIt first, FwdIt last, iter_diff
     }
 }
 
-template <typename FwdIt>
-// requires FwdIt ForwardIterator
-ASTL_NODISCARD auto nth_most_frequent_element(FwdIt first, FwdIt last, iter_diff_type<FwdIt> n = 1)
-    -> optional<astl::iter_value_type<FwdIt>>
-{
-    return i::nth_most_frequent_element(first, last, n, std::equal_to{});
-}
-
 template <typename FwdIt, typename BinaryPredicate, typename P>
 ASTL_NODISCARD auto nth_most_frequent_element(FwdIt first, FwdIt last, iter_diff_type<FwdIt> n,
                                               BinaryPredicate pred, P p)
@@ -683,10 +620,11 @@ ASTL_NODISCARD auto nth_most_frequent_element(FwdIt first, FwdIt last, iter_diff
                                         astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
 }
 
-template <typename FwdIt, typename BinaryPredicate>
+template <typename FwdIt, typename BinaryPredicate = std::equal_to<>>
 // requires FwdIt ForwardIterator
 // requires BinaryPredicate, returns bool, two arguments of value_type(FwdIt)
-ASTL_NODISCARD auto num_of_unique_elements(FwdIt first, FwdIt last, BinaryPredicate pred)
+ASTL_NODISCARD auto num_of_unique_elements(FwdIt first, FwdIt last,
+                                           BinaryPredicate pred = BinaryPredicate{})
     -> iter_diff_type<FwdIt>
 {
     if (first == last) return 0;
@@ -719,13 +657,6 @@ ASTL_NODISCARD auto num_of_unique_elements(FwdIt first, FwdIt last, BinaryPredic
         }
         return res;
     }
-}
-
-template <typename FwdIt>
-// requires FwdIt ForwardIterator
-ASTL_NODISCARD auto num_of_unique_elements(FwdIt first, FwdIt last) -> iter_diff_type<FwdIt>
-{
-    return i::num_of_unique_elements(first, last, std::equal_to{});
 }
 
 template <typename FwdIt, typename BinaryPredicate, typename P>
@@ -772,26 +703,17 @@ ASTL_NODISCARD auto first_repeating_element(R r, EqualityComparable pred, P p) -
                                       astl::pass_fn(p));
 }
 
-template <typename R1, typename R2, typename BinaryPredicate>
+template <typename R1, typename R2, typename BinaryPredicate = std::equal_to<>>
 // requires R1 ForwardIterator range
 // requires R2 ForwardIterator range
 // requires BinaryPredicate, returns bool, arguments ValueType(R1) and ValueType(R2)
-ASTL_NODISCARD auto longest_common_subarray(R1 &&r1, R2 &&r2, BinaryPredicate pred)
+ASTL_NODISCARD auto longest_common_subarray(R1 &&r1, R2 &&r2,
+                                            BinaryPredicate pred = BinaryPredicate{})
     -> range_diff_type<R1>
 {
     return internal_dp::longest_common_subarray1(adl::begin(r1), astl::size_or_distance(r1),
                                                  adl::begin(r2), astl::size_or_distance(r2),
                                                  astl::pass_fn(pred));
-}
-
-template <typename R1, typename R2>
-// requires R1 ForwardIterator range
-// requires R2 ForwardIterator range
-ASTL_NODISCARD auto longest_common_subarray(R1 &&r1, R2 &&r2) -> range_diff_type<R1>
-{
-    return internal_dp::longest_common_subarray1(adl::begin(r1), astl::size_or_distance(r1),
-                                                 adl::begin(r2), astl::size_or_distance(r2),
-                                                 std::equal_to{});
 }
 
 template <typename R1, typename R2, typename BinaryPredicate, typename P1, typename P2>
@@ -845,28 +767,17 @@ ASTL_NODISCARD auto longest_common_subarray_buffered(R1 &&r1, R2 &&r2, BinaryPre
 
 // Subsequence is a sequence that appears in the same relative order, but not
 // necessarily contiguous.
-template <typename R1, typename R2, typename BinaryPredicate>
+template <typename R1, typename R2, typename BinaryPredicate = std::equal_to<>>
 // requires R1 ForwardIterator range
 // requires R2 ForwardIterator range
 // requires BinaryPredicate, returns bool, arguments ValueType(R1) and ValueType(R2)
-ASTL_NODISCARD auto longest_common_subseq(R1 &&r1, R2 &&r2, BinaryPredicate pred)
+ASTL_NODISCARD auto longest_common_subseq(R1 &&r1, R2 &&r2,
+                                          BinaryPredicate pred = BinaryPredicate{})
     -> range_diff_type<R1>
 {
     return internal_dp::longest_common_subseq1(adl::begin(r1), astl::size_or_distance(r1),
                                                adl::begin(r2), astl::size_or_distance(r2),
                                                astl::pass_fn(pred));
-}
-
-// Subsequence is a sequence that appears in the same relative order, but not
-// necessarily contiguous.
-template <typename R1, typename R2>
-// requires R1 ForwardIterator range
-// requires R2 ForwardIterator range
-ASTL_NODISCARD auto longest_common_subseq(R1 &&r1, R2 &&r2) -> range_diff_type<R1>
-{
-    return internal_dp::longest_common_subseq1(adl::begin(r1), astl::size_or_distance(r1),
-                                               adl::begin(r2), astl::size_or_distance(r2),
-                                               std::equal_to{});
 }
 
 // Subsequence is a sequence that appears in the same relative order, but not
@@ -880,21 +791,12 @@ ASTL_NODISCARD auto longest_common_subseq(R1 &&r1, R2 &&r2, BinaryPredicate pred
         astl::lockstep(astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2)));
 }
 
-template <typename R1, typename BinaryPredicate>
+template <typename R1, typename BinaryPredicate = std::equal_to<>>
 // requires R1 BidirectionalIterator range
-ASTL_NODISCARD auto longest_subarray(R1 &&r1, BinaryPredicate pred)
+ASTL_NODISCARD auto longest_subarray(R1 &&r1, BinaryPredicate pred = BinaryPredicate{})
     -> std::pair<astl::iter_of_range<R1>, astl::iter_of_range<R1>>
 {
     return i::longest_subarray(adl::begin(r1), adl::end(r1), astl::pass_fn(pred));
-}
-
-template <typename R>
-// requires R BidirectionalIterator range
-// requires BinaryPredicate, returns bool, arguments ValueType(R) and ValueType(R)
-ASTL_NODISCARD auto longest_subarray(R &&r)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    return i::longest_subarray(adl::begin(r), adl::end(r));
 }
 
 template <typename R, typename BinaryPredicate, typename P>
@@ -904,20 +806,14 @@ ASTL_NODISCARD auto longest_subarray(R &&r, BinaryPredicate pred, P p)
     return i::longest_subarray(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p));
 }
 
-template <typename R, typename BinaryPredicate>
+template <typename R, typename BinaryPredicate = std::equal_to<>>
 // requires R ForwardIterator range
 // requires BinaryPredicate, returns bool, two arguments of ValueType(R)
-ASTL_NODISCARD auto longest_subseq(R &&r, BinaryPredicate pred) -> range_diff_type<R>
+ASTL_NODISCARD auto longest_subseq(R &&r, BinaryPredicate pred = BinaryPredicate{})
+    -> range_diff_type<R>
 {
     return internal_dp::longest_subseq1(adl::begin(r), astl::size_or_distance(r),
                                         astl::pass_fn(pred));
-}
-
-template <typename R>
-// requires R ForwardIterator range
-ASTL_NODISCARD auto longest_subseq(R &&r) -> range_diff_type<R>
-{
-    return internal_dp::longest_subseq1(adl::begin(r), astl::size_or_distance(r), std::equal_to{});
 }
 
 template <typename R, typename BinaryPredicate, typename P>
@@ -927,17 +823,10 @@ ASTL_NODISCARD auto longest_subseq(R &&r, BinaryPredicate pred, P p) -> range_di
                                         astl::size_or_distance(r), astl::pass_fn(pred));
 }
 
-template <typename R>
-// requires R ForwardIterator range
-ASTL_NODISCARD auto most_frequent_element(R &&r) -> optional<astl::range_value_type<R>>
-{
-    return i::most_frequent_element(adl::begin(r), adl::end(r));
-}
-
-template <typename R, typename BinaryPredicate>
+template <typename R, typename BinaryPredicate = std::equal_to<>>
 // requires R ForwardIterator range
 // requires BinaryPredicate, returns bool, two arguments of value_type(FwdIt)
-ASTL_NODISCARD auto most_frequent_element(R &&r, BinaryPredicate pred)
+ASTL_NODISCARD auto most_frequent_element(R &&r, BinaryPredicate pred = BinaryPredicate{})
     -> optional<astl::range_value_type<R>>
 {
     return i::most_frequent_element(adl::begin(r), adl::end(r), astl::pass_fn(pred));
@@ -951,18 +840,11 @@ ASTL_NODISCARD auto most_frequent_element(R &&r, BinaryPredicate pred, P p)
                                     astl::pass_fn(p));
 }
 
-template <typename R>
-// requires R ForwardIterator range
-ASTL_NODISCARD auto nth_most_frequent_element(R &&r, range_diff_type<R> n = 1)
-    -> optional<astl::range_value_type<R>>
-{
-    return i::nth_most_frequent_element(adl::begin(r), adl::end(r), n);
-}
-
-template <typename R, typename BinaryPredicate>
+template <typename R, typename BinaryPredicate = std::equal_to<>>
 // requires R ForwardIterator range
 // requires BinaryPredicate, returns bool, two arguments of value_type(FwdIt)
-ASTL_NODISCARD auto nth_most_frequent_element(R &&r, range_diff_type<R> n, BinaryPredicate pred)
+ASTL_NODISCARD auto nth_most_frequent_element(R &&r, range_diff_type<R> n,
+                                              BinaryPredicate pred = BinaryPredicate{})
     -> optional<astl::range_value_type<R>>
 {
     return i::nth_most_frequent_element(adl::begin(r), adl::end(r), n, astl::pass_fn(pred));
@@ -976,20 +858,13 @@ ASTL_NODISCARD auto nth_most_frequent_element(R &&r, BinaryPredicate pred, range
                                         astl::pass_fn(p));
 }
 
-template <typename R, typename BinaryPredicate>
+template <typename R, typename BinaryPredicate = std::equal_to<>>
 // requires R ForwardIterator range
 // requires BinaryPredicate, returns bool, two arguments of value_type(FwdIt)
-ASTL_NODISCARD auto num_of_unique_elements(R &&r, BinaryPredicate pred) -> range_diff_type<R>
+ASTL_NODISCARD auto num_of_unique_elements(R &&r, BinaryPredicate pred = BinaryPredicate{})
+    -> range_diff_type<R>
 {
     return i::num_of_unique_elements(adl::begin(r), adl::end(r), astl::pass_fn(pred));
-}
-
-template <typename R>
-// requires R ForwardIterator range
-// requires BinaryPredicate, returns bool, two arguments of value_type(FwdIt)
-ASTL_NODISCARD auto num_of_unique_elements(R &&r) -> range_diff_type<R>
-{
-    return i::num_of_unique_elements(adl::begin(r), adl::end(r));
 }
 
 template <typename R, typename BinaryPredicate, typename P>
