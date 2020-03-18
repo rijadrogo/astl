@@ -157,7 +157,8 @@ ASTL_NODISCARD auto trim(BidiIt first, BidiIt last, std::initializer_list<T> tri
 }
 
 template <typename BidiIt, typename UnaryPredicate, typename P>
-ASTL_NODISCARD auto trim_if(BidiIt first, BidiIt last, UnaryPredicate pred) -> iterator_range<BidiIt>
+ASTL_NODISCARD auto trim_if(BidiIt first, BidiIt last, UnaryPredicate pred)
+    -> iterator_range<BidiIt>
 {
     auto pred1(astl::pass_fn(pred));
     auto first1(i::trim_left_if(first, last, pred1));
@@ -174,7 +175,7 @@ ASTL_NODISCARD auto trim_if(BidiIt first, BidiIt last, UnaryPredicate pred, P p)
     return astl::make_range(first1, i::trim_right_if(first1, last, pred1, proj));
 }
 
-}// namespace i
+} // namespace i
 
 namespace r
 {
@@ -207,7 +208,8 @@ ASTL_NODISCARD auto trim_left_if(R r, UnaryPredicate pred) -> iterator_range<beg
 
 template <typename R, typename UnaryPredicate, typename P>
 // requires R ForwardIterator range
-ASTL_NODISCARD auto trim_left_if(R r, UnaryPredicate pred, P p) -> iterator_range<begin_t<R>, end_t<R>>
+ASTL_NODISCARD auto trim_left_if(R r, UnaryPredicate pred, P p)
+    -> iterator_range<begin_t<R>, end_t<R>>
 {
     return astl::make_range(
         i::trim_left(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p)),
@@ -217,7 +219,7 @@ ASTL_NODISCARD auto trim_left_if(R r, UnaryPredicate pred, P p) -> iterator_rang
 //
 
 template <typename R, typename TrimElements>
-// requires R BiderectionalIterator range
+// requires R BidirectionalIterator range
 // requires TrimElements ForwardIterator range
 ASTL_NODISCARD auto trim_right(R r, TrimElements elems) -> iterator_range<begin_t<R>, end_t<R>>
 {
@@ -227,7 +229,7 @@ ASTL_NODISCARD auto trim_right(R r, TrimElements elems) -> iterator_range<begin_
 }
 
 template <typename R, typename TrimElements, typename P>
-// requires R BiderectionalIterator range
+// requires R BidirectionalIterator range
 // requires TrimElements ForwardIterator range
 ASTL_NODISCARD auto trim_right(R r, TrimElements elems, P p) -> iterator_range<begin_t<R>, end_t<R>>
 {
@@ -237,7 +239,7 @@ ASTL_NODISCARD auto trim_right(R r, TrimElements elems, P p) -> iterator_range<b
 }
 
 template <typename R, typename UnaryPredicate>
-// requires R BiderectionalIterator range
+// requires R BidirectionalIterator range
 ASTL_NODISCARD auto trim_right_if(R r, UnaryPredicate pred) -> iterator_range<begin_t<R>, end_t<R>>
 {
     return astl::make_range(adl::begin(r),
@@ -245,8 +247,9 @@ ASTL_NODISCARD auto trim_right_if(R r, UnaryPredicate pred) -> iterator_range<be
 }
 
 template <typename R, typename UnaryPredicate, typename P>
-// requires R BiderectionalIterator range
-ASTL_NODISCARD auto trim_right_if(R r, UnaryPredicate pred, P p) -> iterator_range<begin_t<R>, end_t<R>>
+// requires R BidirectionalIterator range
+ASTL_NODISCARD auto trim_right_if(R r, UnaryPredicate pred, P p)
+    -> iterator_range<begin_t<R>, end_t<R>>
 {
     return astl::make_range(
         adl::begin(r),
@@ -254,7 +257,7 @@ ASTL_NODISCARD auto trim_right_if(R r, UnaryPredicate pred, P p) -> iterator_ran
 }
 
 template <typename R, typename TrimElements>
-// requires R BiderectionalIterator range
+// requires R BidirectionalIterator range
 // requires TrimElements ForwardIterator range
 ASTL_NODISCARD auto trim(R r, TrimElements elems) -> iterator_range<begin_t<R>, end_t<R>>
 {
@@ -262,7 +265,7 @@ ASTL_NODISCARD auto trim(R r, TrimElements elems) -> iterator_range<begin_t<R>, 
 }
 
 template <typename R, typename TrimElements, typename P>
-// requires R BiderectionalIterator range
+// requires R BidirectionalIterator range
 // requires TrimElements ForwardIterator range
 ASTL_NODISCARD auto trim(R r, TrimElements elems, P p) -> iterator_range<begin_t<R>, end_t<R>>
 {
@@ -271,20 +274,20 @@ ASTL_NODISCARD auto trim(R r, TrimElements elems, P p) -> iterator_range<begin_t
 }
 
 template <typename R, typename UnaryPredicate>
-// requires R BiderectionalIterator range
+// requires R BidirectionalIterator range
 ASTL_NODISCARD auto trim_if(R r, UnaryPredicate pred) -> iterator_range<begin_t<R>, end_t<R>>
 {
     return i::trim_if(adl::begin(r), adl::end(r), astl::pass_fn(pred));
 }
 
 template <typename R, typename UnaryPredicate, typename P>
-// requires R BiderectionalIterator range
+// requires R BidirectionalIterator range
 ASTL_NODISCARD auto trim_if(R r, UnaryPredicate pred, P p) -> iterator_range<begin_t<R>, end_t<R>>
 {
     return i::trim_if(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p));
 }
 
-}// namespace r
-}// namespace astl
+} // namespace r
+} // namespace astl
 
-#endif// ASTL_INCLUDE_TRIM_HPP
+#endif // ASTL_INCLUDE_TRIM_HPP
