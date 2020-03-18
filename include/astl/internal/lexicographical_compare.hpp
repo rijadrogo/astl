@@ -146,7 +146,7 @@ auto lex_3way_compare_unchecked(InIt1 first1, InIt1 last1, InIt2 first2, InIt2 l
 namespace i
 {
 
-// Libcpp doesnt optimise to memcmp if possible for std::lexicographical_compare
+// Libcpp doesn't optimise to memcmp if possible for std::lexicographical_compare
 #if defined(_LIBCPP_VERSION)
 template <typename InIt1, typename InIt2, typename Comparator>
 // requires InIt1 InputIterator
