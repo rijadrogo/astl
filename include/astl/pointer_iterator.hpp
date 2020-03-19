@@ -44,7 +44,7 @@ public:
 template <typename WrappedIteratorT>
 pointer_iterator(WrappedIteratorT)->pointer_iterator<WrappedIteratorT>;
 
-#endif// HAS_DEDUCTION_GUIDES
+#endif // HAS_DEDUCTION_GUIDES
 
 template <typename I>
 ASTL_NODISCARD constexpr auto make_pointer_iterator(I i) -> pointer_iterator<I>
@@ -68,6 +68,6 @@ ASTL_NODISCARD constexpr auto make_pointer_range(RangeT &&r)
 {
     return astl::make_pointer_range(adl::begin(r), adl::end(r));
 }
-}// namespace astl
+} // namespace astl
 
-#endif// ASTL_INCLUDE_POINTER_ITERATOR_HPP
+#endif // ASTL_INCLUDE_POINTER_ITERATOR_HPP
