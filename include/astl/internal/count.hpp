@@ -299,39 +299,44 @@ inline constexpr struct {
     }
 } count_if{};
 
-template <typename R, typename N, typename UnaryPredicate>
-// requires R InputIterator range
-// requires N integral type
-// requires UnaryPredicate, return bool, argument value_type(R)
-ASTL_NODISCARD auto count_if_n(R &&r, N n, UnaryPredicate pred)
-    -> std::pair<astl::range_diff_type<R>, astl::iter_of_range<R>>
-{
-    return i::count_if_n(adl::begin(r), n, astl::pass_fn(pred));
-}
+inline constexpr struct {
+    template <typename R, typename N, typename UnaryPredicate>
+    // requires R InputIterator range
+    // requires N integral type
+    // requires UnaryPredicate, return bool, argument value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, N n, UnaryPredicate pred) const
+        -> std::pair<astl::range_diff_type<R>, astl::iter_of_range<R>>
+    {
+        return i::count_if_n(adl::begin(r), n, astl::pass_fn(pred));
+    }
 
-template <typename R, typename N, typename UnaryPredicate, typename P>
-ASTL_NODISCARD auto count_if_n(R &&r, N n, UnaryPredicate pred, P p)
-    -> std::pair<astl::range_diff_type<R>, astl::iter_of_range<R>>
-{
-    return i::count_if_n(adl::begin(r), n, astl::pass_fn(pred), astl::pass_fn(p));
-}
+    template <typename R, typename N, typename UnaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, N n, UnaryPredicate pred, P p) const
+        -> std::pair<astl::range_diff_type<R>, astl::iter_of_range<R>>
+    {
+        return i::count_if_n(adl::begin(r), n, astl::pass_fn(pred), astl::pass_fn(p));
+    }
+} count_if_n{};
 
-template <typename R, typename N, typename T>
-// requires R InputIterator range
-// requires N integral type
-// requires T, equality comparable with value_type(R)
-ASTL_NODISCARD auto count_n(R &&r, N n, T const &value)
-    -> std::pair<astl::range_diff_type<R>, astl::iter_of_range<R>>
-{
-    return i::count_n(adl::begin(r), n, value);
-}
+inline constexpr struct {
+    template <typename R, typename N, typename T>
+    // requires R InputIterator range
+    // requires N integral type
+    // requires T, equality comparable with value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, N n, T const &value) const
+        -> std::pair<astl::range_diff_type<R>, astl::iter_of_range<R>>
+    {
+        return i::count_n(adl::begin(r), n, value);
+    }
 
-template <typename R, typename N, typename T, typename P>
-ASTL_NODISCARD auto count_n(R &&r, N n, T const &value, P p)
-    -> std::pair<astl::range_diff_type<R>, astl::iter_of_range<R>>
-{
-    return i::count_n(adl::begin(r), n, value, astl::pass_fn(p));
-}
+    template <typename R, typename N, typename T, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, N n, T const &value, P p) const
+        -> std::pair<astl::range_diff_type<R>, astl::iter_of_range<R>>
+    {
+        return i::count_n(adl::begin(r), n, value, astl::pass_fn(p));
+    }
+} count_n{};
+
 } // namespace r
 } // namespace astl
 
