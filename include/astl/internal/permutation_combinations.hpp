@@ -548,6 +548,7 @@ ASTL_NODISCARD auto count_each_circular_permutation(BidIt first, BidIt mid, BidI
                                                               std::distance(mid, last));
 }
 }// namespace i
+
 namespace internal_pc
 {
 // Difficult!!!  See notes for operator().
