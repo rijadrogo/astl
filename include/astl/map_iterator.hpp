@@ -5,7 +5,7 @@
 #ifndef ASTL_INCLUDE_MAP_ITERATOR_HPP
 #define ASTL_INCLUDE_MAP_ITERATOR_HPP
 
-#include <type_traits>// for decay, declval
+#include <type_traits> // for decay, declval
 
 #include "ebo_base.hpp"
 #include "functional.hpp"
@@ -18,7 +18,7 @@ namespace astl
 namespace internal_mi
 {
 template <int> struct mi_tag {};
-}// namespace internal_mi
+} // namespace internal_mi
 
 // mapped_iterator - This is a simple iterator adapter that causes a function to
 // be applied whenever operator* is invoked on the iterator.
@@ -70,5 +70,5 @@ ASTL_NODISCARD constexpr auto map_range(R &&r, F &&fn)
     return astl::make_range(astl::map_iterator(adl::begin(r), fn),
                             astl::map_iterator(adl::end(r), fn));
 }
-}// namespace astl
-#endif// ASTL_INCLUDE_MAP_ITERATOR_HPP
+} // namespace astl
+#endif // ASTL_INCLUDE_MAP_ITERATOR_HPP
