@@ -157,6 +157,28 @@ ASTL_NODISCARD constexpr auto value_type(R &&...) noexcept ->
 }
 
 inline constexpr struct {
+    template <typename Iterator> auto operator()(Iterator i1, Iterator i2) const
+    {
+        return std::iter_swap(i1, i2);
+    }
+
+} iter_swap{};
+
+inline constexpr struct {
+    template <typename Iterator>
+    auto operator()(Iterator i1, Iterator i2) -> decltype(*i1 = std::move(*i2)) const
+    {
+        return *i1 = std::move(*i2);
+    }
+
+    template <typename Iterator> auto operator()(Iterator i) -> decltype(std::move(*i)) const
+    {
+        return std::move(*i);
+    }
+
+} iter_move{};
+
+inline constexpr struct {
     /// Increment (decrement for negative n) i |n| times or until i == bound
     /// whichever comes f. Returns n - the difference between i's final position and
     /// its initial position. (Note: "advance" has overloads with this behavior in
@@ -507,12 +529,12 @@ public:
         return !(DerivedT::_op_less(*static_cast<DerivedT const *>(this), rhs));
     }
 
-    ASTL_NODISCARD constexpr auto operator->() -> PointerT
+    ASTL_NODISCARD constexpr auto operator-> () -> PointerT
     {
         return &static_cast<DerivedT *>(this)->operator*();
     }
 
-    ASTL_NODISCARD constexpr auto operator->() const -> PointerT
+    ASTL_NODISCARD constexpr auto operator-> () const -> PointerT
     {
         return &static_cast<DerivedT const *>(this)->operator*();
     }

@@ -102,15 +102,16 @@ ASTL_NODISCARD constexpr auto iter_comp_val(iter_less_iter_t) noexcept -> iter_l
 
 template <typename Comparator>
 // requires Comparator, returns type convertible to bool, arguments iterator and ...
-ASTL_NODISCARD constexpr auto
-iter_comp_val(Comparator comp) noexcept(std::is_nothrow_constructible<iter_comp_val_t<Comparator>, Comparator>::value)
+ASTL_NODISCARD constexpr auto iter_comp_val(Comparator comp) noexcept(
+    std::is_nothrow_constructible<iter_comp_val_t<Comparator>, Comparator>::value)
     -> iter_comp_val_t<Comparator>
 {
     return iter_comp_val_t<Comparator>{std::move(comp)};
 }
 
 template <typename Comparator>
-ASTL_NODISCARD constexpr auto iter_comp_val(iter_comp_iter_t<Comparator> comp) -> iter_comp_val_t<Comparator>
+ASTL_NODISCARD constexpr auto iter_comp_val(iter_comp_iter_t<Comparator> comp)
+    -> iter_comp_val_t<Comparator>
 {
     return iter_comp_val_t<Comparator>{std::move(comp)};
 }
@@ -124,9 +125,11 @@ struct val_comp_iter_t {
 
     explicit constexpr val_comp_iter_t(Comparator comp) : _comp(std::move(comp)) {}
 
-    explicit constexpr val_comp_iter_t(iter_comp_iter_t<Comparator> const &comp) : _comp(comp._comp) {}
+    explicit constexpr val_comp_iter_t(iter_comp_iter_t<Comparator> const &comp) : _comp(comp._comp)
+    {}
 
-    explicit constexpr val_comp_iter_t(iter_comp_iter_t<Comparator> &&comp) : _comp(std::move(comp._comp))
+    explicit constexpr val_comp_iter_t(iter_comp_iter_t<Comparator> &&comp)
+        : _comp(std::move(comp._comp))
     {}
 
     template <typename T, typename I>
@@ -149,7 +152,8 @@ ASTL_NODISCARD constexpr auto val_comp_iter(Comparator comp) -> val_comp_iter_t<
 
 template <typename Comparator>
 // requires Comparator, returns type convertible to bool, arguments iterator and ...
-ASTL_NODISCARD constexpr auto val_comp_iter(iter_comp_iter_t<Comparator> comp) -> val_comp_iter_t<Comparator>
+ASTL_NODISCARD constexpr auto val_comp_iter(iter_comp_iter_t<Comparator> comp)
+    -> val_comp_iter_t<Comparator>
 {
     return val_comp_iter_t<Comparator>{std::move(comp)};
 }
@@ -217,7 +221,8 @@ ASTL_NODISCARD constexpr auto iter_equals_val(T &val) noexcept -> iter_equals_va
 template <typename Comparator, typename T>
 // requires Comparator, returns type convertible to bool, arguments iterator and T
 // requires T ...
-ASTL_NODISCARD constexpr auto iter_comp_val(Comparator comp, T &val) -> iter_comp_to_val_t<Comparator, T>
+ASTL_NODISCARD constexpr auto iter_comp_val(Comparator comp, T &val)
+    -> iter_comp_to_val_t<Comparator, T>
 {
     return iter_comp_to_val_t<Comparator, T>{std::move(comp), val};
 }
@@ -231,7 +236,8 @@ struct iter_comp_to_iter_t {
 
     explicit constexpr iter_comp_to_iter_t(I1 i1) : _comp(), _it(std::move(i1)) {}
 
-    constexpr iter_comp_to_iter_t(Comparator comp, I1 i) : _comp(std::move(comp)), _it(std::move(i)) {}
+    constexpr iter_comp_to_iter_t(Comparator comp, I1 i) : _comp(std::move(comp)), _it(std::move(i))
+    {}
 
     template <typename I2>
     // requires I2 iterator
