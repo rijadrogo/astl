@@ -16,28 +16,31 @@ namespace astl
 {
 namespace i
 {
-template <typename FwdIt>
-// requires FwdIt ForwardIterator
-auto rotate_one_right(FwdIt first, FwdIt last) -> FwdIt
-{
-    if (first == last) return last;
+inline constexpr struct {
+    template <typename FwdIt>
+    // requires FwdIt ForwardIterator
+    auto operator()(FwdIt first, FwdIt last) const -> FwdIt
+    {
+        if (first == last) return last;
 
-    if constexpr (is_bidirectional_it_v<FwdIt>) {// Bidirectional Iterator
-        FwdIt buttlast(astl::prev(last));
-        auto temp(std::move(*buttlast));
-        FwdIt end(std::move_backward(first, buttlast, last));
-        *first = std::move(temp);
-        return end;
-    }
-    else {// Forward Iterator
-        using std::swap;
-        FwdIt current(first);
-        while (++current != last) swap(*first, *current);
+        if constexpr (is_bidirectional_it_v<FwdIt>) { // Bidirectional Iterator
+            FwdIt buttlast(astl::prev(last));
+            auto temp(std::move(*buttlast));
+            FwdIt end(std::move_backward(first, buttlast, last));
+            *first = std::move(temp);
+            return end;
+        }
+        else { // Forward Iterator
+            using std::swap;
+            FwdIt current(first);
+            while (++current != last) swap(*first, *current);
 
-        return first;
+            return first;
+        }
     }
-}
-}// namespace i
+} rotate_one_right{};
+
+} // namespace i
 
 namespace internal_rot
 {
@@ -63,12 +66,12 @@ auto rot_buff_rhs(FwdIt first, FwdIt mid, FwdIt last, B buffer) -> FwdIt
     // precondition distance(mid, last) < distance(first, mid)
     if (astl::next(mid) == last) return i::rotate_one_right(first, last);
 
-    if constexpr (is_bidirectional_it_v<FwdIt>) {// Bidirectional Iterator
+    if constexpr (is_bidirectional_it_v<FwdIt>) { // Bidirectional Iterator
         B buf_l(std::move(mid, last, buffer));
         std::move_backward(first, mid, last);
         return std::move(buffer, buf_l, first);
     }
-    else {// Forward Iterator
+    else { // Forward Iterator
         (void) buffer;
         // TODO use buffer somehow
         return std::rotate(first, mid, last);
@@ -99,154 +102,190 @@ auto rotate_adaptive_unchecked(FwdIt first, N lhs_size, FwdIt mid, N rhs_size, F
     }
     return std::rotate(first, mid, last);
 }
-}// namespace internal_rot
+} // namespace internal_rot
 
 namespace i
 {
-using std::rotate;     // NOLINT(misc-unused-using-decls)
-using std::rotate_copy;// NOLINT(misc-unused-using-decls)
 
-template <typename FwdIt, typename N, typename B, typename Size>
-// requires FwdIt ForwardIterator
-// requires N integral type
-// requires B ForwardIterator
-// requires Size integral type
-auto rotate_adaptive(FwdIt first, N lhs_size, FwdIt mid, N rhs_size, FwdIt last, B buffer,
-                     Size buffer_size) -> FwdIt
-{
-    // precondition first <= mid <= last
-    // precondition distance(first, mid) == lhs_size
-    // precondition distance(mid, last) == rhs_size
-    if (lhs_size == N(0)) return last;
+inline constexpr struct {
 
-    if (rhs_size == N(0)) return first;
+    template <typename FwdIt> auto operator()(FwdIt first, FwdIt mid, FwdIt last) const -> FwdIt
+    {
+        return std::rotate(first, mid, last);
+    }
+} rotate{};
 
-    return internal_rot::rotate_adaptive_unchecked(first, lhs_size, mid, rhs_size, last, buffer,
-                                                   buffer_size);
-}
+inline constexpr struct {
+    template <typename FwdIt, typename N, typename B, typename Size>
+    // requires FwdIt ForwardIterator
+    // requires N integral type
+    // requires B ForwardIterator
+    // requires Size integral type
+    auto operator()(FwdIt first, N lhs_size, FwdIt mid, N rhs_size, FwdIt last, B buffer,
+                    Size buffer_size) const -> FwdIt
+    {
+        // precondition first <= mid <= last
+        // precondition distance(first, mid) == lhs_size
+        // precondition distance(mid, last) == rhs_size
+        if (lhs_size == N(0)) return last;
 
-template <typename FwdIt, typename B, typename N>
-// requires FwdIt ForwardIterator
-// requires B ForwardIterator
-// requires N integral type
-auto rotate_adaptive(FwdIt first, FwdIt mid, FwdIt last, B buffer, N buffer_size) -> FwdIt
-{
-    // precondition first <= mid <= last
-    if (first == mid) return last;
+        if (rhs_size == N(0)) return first;
 
-    if (mid == last) return first;
+        return internal_rot::rotate_adaptive_unchecked(first, lhs_size, mid, rhs_size, last, buffer,
+                                                       buffer_size);
+    }
 
-    if (buffer_size == N(0)) return std::rotate(first, mid, last);
+    template <typename FwdIt, typename B, typename N>
+    // requires FwdIt ForwardIterator
+    // requires B ForwardIterator
+    // requires N integral type
+    auto operator()(FwdIt first, FwdIt mid, FwdIt last, B buffer, N buffer_size) const -> FwdIt
+    {
+        // precondition first <= mid <= last
+        if (first == mid) return last;
 
-    return internal_rot::rotate_adaptive_unchecked(first, astl::distance(first, mid), mid,
-                                                   astl::distance(mid, last), last, buffer,
-                                                   buffer_size);
-}
+        if (mid == last) return first;
 
-template <typename FwdIt>
-// requires FwdIt ForwardIterator
-auto rotate_adaptive(FwdIt first, FwdIt mid, FwdIt last) -> FwdIt
-{
-    // precondition first <= mid <= last
-    if (first == mid) return last;
+        if (buffer_size == N(0)) return std::rotate(first, mid, last);
 
-    if (mid == last) return first;
+        return internal_rot::rotate_adaptive_unchecked(first, astl::distance(first, mid), mid,
+                                                       astl::distance(mid, last), last, buffer,
+                                                       buffer_size);
+    }
 
-    using Diff = iter_diff_type<FwdIt>;
-    Diff lhs_size(astl::distance(first, mid));
-    Diff rhs_size(astl::distance(mid, last));
+    template <typename FwdIt>
+    // requires FwdIt ForwardIterator
+    auto operator()(FwdIt first, FwdIt mid, FwdIt last) const -> FwdIt
+    {
+        // precondition first <= mid <= last
+        if (first == mid) return last;
 
-    using T = iter_value_type<FwdIt>;
-    inline_temporary_buffer<T> buffer(std::min(lhs_size, rhs_size), *first);
-    return internal_rot::rotate_adaptive_unchecked(
-        first, lhs_size, mid, rhs_size, astl::next(mid, rhs_size), buffer.begin(), buffer.size());
-}
+        if (mid == last) return first;
 
-template <typename FwdIt>
-// requires FwdIt ForwardIterator
-auto rotate_one_left(FwdIt first, FwdIt last) -> FwdIt
-{
-    if (first == last) return last;
+        using Diff = iter_diff_type<FwdIt>;
+        Diff lhs_size(astl::distance(first, mid));
+        Diff rhs_size(astl::distance(mid, last));
 
-    auto tmp(std::move(*first));
-    FwdIt end(std::move(astl::next(first), last, first));
-    *end = std::move(tmp);
-    return end;
-}
+        using T = iter_value_type<FwdIt>;
+        inline_temporary_buffer<T> buffer(std::min(lhs_size, rhs_size), *first);
+        return internal_rot::rotate_adaptive_unchecked(first, lhs_size, mid, rhs_size,
+                                                       astl::next(mid, rhs_size), buffer.begin(),
+                                                       buffer.size());
+    }
+} rotate_adaptive{};
 
-template <typename FwdIt, typename OutIt>
-// requires FwdIt ForwardIterator
-// requires OutIt OutputIterator
-auto rotate_move(FwdIt first, FwdIt mid, FwdIt last, OutIt dest) -> OutIt
-{
-    // precondition first <= mid <= last
-    return i::rotate_copy(std::make_move_iterator(first), std::make_move_iterator(mid),
-                          std::make_move_iterator(last), dest);
-}
+inline constexpr struct {
 
-}// namespace i
+    template <typename FwdIt, typename OutIt>
+    auto operator()(FwdIt first, FwdIt mid, FwdIt last, OutIt dest) const -> FwdIt
+    {
+        return std::rotate_copy(first, mid, last, dest);
+    }
+} rotate_copy{};
+
+inline constexpr struct {
+    template <typename FwdIt>
+    // requires FwdIt ForwardIterator
+    auto operator()(FwdIt first, FwdIt last) const -> FwdIt
+    {
+        if (first == last) return last;
+
+        auto tmp(std::move(*first));
+        FwdIt end(std::move(astl::next(first), last, first));
+        *end = std::move(tmp);
+        return end;
+    }
+} rotate_one_left{};
+
+inline constexpr struct {
+    template <typename FwdIt, typename OutIt>
+    // requires FwdIt ForwardIterator
+    // requires OutIt OutputIterator
+    auto operator()(FwdIt first, FwdIt mid, FwdIt last, OutIt dest) const -> OutIt
+    {
+        // precondition first <= mid <= last
+        return i::rotate_copy(std::make_move_iterator(first), std::make_move_iterator(mid),
+                              std::make_move_iterator(last), dest);
+    }
+} rotate_move{};
+
+} // namespace i
 
 namespace r
 {
-template <typename R, typename FwdIt>
-// requires R ForwardIterator range
-// requires FwdIt ForwardIterator
-auto rotate(R &&r, FwdIt mid) -> iter_of_range<R>
-{
-    // precondition r.begin() <= mid <= r.end()
-    return i::rotate(adl::begin(r), mid, adl::end(r));
-}
 
-template <typename R, typename FwdIt>
-// requires R ForwardIterator range
-// requires FwdIt ForwardIterator
-auto rotate_adaptive(R &&r, FwdIt mid) -> iter_of_range<R>
-{
-    // precondition r.begin() <= mid <= r.end()
-    return i::rotate_adaptive(adl::begin(r), mid, adl::end(r));
-}
+inline constexpr struct {
+    template <typename R, typename FwdIt>
+    // requires R ForwardIterator range
+    // requires FwdIt ForwardIterator
+    auto operator()(R &&r, FwdIt mid) const -> iter_of_range<R>
+    {
+        // precondition r.begin() <= mid <= r.end()
+        return i::rotate(adl::begin(r), mid, adl::end(r));
+    }
+} rotate{};
 
-template <typename R, typename FwdIt, typename B, typename N>
-// requires R ForwardIterator range
-// requires FwdIt ForwardIterator
-// requires B ForwardIterator
-// requires N integral type
-auto rotate_adaptive(R &&r, FwdIt mid, B buffer, N buffer_size) -> iter_of_range<R>
-{
-    // precondition r.begin() <= mid <= r.end()
-    return i::rotate_adaptive(adl::begin(r), mid, adl::end(r), buffer, buffer_size);
-}
+inline constexpr struct {
+    template <typename R, typename FwdIt>
+    // requires R ForwardIterator range
+    // requires FwdIt ForwardIterator
+    auto operator()(R &&r, FwdIt mid) const -> iter_of_range<R>
+    {
+        // precondition r.begin() <= mid <= r.end()
+        return i::rotate_adaptive(adl::begin(r), mid, adl::end(r));
+    }
 
-template <typename R, typename FwdIt, typename OutIt>
-// requires R ForwardIterator range
-// requires FwdIt ForwardIterator
-// requires OutIt OutputIterator
-auto rotate_copy(R &&r, FwdIt mid, OutIt dest) -> OutIt
-{
-    return i::rotate_copy(adl::begin(r), mid, adl::end(r), dest);
-}
+    template <typename R, typename FwdIt, typename B, typename N>
+    // requires R ForwardIterator range
+    // requires FwdIt ForwardIterator
+    // requires B ForwardIterator
+    // requires N integral type
+    auto operator()(R &&r, FwdIt mid, B buffer, N buffer_size) const -> iter_of_range<R>
+    {
+        // precondition r.begin() <= mid <= r.end()
+        return i::rotate_adaptive(adl::begin(r), mid, adl::end(r), buffer, buffer_size);
+    }
+} rotate_adaptive{};
 
-template <typename R> auto rotate_one_left(R &&r) -> iter_of_range<R>
-{
-    return i::rotate_one_left(adl::begin(r), adl::end(r));
-}
+inline constexpr struct {
+    template <typename R, typename FwdIt, typename OutIt>
+    // requires R ForwardIterator range
+    // requires FwdIt ForwardIterator
+    // requires OutIt OutputIterator
+    auto operator()(R &&r, FwdIt mid, OutIt dest) const -> OutIt
+    {
+        return i::rotate_copy(adl::begin(r), mid, adl::end(r), dest);
+    }
+} rotate_copy{};
 
-template <typename R, typename FwdIt, typename OutIt>
-// requires R ForwardIterator range
-// requires FwdIt ForwardIterator
-// requires OutIt OutputIterator
-auto rotate_move(R &&r, FwdIt mid, OutIt dest) -> OutIt
-{
-    return i::rotate_move(adl::begin(r), mid, adl::end(r), dest);
-}
+inline constexpr struct {
+    template <typename R> auto operator()(R &&r) const -> iter_of_range<R>
+    {
+        return i::rotate_one_left(adl::begin(r), adl::end(r));
+    }
+} rotate_one_left{};
 
-template <typename R>
-// requires R ForwardIterator range
-auto rotate_one_right(R &&r) -> iter_of_range<R>
-{
-    return i::rotate_one_right(adl::begin(r), adl::end(r));
-}
-}// namespace r
-}// namespace astl
+inline constexpr struct {
+    template <typename R, typename FwdIt, typename OutIt>
+    // requires R ForwardIterator range
+    // requires FwdIt ForwardIterator
+    // requires OutIt OutputIterator
+    auto operator()(R &&r, FwdIt mid, OutIt dest) const -> OutIt
+    {
+        return i::rotate_move(adl::begin(r), mid, adl::end(r), dest);
+    }
+} rotate_move{};
 
-#endif// ASTL_INCLUDE_ROTATE_HPP
+inline constexpr struct {
+    template <typename R>
+    // requires R ForwardIterator range
+    auto operator()(R &&r) const -> iter_of_range<R>
+    {
+        return i::rotate_one_right(adl::begin(r), adl::end(r));
+    }
+} rotate_one_right{};
+
+} // namespace r
+} // namespace astl
+
+#endif // ASTL_INCLUDE_ROTATE_HPP
