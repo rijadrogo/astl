@@ -184,7 +184,7 @@ inline constexpr struct {
     /// its initial position. (Note: "advance" has overloads with this behavior in
     /// the Ranges TS.)
     template <typename I, typename Distance, typename S>
-    constexpr auto operator()(I &i, Distance n, S bound) -> iter_diff_type<I>
+    constexpr auto operator()(I &i, Distance n, S bound) const -> iter_diff_type<I>
     {
         if constexpr (is_random_access_it_v<I>) { // Random Access Iterator
             Distance it_diff(bound - i);
@@ -215,7 +215,7 @@ inline constexpr struct {
         }
     }
 
-    template <typename I, typename Distance> void operator()(I &iter, Distance n)
+    template <typename I, typename Distance> void operator()(I &iter, Distance n) const
     {
         std::advance(iter, n);
     }
@@ -224,17 +224,18 @@ inline constexpr struct {
 
 inline constexpr struct {
     template <typename I, typename Distance, typename S>
-    ASTL_NODISCARD constexpr auto operator()(I i, Distance n, S const bound) -> I
+    ASTL_NODISCARD constexpr auto operator()(I i, Distance n, S const bound) const -> I
     {
         astl::advance(i, n, bound);
         return i;
     }
-    template <typename I, typename Distance> ASTL_NODISCARD auto operator()(I iter, Distance n) -> I
+    template <typename I, typename Distance>
+    ASTL_NODISCARD auto operator()(I iter, Distance n) const -> I
     {
         return std::next(iter, n);
     }
 
-    template <typename I> ASTL_NODISCARD auto operator()(I iter) -> I
+    template <typename I> ASTL_NODISCARD auto operator()(I iter) const -> I
     {
         ++iter;
         return iter;
@@ -242,7 +243,8 @@ inline constexpr struct {
 } next{};
 
 inline constexpr struct {
-    template <typename I, typename S> ASTL_NODISCARD constexpr auto operator()(I i, S end) -> I
+    template <typename I, typename S>
+    ASTL_NODISCARD constexpr auto operator()(I i, S end) const -> I
     {
         return (i == end ? end : astl::next(i));
     }
@@ -251,18 +253,18 @@ inline constexpr struct {
 inline constexpr struct {
 
     template <typename BidiIt, typename Distance, typename S>
-    ASTL_NODISCARD constexpr auto operator()(BidiIt i, Distance n, S const bound) -> BidiIt
+    ASTL_NODISCARD constexpr auto operator()(BidiIt i, Distance n, S const bound) const -> BidiIt
     {
         astl::advance(i, -static_cast<iter_diff_type<BidiIt>>(n), bound);
         return i;
     }
     template <typename BidiIter, typename Distance>
-    ASTL_NODISCARD auto operator()(BidiIter iter, Distance n) -> BidiIter
+    ASTL_NODISCARD auto operator()(BidiIter iter, Distance n) const -> BidiIter
     {
         return std::prev(iter, n);
     }
 
-    template <typename BidiIter> ASTL_NODISCARD auto operator()(BidiIter iter) -> BidiIter
+    template <typename BidiIter> ASTL_NODISCARD auto operator()(BidiIter iter) const -> BidiIter
     {
         --iter;
         return iter;
@@ -272,13 +274,13 @@ inline constexpr struct {
 inline constexpr struct {
 
     template <typename I, typename S, typename Distance>
-    constexpr auto operator()(I first, S last, Distance &d) -> void
+    constexpr auto operator()(I first, S last, Distance &d) const -> void
     {
         d += static_cast<Distance>(std::distance(first, last));
     }
 
     template <typename I, typename S>
-    ASTL_NODISCARD constexpr auto operator()(I first, S last) -> iter_diff_type<I>
+    ASTL_NODISCARD constexpr auto operator()(I first, S last) const -> iter_diff_type<I>
     {
         return std::distance(first, last);
     }
@@ -287,7 +289,8 @@ inline constexpr struct {
 
 inline constexpr struct {
     // Complexity O(n + n/2);  n = distance(first, last)
-    template <typename I, typename S> ASTL_NODISCARD constexpr auto operator()(I first, S last) -> I
+    template <typename I, typename S>
+    ASTL_NODISCARD constexpr auto operator()(I first, S last) const -> I
     {
         return astl::next(first, astl::distance(first, last) >> 1);
     }

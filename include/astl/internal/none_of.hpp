@@ -120,7 +120,7 @@ inline constexpr struct {
     }
 } none_of{};
 
-template <int N>
+template <int N = 2>
 inline constexpr auto none_of_adjacent = internal_none_of::none_of_adjacent_t<N, false>{};
 
 inline constexpr struct {
