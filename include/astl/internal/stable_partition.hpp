@@ -699,7 +699,7 @@ template <typename R, typename N, typename UnaryPredicate, typename B>
 auto stable_partition_n_buffered(R &&r, N n, UnaryPredicate pred, B buffer)
     -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
 {
-    // precondtion: n <= buffer.size()
+    // precondition: n <= buffer.size()
     return i::stable_partition_n_buffered(adl::begin(r), n, astl::pass_fn(pred), buffer);
 }
 
@@ -707,7 +707,7 @@ template <typename R, typename N, typename UnaryPredicate, typename B, typename 
 auto stable_partition_n_buffered(R &&r, N n, UnaryPredicate pred, B buffer, P p)
     -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
 {
-    // precondtion: n <= buffer.size()
+    // precondition: n <= buffer.size()
     return i::stable_partition_n_buffered(adl::begin(r), n, astl::pass_fn(pred), buffer,
                                           astl::pass_fn(p));
 }
