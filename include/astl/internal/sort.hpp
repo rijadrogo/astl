@@ -83,7 +83,7 @@ namespace i
 template <typename BidiIt, typename Comparator = std::less<>>
 // requires BidiIt Bidirectional iterator
 // requires Comparator is StrictWeakOrdering on the value_type(BidiIt)
-auto insertion_sort(BidiIt first, BidiIt last, Comparator comp = std::less{}) -> void;
+auto insertion_sort(BidiIt first, BidiIt last, Comparator comp = Comparator{}) -> void;
 
 template <typename BidiIt, typename Comparator, typename P>
 auto insertion_sort(BidiIt first, BidiIt last, Comparator comp, P p) -> void;
@@ -109,7 +109,7 @@ namespace i
 template <typename FwdIt, typename Comparator = std::less<>>
 // requires FwdIt is ForwardIterator
 // requires  Comparator is StrictWeakOrdering on the value_type(FwdIt)
-auto binary_insertion_sort(FwdIt first, FwdIt last, Comparator comp = std::less{}) -> void
+auto binary_insertion_sort(FwdIt first, FwdIt last, Comparator comp = Comparator{}) -> void
 {
     if (first == last) return;
 
@@ -134,7 +134,7 @@ template <typename FwdIt, typename N, typename Comparator = std::less<>>
 // requires FwdIt is ForwardIterator
 // requires N is integral type
 // requires  Comparator is StrictWeakOrdering on the value_type(FwdIt)
-auto binary_insertion_sort_n(FwdIt first, N n, Comparator comp = std::less{}) -> FwdIt
+auto binary_insertion_sort_n(FwdIt first, N n, Comparator comp = Comparator{}) -> FwdIt
 {
     if (n == N(0)) return first;
 
@@ -158,7 +158,7 @@ auto binary_insertion_sort_n(FwdIt first, N n, Comparator comp, P p) -> FwdIt
 template <typename BidiIt, typename Comparator = std::less<>>
 // requires BidiIt ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type (BidiIt)
-auto bubble_sort(BidiIt first, BidiIt const last, Comparator comp = std::less{}) -> void
+auto bubble_sort(BidiIt first, BidiIt const last, Comparator comp = Comparator{}) -> void
 {
     using std::swap;
     auto j_sent(last);
@@ -185,7 +185,7 @@ auto bubble_sort(BidiIt first, BidiIt last, Comparator comp, P p) -> void
 template <typename RandIt, typename Comparator = std::less<>>
 // requires RandIt Random access iterator
 // requires Comparator is StrictWeakOrdering on the value_type (RandIt)
-auto heap_sort(RandIt first, RandIt last, Comparator comp = std::less{}) -> void
+auto heap_sort(RandIt first, RandIt last, Comparator comp = Comparator{}) -> void
 {
     auto pred(astl::pass_fn(comp));
     std::make_heap(first, last, pred);
@@ -203,7 +203,7 @@ auto heap_sort(RandIt first, RandIt last, Comparator comp, P p) -> void
 template <typename BidiIt, typename Comparator = std::less<>>
 // requires BidiIt Bidirectional iterator
 // requires Comparator is StrictWeakOrdering on the value_type(BidiIt)
-auto inplace_stable_sort(BidiIt first, BidiIt last, Comparator comp = std::less{}) -> void
+auto inplace_stable_sort(BidiIt first, BidiIt last, Comparator comp = Comparator{}) -> void
 {
     internal_sort::inplace_stable_sort1(first, last, astl::pass_fn(comp));
 }
@@ -263,7 +263,7 @@ template <typename FwdIt, typename N, typename Comparator = std::less<>>
 // requires FwdIt is ForwardIterator
 // requires N is integral type
 // requires Comparator is StrictWeakOrdering on the value_type(FwdIt)
-auto is_sorted_n(FwdIt first, N n, Comparator comp = std::less{}) -> bool
+auto is_sorted_n(FwdIt first, N n, Comparator comp = Comparator{}) -> bool
 {
     if (n == N(0)) return true;
 
@@ -284,7 +284,7 @@ auto is_sorted_n(FwdIt first, N n, Comparator comp, P p) -> bool
 template <typename I, typename Comparator = std::less<>>
 // requires I ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type (I)
-auto median_of_three_iterators(I a, I b, I c, Comparator comp = std::less{}) -> I
+auto median_of_three_iterators(I a, I b, I c, Comparator comp = Comparator{}) -> I
 {
     if (comp(*a, *b)) {
         if (comp(*b, *c)) return b;
@@ -312,7 +312,7 @@ auto median_of_three_iterators(I a, I b, I c, Comparator comp, P p) -> I
 template <typename BidiIt, typename Comparator = std::less<>>
 // requires BidiIt Bidirectional iterator
 // requires Comparator is StrictWeakOrdering on the value_type (BidiIt)
-auto merge_sort(BidiIt first, BidiIt last, Comparator comp = std::less{}) -> void
+auto merge_sort(BidiIt first, BidiIt last, Comparator comp = Comparator{}) -> void
 {
     if (first == last || astl::next(first) == last) return;
 
@@ -363,7 +363,7 @@ template <typename FwdIt, typename N, typename Comparator = std::less<>>
 // requires FwdIt is ForwardIterator
 // requires N is integral type
 // requires Comparator is StrictWeakOrdering on the value_type (FwdIt)
-auto merge_sort_n(FwdIt first, N n, Comparator comp = std::less{}) -> FwdIt
+auto merge_sort_n(FwdIt first, N n, Comparator comp = Comparator{}) -> FwdIt
 {
     N half(n >> 1);
     if (half == N(0)) return ++first;
@@ -383,7 +383,7 @@ auto merge_sort_n(FwdIt first, N n, Comparator comp, P p) -> FwdIt
 template <typename I, typename Comparator = std::less<>>
 // requires I ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type (I)
-auto move_median_to_first(I result, I a, I b, I c, Comparator comp = std::less{}) -> void
+auto move_median_to_first(I result, I a, I b, I c, Comparator comp = Comparator{}) -> void
 {
     using std::swap;
     if (comp(*a, *b)) {
@@ -426,7 +426,7 @@ auto partial_sort_copy(InputIt first, InputIt last, RandIt d_first, RandIt d_las
 template <typename RandIt, typename Comparator = std::less<>>
 // requires RandIt RandomAccessIterator
 // requires Comparator is StrictWeakOrdering on the value_type (RandIt)
-auto partial_sort_left(RandIt first, RandIt middle, RandIt last, Comparator comp = std::less{})
+auto partial_sort_left(RandIt first, RandIt middle, RandIt last, Comparator comp = Comparator{})
     -> void
 {
     auto pred(astl::pass_fn(comp));
@@ -471,7 +471,7 @@ auto partial_sort_move(InputIt first, InputIt last, RandIt d_first, RandIt d_las
 template <typename RandIt, typename Comparator = std::less<>>
 // requires RandIt RandomAccessIterator
 // requires Comparator is StrictWeakOrdering on the value_type (RandIt)
-auto partial_sort_right(RandIt first, RandIt middle, RandIt last, Comparator comp = std::less{})
+auto partial_sort_right(RandIt first, RandIt middle, RandIt last, Comparator comp = Comparator{})
     -> void
 {
     auto pred(astl::pass_fn(comp));
@@ -489,12 +489,12 @@ auto partial_sort_right(RandIt first, RandIt middle, RandIt last, Comparator com
 template <typename FwdIt, typename Comparator = std::less<>>
 // requires FwdIt ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type (FwdIt)
-auto selection_sort(FwdIt first, FwdIt last, Comparator comp = std::less{}) -> void;
+auto selection_sort(FwdIt first, FwdIt last, Comparator comp = Comparator{}) -> void;
 
 template <typename FwdIt, typename Comparator = std::less<>>
 // requires FwdIt ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type (FwdIt)
-auto quicksort(FwdIt first, FwdIt last, Comparator comp = std::less{}) -> void
+auto quicksort(FwdIt first, FwdIt last, Comparator comp = Comparator{}) -> void
 {
     if (first == last) return;
 
@@ -547,7 +547,7 @@ auto selection_sort(FwdIt first, FwdIt last, Comparator comp, P p) -> void
 template <typename RandIt, typename Comparator = std::less<>>
 // requires RandIt RandomAccessIterator
 // requires Comparator is StrictWeakOrdering on the value_type(RandIt)
-auto shell_sort(RandIt first, RandIt const last, Comparator comp = std::less{}) -> void
+auto shell_sort(RandIt first, RandIt const last, Comparator comp = Comparator{}) -> void
 {
     using difference_type = typename std::iterator_traits<RandIt>::difference_type;
 
@@ -663,16 +663,16 @@ template <typename FwdIt, typename Comparator>
 // requires Comparator is StrictWeakOrdering on the value_type(FwdIt)
 auto sort3(FwdIt first, Comparator comp) -> unsigned
 {
-    FwdIt x1(first++);
-    FwdIt x2(first++);
-    return i::sort3(x1, x2, first, astl::pass_fn(comp));
+    FwdIt x1(first);
+    FwdIt x2(++first);
+    return i::sort3(x1, x2, ++first, astl::pass_fn(comp));
 }
 
 // stable, 3-6 compares, 0-5 swaps
 template <typename FwdIt, typename Comparator = std::less<>>
 // requires FwdIt ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type(FwdIt)
-auto sort4(FwdIt x1, FwdIt x2, FwdIt x3, FwdIt x4, Comparator comp = std::less{}) -> unsigned
+auto sort4(FwdIt x1, FwdIt x2, FwdIt x3, FwdIt x4, Comparator comp = Comparator{}) -> unsigned
 {
     using std::swap;
     unsigned r(i::sort3(x1, x2, x3, comp));
@@ -694,12 +694,12 @@ auto sort4(FwdIt x1, FwdIt x2, FwdIt x3, FwdIt x4, Comparator comp = std::less{}
 template <typename FwdIt, typename Comparator = std::less<>>
 // requires FwdIt ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type(FwdIt)
-auto sort4(FwdIt first, Comparator comp = std::less{}) -> unsigned
+auto sort4(FwdIt first, Comparator comp = Comparator{}) -> unsigned
 {
-    FwdIt x1(first++);
-    FwdIt x2(first++);
-    FwdIt x3(first++);
-    return i::sort4(x1, x2, x3, first, astl::pass_fn(comp));
+    FwdIt x1(first);
+    FwdIt x2(++first);
+    FwdIt x3(++first);
+    return i::sort4(x1, x2, x3, ++first, astl::pass_fn(comp));
 }
 
 // stable, 4-10 compares, 0-9 swaps
@@ -707,7 +707,7 @@ auto sort4(FwdIt first, Comparator comp = std::less{}) -> unsigned
 template <typename FwdIt, typename Comparator = std::less<>>
 // requires FwdIt ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type(FwdIt)
-auto sort5(FwdIt x1, FwdIt x2, FwdIt x3, FwdIt x4, FwdIt x5, Comparator comp = std::less{})
+auto sort5(FwdIt x1, FwdIt x2, FwdIt x3, FwdIt x4, FwdIt x5, Comparator comp = Comparator{})
     -> unsigned
 {
     using std::swap;
@@ -734,13 +734,13 @@ auto sort5(FwdIt x1, FwdIt x2, FwdIt x3, FwdIt x4, FwdIt x5, Comparator comp = s
 template <typename FwdIt, typename Comparator = std::less<>>
 // requires FwdIt ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type(FwdIt)
-auto sort5(FwdIt first, Comparator comp = std::less{}) -> unsigned
+auto sort5(FwdIt first, Comparator comp = Comparator{}) -> unsigned
 {
-    FwdIt x1(first++);
-    FwdIt x2(first++);
-    FwdIt x3(first++);
-    FwdIt x4(first++);
-    return i::sort5(x1, x2, x3, x4, first, astl::pass_fn(comp));
+    FwdIt x1(first);
+    FwdIt x2(++first);
+    FwdIt x3(++first);
+    FwdIt x4(++first);
+    return i::sort5(x1, x2, x3, x4, ++first, astl::pass_fn(comp));
 }
 
 // stable, 5-15 compares, 0-14 swaps
@@ -749,7 +749,7 @@ template <typename FwdIt, typename Comparator = std::less<>>
 // requires FwdIt ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type (FwdIt)
 auto sort6(FwdIt x1, FwdIt x2, FwdIt x3, FwdIt x4, FwdIt x5, FwdIt x6,
-           Comparator comp = std::less{}) -> unsigned
+           Comparator comp = Comparator{}) -> unsigned
 {
     using std::swap;
     unsigned r(i::sort5(x1, x2, x3, x4, x5, comp));
@@ -779,20 +779,20 @@ auto sort6(FwdIt x1, FwdIt x2, FwdIt x3, FwdIt x4, FwdIt x5, FwdIt x6,
 template <typename FwdIt, typename Comparator = std::less<>>
 // requires FwdIt ForwardIterator
 // requires Comparator is StrictWeakOrdering on the value_type(FwdIt)
-auto sort6(FwdIt first, Comparator comp = std::less{}) -> unsigned
+auto sort6(FwdIt first, Comparator comp = Comparator{}) -> unsigned
 {
-    FwdIt x1(first++);
-    FwdIt x2(first++);
-    FwdIt x3(first++);
-    FwdIt x4(first++);
-    FwdIt x5(first++);
-    return i::sort6(x1, x2, x3, x4, x5, first, astl::pass_fn(comp));
+    FwdIt x1(first);
+    FwdIt x2(++first);
+    FwdIt x3(++first);
+    FwdIt x4(++first);
+    FwdIt x5(++first);
+    return i::sort6(x1, x2, x3, x4, x5, ++first, astl::pass_fn(comp));
 }
 
 template <typename RandIt, typename Comparator = std::less<>>
 // requires RandIt RandomAccessIterator
 // requires Comparator is StrictWeakOrdering on the value_type(RandIt)
-auto sort(RandIt first, RandIt const last, Comparator comp = std::less{}) -> void
+auto sort(RandIt first, RandIt const last, Comparator comp = Comparator{}) -> void
 {
     auto pr(astl::pass_fn(comp));
     switch (last - first) {
@@ -816,7 +816,7 @@ auto sort(RandIt first, RandIt last, Comparator comp, P p) -> void
 template <typename RandIt, typename Comparator = std::less<>>
 // requires RandIt RandomAccessIterator
 // requires Comparator is StrictWeakOrdering on the value_type(RandIt)
-auto sort_and_unique(RandIt f, RandIt l, Comparator comp = std::less{}) -> RandIt
+auto sort_and_unique(RandIt f, RandIt l, Comparator comp = Comparator{}) -> RandIt
 {
     i::sort(f, l, comp);
     return std::unique(f, l, astl::not_fn(comp));
@@ -842,13 +842,12 @@ template <typename RandIt, typename Comparator = std::less<>>
 // requires RandIt RandomAccessIterator
 // requires Comparator is StrictWeakOrdering on the value_type(RandIt)
 auto sort_subrange(RandIt first, RandIt last, RandIt sub_f, RandIt sub_l,
-                   Comparator comp = std::less{}) -> std::pair<RandIt, RandIt>
+                   Comparator comp = Comparator{}) -> std::pair<RandIt, RandIt>
 {
     // precondition sub_f <= sub_l
     // precondition first <= sub_f && sub_l <= last
-    if (sub_f == sub_l)
-        return std::make_pair(sub_f,
-                              sub_l); // the empty sub-range is already sorted.
+    // the empty sub-range is already sorted.
+    if (sub_f == sub_l) return std::make_pair(sub_f, sub_l);
 
     auto cmp(astl::pass_fn(comp));
     if (sub_f != first) { // sub-range is at the start, don't need to partition
@@ -882,7 +881,7 @@ template <typename R, typename N, typename Comparator = std::less<>>
 // requires R is ForwardIterator range
 // requires N is integral
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto binary_insertion_sort_n(R &&r, N n, Comparator comp = std::less{}) -> iter_of_range<R>
+auto binary_insertion_sort_n(R &&r, N n, Comparator comp = Comparator{}) -> iter_of_range<R>
 {
     return i::binary_insertion_sort_n(adl::begin(r), n, astl::pass_fn(comp));
 }
@@ -902,7 +901,7 @@ auto bubble_sort(R &&r, Comparator comp, P p) -> void
 template <typename R, typename Comparator = std::less<>>
 // requires R ForwardIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto bubble_sort(R &&r, Comparator comp = std::less{}) -> void
+auto bubble_sort(R &&r, Comparator comp = Comparator{}) -> void
 {
     i::bubble_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
 }
@@ -916,7 +915,7 @@ auto heap_sort(R &&r, Comparator comp, P p) -> void
 }
 
 template <typename R, typename Comparator = std::less<>>
-auto heap_sort(R &&r, Comparator comp = std::less{}) -> void
+auto heap_sort(R &&r, Comparator comp = Comparator{}) -> void
 {
     i::heap_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
 }
@@ -933,7 +932,7 @@ auto inplace_stable_sort(R &&r, Comparator comp, P p) -> void
 // same as stable_sort, guarantees no allocation
 // complexity O(N*log(N)^2)
 template <typename R, typename Comparator = std::less<>>
-auto inplace_stable_sort(R &&r, Comparator comp = std::less{}) -> void
+auto inplace_stable_sort(R &&r, Comparator comp = Comparator{}) -> void
 {
     i::inplace_stable_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
 }
@@ -947,7 +946,7 @@ auto insertion_sort(R &&r, Comparator comp, P p) -> void
 template <typename R, typename Comparator = std::less<>>
 // requires R BidirectionalIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto insertion_sort(R &&r, Comparator comp = std::less{}) -> void
+auto insertion_sort(R &&r, Comparator comp = Comparator{}) -> void
 {
     i::insertion_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
 }
@@ -976,7 +975,7 @@ auto is_sorted(R &&r) -> bool
 template <typename R, typename N, typename Comparator = std::less<>>
 // requires R ForwardIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto is_sorted_n(R &&r, N n, Comparator comp = std::less{}) -> bool
+auto is_sorted_n(R &&r, N n, Comparator comp = Comparator{}) -> bool
 {
     return i::is_sorted_n(adl::begin(r), n, astl::pass_fn(comp));
 }
@@ -1020,7 +1019,7 @@ auto merge_sort(R &&r, Comparator comp, P p) -> void
 template <typename R, typename Comparator = std::less<>>
 // requires R BidirectionalIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto merge_sort(R &&r, Comparator comp = std::less{}) -> void
+auto merge_sort(R &&r, Comparator comp = Comparator{}) -> void
 {
     i::merge_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
 }
@@ -1045,7 +1044,7 @@ template <typename R, typename N, typename Comparator = std::less<>>
 // requires R is ForwardIterator range
 // requires N is integral type
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto merge_sort_n(R &&r, N n, Comparator comp = std::less{}) -> iter_of_range<R>
+auto merge_sort_n(R &&r, N n, Comparator comp = Comparator{}) -> iter_of_range<R>
 {
     return i::merge_sort_n(adl::begin(r), n, astl::pass_fn(comp));
 }
@@ -1110,7 +1109,7 @@ auto partial_sort_left(R &&r, RandIt middle, Comparator comp, P p) -> void
 }
 
 template <typename R, typename RandIt, typename Comparator = std::less<>>
-auto partial_sort_left(R &&r, RandIt middle, Comparator comp = std::less{}) -> void
+auto partial_sort_left(R &&r, RandIt middle, Comparator comp = Comparator{}) -> void
 {
     i::partial_sort_left(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp));
 }
@@ -1150,7 +1149,7 @@ template <typename R, typename RandIt, typename Comparator = std::less<>>
 // requires R RandomAccessIterator range
 // requires RandIt RandomAccessIterator
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto partial_sort_right(R &&r, RandIt middle, Comparator comp = std::less{}) -> void
+auto partial_sort_right(R &&r, RandIt middle, Comparator comp = Comparator{}) -> void
 {
     i::partial_sort_right(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp));
 }
@@ -1164,7 +1163,7 @@ auto quicksort(R &&r, Comparator comp, P p) -> void
 template <typename R, typename Comparator = std::less<>>
 // requires R ForwardIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto quicksort(R &&r, Comparator comp = std::less{}) -> void
+auto quicksort(R &&r, Comparator comp = Comparator{}) -> void
 {
     i::quicksort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
 }
@@ -1178,7 +1177,7 @@ auto selection_sort(R &&r, Comparator comp, P p) -> void
 template <typename R, typename Comparator = std::less<>>
 // requires R ForwardIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto selection_sort(R &&r, Comparator comp = std::less{}) -> void
+auto selection_sort(R &&r, Comparator comp = Comparator{}) -> void
 {
     i::selection_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
 }
@@ -1192,7 +1191,7 @@ auto shell_sort(R &&r, Comparator comp, P p) -> void
 template <typename R, typename Comparator = std::less<>>
 // requires R RandomAccessIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto shell_sort(R &&r, Comparator comp = std::less{}) -> void
+auto shell_sort(R &&r, Comparator comp = Comparator{}) -> void
 {
     i::shell_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
 }
@@ -1246,7 +1245,7 @@ auto sort(R &&r) -> void
 }
 
 template <typename R, typename Comparator = std::less<>>
-auto sort2(R &&r, Comparator comp = std::less{}) -> unsigned
+auto sort2(R &&r, Comparator comp = Comparator{}) -> unsigned
 {
     return i::sort2(adl::begin(r), astl::pass_fn(comp));
 }
@@ -1260,7 +1259,7 @@ auto sort2(R &&r, Comparator comp, P p) -> unsigned
 template <typename R, typename Comparator = std::less<>>
 // requires R ForwardIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort3(R &&r, Comparator comp = std::less{}) -> unsigned
+auto sort3(R &&r, Comparator comp = Comparator{}) -> unsigned
 {
     return i::sort3(adl::begin(r), astl::pass_fn(comp));
 }
@@ -1274,7 +1273,7 @@ auto sort3(R &&r, Comparator comp, P p) -> unsigned
 template <typename R, typename Comparator = std::less<>>
 // requires R ForwardIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort4(R &&r, Comparator comp = std::less{}) -> unsigned
+auto sort4(R &&r, Comparator comp = Comparator{}) -> unsigned
 {
     return i::sort4(adl::begin(r), astl::pass_fn(comp));
 }
@@ -1288,7 +1287,7 @@ auto sort4(R &&r, Comparator comp, P p) -> unsigned
 template <typename R, typename Comparator = std::less<>>
 // requires R ForwardIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort5(R &&r, Comparator comp = std::less{}) -> unsigned
+auto sort5(R &&r, Comparator comp = Comparator{}) -> unsigned
 {
     return i::sort5(adl::begin(r), astl::pass_fn(comp));
 }
@@ -1302,7 +1301,7 @@ auto sort5(R &&r, Comparator comp, P p) -> unsigned
 template <typename R, typename Comparator = std::less<>>
 // requires R ForwardIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort6(R &&r, Comparator comp = std::less{}) -> unsigned
+auto sort6(R &&r, Comparator comp = Comparator{}) -> unsigned
 {
     return i::sort6(adl::begin(r), astl::pass_fn(comp));
 }
@@ -1322,7 +1321,7 @@ auto sort_and_unique(R &&r, Comparator comp, P p) -> iter_of_range<R>
 template <typename R, typename Comparator = std::less<>>
 // requires R RandomAccessIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort_and_unique(R &&r, Comparator comp = std::less{}) -> iter_of_range<R>
+auto sort_and_unique(R &&r, Comparator comp = Comparator{}) -> iter_of_range<R>
 {
     return i::sort_and_unique(adl::begin(r), adl::end(r), astl::pass_fn(comp));
 }

@@ -22,11 +22,11 @@ template <typename FwdItHay, typename FwdItPat, typename BinaryPredicate>
 // requires FwdItPat ForwardIterator
 // requires BinaryPredicate binary predicate on value_type(FwdItHay) and
 // value_type(FwdItPat)
-auto searchp1(FwdItHay first1, FwdItHay last1, FwdItPat first2, FwdItPat last2, BinaryPredicate pred,
-              std::forward_iterator_tag) -> std::pair<FwdItHay, FwdItHay>
+auto searchp1(FwdItHay first1, FwdItHay last1, FwdItPat first2, FwdItPat last2,
+              BinaryPredicate pred, std::forward_iterator_tag) -> std::pair<FwdItHay, FwdItHay>
 {
     using PairType = std::pair<FwdItHay, FwdItHay>;
-    if (first2 == last2) return PairType{first1, last1};// Everything matches an empty sequence
+    if (first2 == last2) return PairType{first1, last1}; // Everything matches an empty sequence
 
     while (true) {
         // Find first element in sequence 1 that matches *first2, with a minimum of
@@ -53,11 +53,11 @@ auto searchp1(FwdItHay first1, FwdItHay last1, FwdItPat first2, FwdItPat last2, 
                 // Otherwise if source exhausted, pattern not found
                 return PairType{last1, last1};
 
-            if (!pred(*m1, *m2))// if there is a mismatch, restart with a new first1
+            if (!pred(*m1, *m2)) // if there is a mismatch, restart with a new first1
             {
                 ++first1;
                 break;
-            }// else there is a match, check next elements
+            } // else there is a match, check next elements
         }
     }
 }
@@ -83,7 +83,7 @@ auto searchp1(RandIt1 first1, RandIt1 last1, RandIt2 first2, RandIt2 last2, Bina
     Diff2 const len1(last1 - first1);
     if (Ct(len1) < Ct(len2)) return PairType{last1, last1};
 
-    RandIt1 const s(last1 - (len2 - Diff1(1)));// Start of pattern match can't go beyond here
+    RandIt1 const s(last1 - (len2 - Diff1(1))); // Start of pattern match can't go beyond here
 
     while (true) {
         while (true) {
@@ -99,8 +99,8 @@ auto searchp1(RandIt1 first1, RandIt1 last1, RandIt2 first2, RandIt2 last2, Bina
         while (true) {
             if (++m2 == last2) return PairType{first1, first1 + len2};
 
-            ++m1;// no need to check range on m1 because s guarantees we have enough
-                 // source
+            ++m1; // no need to check range on m1 because s guarantees we have enough
+                  // source
             if (!pred(*m1, *m2)) {
                 ++first1;
                 break;
@@ -109,7 +109,8 @@ auto searchp1(RandIt1 first1, RandIt1 last1, RandIt2 first2, RandIt2 last2, Bina
     }
 }
 
-template <typename FwdItHay, typename NHay, typename FwdItPat, typename NPat, typename BinaryPredicate>
+template <typename FwdItHay, typename NHay, typename FwdItPat, typename NPat,
+          typename BinaryPredicate>
 // requires FwdItHay ForwardIterator
 // requires NHay integral type
 // requires FwdItPat ForwardIterator
@@ -121,7 +122,7 @@ auto search_n1(FwdItHay first1, NHay n1, FwdItPat first2, NPat n2, BinaryPredica
 {
     using PairType = std::pair<FwdItHay, FwdItHay>;
     if (n1 == NHay(0))
-        return PairType{first1, astl::next(first1, n1)};// Everything matches an empty sequence
+        return PairType{first1, astl::next(first1, n1)}; // Everything matches an empty sequence
 
     while (true) {
         // Find first element in sequence 1 that match's *first2, with a minimum of
@@ -154,16 +155,17 @@ auto search_n1(FwdItHay first1, NHay n1, FwdItPat first2, NPat n2, BinaryPredica
                 // Otherwise if source exhausted, pattern not found
                 return PairType{m1, m1};
 
-            if (!pred(*m1, *m2))// if there is a mismatch, restart with a new first1
+            if (!pred(*m1, *m2)) // if there is a mismatch, restart with a new first1
             {
                 ++first1;
                 break;
-            }// else there is a match, check next elements
+            } // else there is a match, check next elements
         }
     }
 }
 
-template <typename RandIt1, typename NHay, typename RandIt2, typename NPat, typename BinaryPredicate>
+template <typename RandIt1, typename NHay, typename RandIt2, typename NPat,
+          typename BinaryPredicate>
 // requires RandIt1 RandomAccessIterator
 // requires NHay integral type
 // requires RandIt2 RandomAccessIterator
@@ -176,311 +178,296 @@ auto search_n1(RandIt1 first1, NHay len1, RandIt2 first2, NPat len2, BinaryPredi
     return internal_search::searchp1(first1, first1 + len1, first2, first2 + len2,
                                      astl::pass_fn(pred));
 }
-}// namespace internal_search
+} // namespace internal_search
 namespace i
 {
-template <typename FwdIt1, typename FwdIt2>
-ASTL_NODISCARD auto is_subarray(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2) -> bool
-{
-    return std::search(first1, last1, first2, last2) != last1;
-}
 
-template <typename FwdIt1, typename FwdIt2, typename Eqv>
-ASTL_NODISCARD auto is_subarray(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2, Eqv e)
-    -> bool
-{
-    return std::search(first1, last1, first2, last2, astl::pass_fn(e)) != last1;
-}
+inline constexpr struct {
 
-template <typename FwdIt1, typename FwdIt2, typename Eqv, typename P1, typename P2>
-ASTL_NODISCARD auto is_subarray(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2, Eqv e,
-                                P1 p1, P2 p2) -> bool
-{
-    return i::is_subarray(first1, last1, first2, last2,
-                          astl::lockstep(astl::pass_fn(e), astl::pass_fn(p1), astl::pass_fn(p2)));
-}
-
-template <typename FwdIt1, typename FwdIt2, typename Eqv>
-ASTL_NODISCARD auto is_subseq(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2, Eqv e)
-    -> bool
-{
-    if (first1 == last1 || first2 == last2) return false;
-
-    while (true) {
-        auto i(std::find_if(first1, last1, astl::bind2nd(e, *first2)));
-        if (i == last1) { return false; }
-
-        first1 = astl::next(i);
-        ++first2;
-        if (first2 == last2) return true;
+    template <typename FwdIt1, typename FwdIt2, typename Eqv = std::equal_to<>>
+    ASTL_NODISCARD auto operator()(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
+                                   Eqv e = Eqv{}) const -> bool
+    {
+        return std::search(first1, last1, first2, last2, astl::pass_fn(e)) != last1;
     }
-}
-template <typename FwdIt1, typename FwdIt2>
-ASTL_NODISCARD auto is_subseq(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2) -> bool
-{
-    return i::is_subseq(first1, last1, first2, last2, std::equal_to{});
-}
 
-template <typename FwdIt1, typename FwdIt2, typename Eqv, typename P1, typename P2>
-ASTL_NODISCARD auto is_subseq(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2, Eqv e,
-                              P1 p1, P2 p2) -> bool
-{
-    return i::is_subseq(first1, last1, first2, last2,
-                        astl::lockstep(astl::pass_fn(e), astl::pass_fn(p1), astl::pass_fn(p2)));
-}
+    template <typename FwdIt1, typename FwdIt2, typename Eqv, typename P1, typename P2>
+    ASTL_NODISCARD auto operator()(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2, Eqv e,
+                                   P1 p1, P2 p2) const -> bool
+    {
+        return (*this)(first1, last1, first2, last2,
+                       astl::lockstep(astl::pass_fn(e), astl::pass_fn(p1), astl::pass_fn(p2)));
+    }
+} is_subarray{};
 
-using std::search;// NOLINT(misc-unused-using-decls)
-template <typename FwdItHay, typename FwdItPat, typename BinaryPredicate, typename P1, typename P2>
-ASTL_NODISCARD auto search(FwdItHay first1, FwdItHay last1, FwdItPat s_first, FwdItPat s_last,
-                           BinaryPredicate pred, P1 p1, P2 p2) -> FwdItHay
-{
-    return i::search(first1, last1, s_first, s_last,
-                     astl::lockstep(astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2)));
-}
+inline constexpr struct {
+    template <typename FwdIt1, typename FwdIt2, typename Eqv = std::equal_to<>>
+    ASTL_NODISCARD auto operator()(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
+                                   Eqv e = Eqv{}) -> bool
+    {
+        if (first1 == last1 || first2 == last2) return false;
 
-template <typename FwdIt, typename N, typename E, typename BinaryPredicate, typename P>
-ASTL_NODISCARD auto search_n(FwdIt first1, FwdIt last1, N count, E &&elem, BinaryPredicate pred, P p)
-    -> FwdIt
-{
-    return std::search_n(first1, last1, count, elem,
-                         astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
+        while (true) {
+            auto i(std::find_if(first1, last1, astl::bind2nd(e, *first2)));
+            if (i == last1) { return false; }
 
-// same as std::search, just returns pair of iterators to the founded sequence
-// inside of [first1, last1)
-template <typename FwdItHay, typename FwdItPat, typename BinaryPredicate>
-// requires FwdItHay ForwardIterator
-// requires FwdItPat ForwardIterator
-// requires BinaryPredicate binary predicate on value_type(FwdItHay) and
-// value_type(FwdItPat)
-ASTL_NODISCARD auto searchp(FwdItHay first1, FwdItHay last1, FwdItPat first2, FwdItPat last2,
-                            BinaryPredicate pred) -> std::pair<FwdItHay, FwdItHay>
-{
-    return internal_search::searchp1(first1, last1, first2, last2, astl::pass_fn(pred),
-                                     astl::iterator_category(first1, first2));
-}
+            first1 = astl::next(i);
+            ++first2;
+            if (first2 == last2) return true;
+        }
+    }
 
-// same as std::search, just returns pair of iterators to the founded sequence
-// inside of [first1, last1)
-template <typename FwdItHay, typename FwdItPat>
-// requires FwdItHay ForwardIterator
-// requires FwdItPat ForwardIterator
-ASTL_NODISCARD auto searchp(FwdItHay first1, FwdItHay last1, FwdItPat first2, FwdItPat last2)
-    -> std::pair<FwdItHay, FwdItHay>
-{
-    return i::searchp(first1, last1, first2, last2, std::equal_to{});
-}
+    template <typename FwdIt1, typename FwdIt2, typename Eqv, typename P1, typename P2>
+    ASTL_NODISCARD auto operator()(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2, Eqv e,
+                                   P1 p1, P2 p2) const -> bool
+    {
+        return (*this)(first1, last1, first2, last2,
+                       astl::lockstep(astl::pass_fn(e), astl::pass_fn(p1), astl::pass_fn(p2)));
+    }
+} is_subseq{};
 
-template <typename FwdItHay, typename FwdItPat, typename BinaryPredicate, typename P>
-ASTL_NODISCARD auto searchp(FwdItHay first1, FwdItHay last1, FwdItPat s_first, FwdItPat s_last,
-                            BinaryPredicate pred, P p) -> std::pair<FwdItHay, FwdItHay>
-{
-    return i::searchp(first1, last1, s_first, s_last,
-                      astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
+inline constexpr struct {
+    template <typename FwdItHay, typename FwdItPat, typename BinaryPredicate = std::equal_to<>>
+    ASTL_NODISCARD auto operator()(FwdItHay first1, FwdItHay last1, FwdItPat s_first,
+                                   FwdItPat s_last, BinaryPredicate pred = BinaryPredicate{}) const
+        -> FwdItHay
+    {
+        return std::search(first1, last1, s_first, s_last, astl::pass_fn(pred));
+    }
 
-// same as std::search, just returns pair of iterators to the founded sequence
-// inside of [first1, last1)
-template <typename FwdItHay, typename NHay, typename FwdItPat, typename NPat, typename BinaryPredicate>
-// requires FwdItHay ForwardIterator
-// requires NHay integral type
-// requires FwdItPat ForwardIterator
-// requires NPat integral type
-// requires BinaryPredicate binary predicate on value_type(FwdItHay) and
-// value_type(FwdItPat)
-ASTL_NODISCARD auto searchp_n(FwdItHay first1, NHay n1, FwdItPat first2, NPat n2, BinaryPredicate pred)
-    -> std::pair<FwdItHay, FwdItHay>
-{
-    return internal_search::search_n1(first1, n1, first2, n2, astl::pass_fn(pred),
-                                      astl::iterator_category(first1, first2));
-}
+    template <typename FwdItHay, typename FwdItPat, typename BinaryPredicate, typename P1,
+              typename P2>
+    ASTL_NODISCARD auto operator()(FwdItHay first1, FwdItHay last1, FwdItPat s_first,
+                                   FwdItPat s_last, BinaryPredicate pred, P1 p1, P2 p2) const
+        -> FwdItHay
+    {
+        return std::search(
+            first1, last1, s_first, s_last,
+            astl::lockstep(astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2)));
+    }
+} search{};
 
-// same as std::search, just returns pair of iterators to the founded sequence
-// inside of [first1, last1)
-template <typename FwdItHay, typename NHay, typename FwdItPat, typename NPat>
-// requires FwdItHay ForwardIterator
-// requires NHay integral type
-// requires FwdItPat ForwardIterator
-// requires NPat integral type
-ASTL_NODISCARD auto searchp_n(FwdItHay first1, NHay n1, FwdItPat first2, NPat n2)
-    -> std::pair<FwdItHay, FwdItHay>
-{
-    return i::searchp_n(first1, n1, first2, n2, std::equal_to{});
-}
+inline constexpr struct {
+    template <typename FwdIt, typename N, typename E, typename BinaryPredicate = std::equal_to<>>
+    ASTL_NODISCARD auto operator()(FwdIt first1, FwdIt last1, N count, E &&elem,
+                                   BinaryPredicate pred = BinaryPredicate{}) const -> FwdIt
+    {
+        return std::search_n(first1, last1, count, elem, astl::pass_fn(pred));
+    }
 
-template <typename FwdItHay, typename NHay, typename FwdItPat, typename NPat, typename BinaryPredicate,
-          typename P>
-ASTL_NODISCARD auto searchp_n(FwdItHay first1, NHay n1, FwdItPat s_first, NPat n2, BinaryPredicate pred,
-                              P p) -> std::pair<FwdItHay, FwdItHay>
-{
-    return i::searchp(first1, n1, s_first, n2,
-                      astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
-}// namespace i
+    template <typename FwdIt, typename N, typename E, typename BinaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(FwdIt first1, FwdIt last1, N count, E &&elem,
+                                   BinaryPredicate pred, P p) const -> FwdIt
+    {
+        return std::search_n(first1, last1, count, elem,
+                             astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} search_n{};
+
+inline constexpr struct {
+    // same as std::search, just returns pair of iterators to the founded sequence
+    // inside of [first1, last1)
+    template <typename FwdItHay, typename FwdItPat, typename BinaryPredicate>
+    // requires FwdItHay ForwardIterator
+    // requires FwdItPat ForwardIterator
+    // requires BinaryPredicate binary predicate on value_type(FwdItHay) and
+    // value_type(FwdItPat)
+    ASTL_NODISCARD auto operator()(FwdItHay first1, FwdItHay last1, FwdItPat first2, FwdItPat last2,
+                                   BinaryPredicate pred) const -> std::pair<FwdItHay, FwdItHay>
+    {
+        return internal_search::searchp1(first1, last1, first2, last2, astl::pass_fn(pred),
+                                         astl::iterator_category(first1, first2));
+    }
+
+    template <typename FwdItHay, typename FwdItPat, typename BinaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(FwdItHay first1, FwdItHay last1, FwdItPat s_first,
+                                   FwdItPat s_last, BinaryPredicate pred, P p) const
+        -> std::pair<FwdItHay, FwdItHay>
+    {
+        return (*this)(first1, last1, s_first, s_last,
+                       astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} searchp{};
+
+inline constexpr struct {
+    // same as std::search, just returns pair of iterators to the founded sequence
+    // inside of [first1, last1)
+    template <typename FwdItHay, typename NHay, typename FwdItPat, typename NPat,
+              typename BinaryPredicate = std::equal_to<>>
+    // requires FwdItHay ForwardIterator
+    // requires NHay integral type
+    // requires FwdItPat ForwardIterator
+    // requires NPat integral type
+    // requires BinaryPredicate binary predicate on value_type(FwdItHay) and
+    // value_type(FwdItPat)
+    ASTL_NODISCARD auto operator()(FwdItHay first1, NHay n1, FwdItPat first2, NPat n2,
+                                   BinaryPredicate pred = BinaryPredicate{}) const
+        -> std::pair<FwdItHay, FwdItHay>
+    {
+        return internal_search::search_n1(first1, n1, first2, n2, astl::pass_fn(pred),
+                                          astl::iterator_category(first1, first2));
+    }
+
+    template <typename FwdItHay, typename NHay, typename FwdItPat, typename NPat,
+              typename BinaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(FwdItHay first1, NHay n1, FwdItPat s_first, NPat n2,
+                                   BinaryPredicate pred, P p) const -> std::pair<FwdItHay, FwdItHay>
+    {
+        return (*this)(first1, n1, s_first, n2,
+                       astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} searchp_n{};
+
+} // namespace i
 
 namespace r
 {
-template <typename R1, typename R2>
-// requires R1 ForwardIterator range
-// requires R2 ForwardIterator
-// requires value_type(R) and value_type(FwdIt) equality comparable
-ASTL_NODISCARD auto is_subarray(R1 &&r1, R2 &&r2) -> bool
-{
-    return i::is_subarray(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2));
-}
 
-template <typename R1, typename R2, typename BinaryPredicate>
-// requires R1 ForwardIterator range
-// requires R2 ForwardIterator
-// requires BinaryPredicate binary predicate on value_type(R) and value_type(FwdIt)
-ASTL_NODISCARD auto is_subarray(R1 &&r1, R2 &&r2, BinaryPredicate pred) -> bool
-{
-    return i::is_subarray(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
-                          astl::pass_fn(pred));
-}
+inline constexpr struct {
+    template <typename R1, typename R2, typename BinaryPredicate = std::equal_to<>>
+    // requires R1 ForwardIterator range
+    // requires R2 ForwardIterator
+    // requires BinaryPredicate binary predicate on value_type(R) and value_type(FwdIt)
+    ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, BinaryPredicate pred = BinaryPredicate{}) const
+        -> bool
+    {
+        return i::is_subarray(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
+                              astl::pass_fn(pred));
+    }
 
-template <typename R, typename R2, typename BinaryPredicate, typename P1, typename P2>
-ASTL_NODISCARD auto is_subarray(R &&r1, R2 &&r2, BinaryPredicate pred, P1 p1, P2 p2) -> bool
-{
-    return i::is_subarray(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
-                          astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2));
-}
+    template <typename R, typename R2, typename BinaryPredicate, typename P1, typename P2>
+    ASTL_NODISCARD auto operator()(R &&r1, R2 &&r2, BinaryPredicate pred, P1 p1, P2 p2) const
+        -> bool
+    {
+        return i::is_subarray(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
+                              astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2));
+    }
+} is_subarray{};
 
-template <typename R1, typename R2>
-// requires R1 ForwardIterator range
-// requires R2 ForwardIterator
-// requires value_type(R) and value_type(FwdIt) equality comparable
-ASTL_NODISCARD auto is_subseq(R1 &&r1, R2 &&r2) -> bool
-{
-    return i::is_subseq(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2));
-}
+inline constexpr struct {
+    template <typename R1, typename R2, typename BinaryPredicate = std::equal_to<>>
+    // requires R1 ForwardIterator range
+    // requires R2 ForwardIterator
+    // requires BinaryPredicate binary predicate on value_type(R) and value_type(FwdIt)
+    ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, BinaryPredicate pred = BinaryPredicate{}) const
+        -> bool
+    {
+        return i::is_subseq(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
+                            astl::pass_fn(pred));
+    }
 
-template <typename R1, typename R2, typename BinaryPredicate>
-// requires R1 ForwardIterator range
-// requires R2 ForwardIterator
-// requires BinaryPredicate binary predicate on value_type(R) and value_type(FwdIt)
-ASTL_NODISCARD auto is_subseq(R1 &&r1, R2 &&r2, BinaryPredicate pred) -> bool
-{
-    return i::is_subseq(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
-                        astl::pass_fn(pred));
-}
+    template <typename R, typename R2, typename BinaryPredicate, typename P1, typename P2>
+    ASTL_NODISCARD auto operator()(R &&r1, R2 &&r2, BinaryPredicate pred, P1 p1, P2 p2) const
+        -> bool
+    {
+        return i::is_subseq(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
+                            astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2));
+    }
+} is_subseq{};
 
-template <typename R, typename R2, typename BinaryPredicate, typename P1, typename P2>
-ASTL_NODISCARD auto is_subseq(R &&r1, R2 &&r2, BinaryPredicate pred, P1 p1, P2 p2) -> bool
-{
-    return i::is_subseq(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
-                        astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2));
-}
+inline constexpr struct {
 
-template <typename R1, typename R2>
-// requires R2 ForwardIterator range
-// requires R2 ForwardIterator
-// requires value_type(R) and value_type(FwdIt) equality comparable
-ASTL_NODISCARD auto search(R1 &&r1, R2 &&r2) -> iter_of_range<R1>
-{
-    return i::search(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2));
-}
+    template <typename R1, typename R2>
+    // requires R2 ForwardIterator range
+    // requires R2 ForwardIterator
+    // requires value_type(R) and value_type(FwdIt) equality comparable
+    ASTL_NODISCARD auto search(R1 &&r1, R2 &&r2) -> iter_of_range<R1>
+    {
+        return i::search(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2));
+    }
 
-template <typename R1, typename R2, typename BinaryPredicate>
-// requires R1 ForwardIterator range
-// requires R2 ForwardIterator
-// requires BinaryPredicate binary predicate on value_type(R) and value_type(FwdIt)
-ASTL_NODISCARD auto search(R1 &&r1, R2 &&r2, BinaryPredicate pred) -> iter_of_range<R1>
-{
-    return i::search(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
-                     astl::pass_fn(pred));
-}
+    template <typename R1, typename R2, typename BinaryPredicate>
+    // requires R1 ForwardIterator range
+    // requires R2 ForwardIterator
+    // requires BinaryPredicate binary predicate on value_type(R) and value_type(FwdIt)
+    ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, BinaryPredicate pred = BinaryPredicate{}) const
+        -> iter_of_range<R1>
+    {
+        return i::search(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
+                         astl::pass_fn(pred));
+    }
 
-template <typename R1, typename R2, typename BinaryPredicate, typename P1, typename P2>
-ASTL_NODISCARD auto search(R1 &&r1, R2 &&r2, BinaryPredicate pred, P1 p1, P2 p2) -> iter_of_range<R1>
-{
-    return i::search(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
-                     astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2));
-}
+    template <typename R1, typename R2, typename BinaryPredicate, typename P1, typename P2>
+    ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, BinaryPredicate pred, P1 p1, P2 p2) const
+        -> iter_of_range<R1>
+    {
+        return i::search(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
+                         astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2));
+    }
+} search{};
 
-template <typename R, typename N, typename E>
-// requires R ForwardIterator range
-// requires S integral type
-// requires E equality comparable with value_type(R)
-ASTL_NODISCARD auto search_n(R &&r, N count, E &&elem) -> iter_of_range<R>
-{
-    return i::search_n(adl::begin(r), adl::end(r), count, elem);
-}
+inline constexpr struct {
 
-template <typename R, typename N, typename E, typename BinaryPredicate>
-// requires R ForwardIterator range
-// requires S integral type
-// requires E comparable with value_type(R) via BinaryPredicate
-// requires BinaryPredicate, returns bool, arguments two value_type(R)
-ASTL_NODISCARD auto search_n(R &&r, N count, E &&elem, BinaryPredicate pred) -> iter_of_range<R>
-{
-    return i::search_n(adl::begin(r), adl::end(r), count, elem, astl::pass_fn(pred));
-}
+    template <typename R, typename N, typename E, typename BinaryPredicate = std::equal_to<>>
+    // requires R ForwardIterator range
+    // requires S integral type
+    // requires E comparable with value_type(R) via BinaryPredicate
+    // requires BinaryPredicate, returns bool, arguments two value_type(R)
+    ASTL_NODISCARD auto operator()(R &&r, N n, E &&elem,
+                                   BinaryPredicate pred = BinaryPredicate{}) const
+        -> iter_of_range<R>
+    {
+        return i::search_n(adl::begin(r), adl::end(r), n, elem, astl::pass_fn(pred));
+    }
 
-template <typename R, typename N, typename E, typename BinaryPredicate, typename P>
-ASTL_NODISCARD auto search_n(R &&r, N count, E &&elem, BinaryPredicate pred, P p) -> iter_of_range<R>
-{
-    return i::search_n(adl::begin(r), adl::end(r), count, elem, astl::pass_fn(pred),
-                       astl::pass_fn(p));
-}
+    template <typename R, typename N, typename E, typename BinaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, N n, E &&elem, BinaryPredicate pred, P p) const
+        -> iter_of_range<R>
+    {
+        return i::search_n(adl::begin(r), adl::end(r), n, elem, astl::pass_fn(pred),
+                           astl::pass_fn(p));
+    }
+} search_n{};
 
-template <typename R, typename FwdIt, typename BinaryPredicate>
-// requires R ForwardIterator range
-// requires FwdIt ForwardIterator
-// requires BinaryPredicate binary predicate on value_type(R) and value_type(FwdIt)
-ASTL_NODISCARD auto searchp(R &&r1, FwdIt s_first, FwdIt s_last, BinaryPredicate pred)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    return i::searchp(adl::begin(r1), adl::end(r1), s_first, s_last, astl::pass_fn(pred));
-}
+inline constexpr struct {
 
-template <typename R, typename FwdIt>
-// requires R ForwardIterator range
-// requires FwdIt ForwardIterator
-ASTL_NODISCARD auto searchp(R &&r1, FwdIt s_first, FwdIt s_last)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    return r::searchp(r1, s_first, s_last, std::equal_to{});
-}
+    template <typename R, typename FwdIt, typename BinaryPredicate = std::equal_to<>>
+    // requires R ForwardIterator range
+    // requires FwdIt ForwardIterator
+    // requires BinaryPredicate binary predicate on value_type(R) and value_type(FwdIt)
+    ASTL_NODISCARD auto operator()(R &&r1, FwdIt s_first, FwdIt s_last,
+                                   BinaryPredicate pred = BinaryPredicate{}) const
+        -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
+    {
+        return i::searchp(adl::begin(r1), adl::end(r1), s_first, s_last, astl::pass_fn(pred));
+    }
 
-template <typename R, typename FwdIt, typename BinaryPredicate, typename P>
-ASTL_NODISCARD auto searchp(R &&r1, FwdIt s_first, FwdIt s_last, BinaryPredicate pred, P p)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    return i::searchp(adl::begin(r1), adl::end(r1), s_first, s_last, astl::pass_fn(pred),
-                      astl::pass_fn(p));
-}
+    template <typename R, typename FwdIt, typename BinaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(R &&r1, FwdIt s_first, FwdIt s_last, BinaryPredicate pred,
+                                   P p) const
+        -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
+    {
+        return i::searchp(adl::begin(r1), adl::end(r1), s_first, s_last, astl::pass_fn(pred),
+                          astl::pass_fn(p));
+    }
+} searchp{};
 
-template <typename R, typename N1, typename FwdIt, typename N2, typename BinaryPredicate>
-// requires R ForwardIterator range
-// requires N1 integral type
-// requires FwdIt ForwardIterator
-// requires N2 integral type
-// requires BinaryPredicate binary predicate on value_type(R) and value_type(FwdIt)
-auto searchp_n(R &&r1, N1 n1, FwdIt s_first, N2 n2, BinaryPredicate pred)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    return i::searchp_n(adl::begin(r1), n1, s_first, n2, astl::pass_fn(pred));
-}
+inline constexpr struct {
+    template <typename R, typename N1, typename FwdIt, typename N2,
+              typename BinaryPredicate = std::equal_to<>>
+    // requires R ForwardIterator range
+    // requires N1 integral type
+    // requires FwdIt ForwardIterator
+    // requires N2 integral type
+    // requires BinaryPredicate binary predicate on value_type(R) and value_type(FwdIt)
+    auto operator()(R &&r1, N1 n1, FwdIt s_first, N2 n2,
+                    BinaryPredicate pred = BinaryPredicate{}) const
+        -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
+    {
+        return i::searchp_n(adl::begin(r1), n1, s_first, n2, astl::pass_fn(pred));
+    }
 
-template <typename R, typename N1, typename FwdIt, typename N2>
-// requires R ForwardIterator range
-// requires N1 integral type
-// requires FwdIt ForwardIterator
-// requires N2 integral type
-ASTL_NODISCARD auto searchp_n(R &&r1, N1 n1, FwdIt s_first, N2 n2)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    return r::searchp_n(r1, n1, s_first, n2, std::equal_to{});
-}
+    template <typename R, typename N1, typename FwdIt, typename N2, typename BinaryPredicate,
+              typename P>
+    ASTL_NODISCARD auto operator()(R &&r1, N1 n1, FwdIt s_first, N2 n2, BinaryPredicate pred,
+                                   P p) const
+        -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
+    {
+        return i::searchp_n(adl::begin(r1), n1, s_first, n2, astl::pass_fn(pred), astl::pass_fn(p));
+    }
+} searchp_n{};
 
-template <typename R, typename N1, typename FwdIt, typename N2, typename BinaryPredicate, typename P>
-ASTL_NODISCARD auto searchp_n(R &&r1, N1 n1, FwdIt s_first, N2 n2, BinaryPredicate pred, P p)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    return i::searchp_n(adl::begin(r1), n1, s_first, n2, astl::pass_fn(pred), astl::pass_fn(p));
-}
-}// namespace r
-}// namespace astl
+} // namespace r
+} // namespace astl
 
-#endif// ASTL_INCLUDE_SEARCH_HPP
+#endif // ASTL_INCLUDE_SEARCH_HPP
