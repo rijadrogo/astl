@@ -5,7 +5,9 @@
     <inspection_tool class="Cppcheck" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HidingNonVirtualFunction" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="OCInconsistentNaming" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
-    <inspection_tool class="OCSimplify" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="OCSimplify" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="enableSimplifyIfWithConstantBranch" value="true" />
+    </inspection_tool>
     <inspection_tool class="OCUnusedClass" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="OCUnusedGlobalDeclaration" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="OCUnusedMacro" enabled="false" level="WARNING" enabled_by_default="false" />

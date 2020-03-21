@@ -59,7 +59,7 @@ auto none_of_adjacent1(I first, NaryPred pred, iter_diff_type<I> d) -> bool
 }
 template <int N, bool> struct none_of_adjacent_t {
     template <typename Iter, typename NaryFunction>
-    ASTL_NODISCARD auto none_of_adjacent(Iter first, Iter last, NaryFunction f) ->
+    ASTL_NODISCARD auto operator()(Iter first, Iter last, NaryFunction f) const ->
         typename std::enable_if<(N > 0), bool>::type
     {
         return internal_none_of::none_of_adjacent1<N>(first, astl::pass_fn(f),
@@ -67,7 +67,7 @@ template <int N, bool> struct none_of_adjacent_t {
     }
 
     template <typename Iter, typename NaryFunction, typename P>
-    ASTL_NODISCARD auto none_of_adjacent(Iter first, Iter last, NaryFunction f, P p) ->
+    ASTL_NODISCARD auto operator()(Iter first, Iter last, NaryFunction f, P p) const ->
         typename std::enable_if<(N > 0), bool>::type
     {
         return internal_none_of::none_of_adjacent1<N>(
@@ -77,7 +77,7 @@ template <int N, bool> struct none_of_adjacent_t {
 
 template <int N> struct none_of_adjacent_t<N, true> {
     template <typename R, typename NaryFunction>
-    ASTL_NODISCARD auto none_of_adjacent(R &&r, NaryFunction f) ->
+    ASTL_NODISCARD auto operator()(R &&r, NaryFunction f) const ->
         typename std::enable_if<(N > 0), bool>::type
     {
         return internal_none_of::none_of_adjacent1<N>(adl::begin(r), astl::pass_fn(f),
@@ -85,7 +85,7 @@ template <int N> struct none_of_adjacent_t<N, true> {
     }
 
     template <typename R, typename NaryFunction, typename P>
-    ASTL_NODISCARD auto none_of_adjacent(R &&r, NaryFunction f, P p) ->
+    ASTL_NODISCARD auto operator()(R &&r, NaryFunction f, P p) const ->
         typename std::enable_if<(N > 0), bool>::type
     {
         return internal_none_of::none_of_adjacent1<N>(

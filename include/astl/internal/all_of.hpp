@@ -65,6 +65,44 @@ auto all_of_adjacent1(I first, NaryPred pred, iter_diff_type<I> d) -> bool
     }
 }
 
+template <int N, bool Range> struct all_of_adjacent_t {
+    template <typename FwdIt, typename NaryPred>
+    ASTL_NODISCARD auto operator()(FwdIt first, FwdIt last, NaryPred fn) const ->
+        typename std::enable_if<(N > 0), bool>::type
+    {
+        return internal_all_of::all_of_adjacent1<N>(first, astl::pass_fn(fn),
+                                                    astl::distance(first, last));
+    }
+
+    template <typename FwdIt, typename NaryPred, typename P>
+    ASTL_NODISCARD auto operator()(FwdIt first, FwdIt last, NaryPred pred, P p) const ->
+        typename std::enable_if<(N > 0), bool>::type
+    {
+        return internal_all_of::all_of_adjacent1<N>(
+            first, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)),
+            astl::distance(first, last));
+    }
+};
+
+template <int N> struct all_of_adjacent_t<N, true> {
+    template <typename R, typename NaryPred>
+    ASTL_NODISCARD auto operator()(R &&r, NaryPred pred) const ->
+        typename std::enable_if<(N > 0), bool>::type
+    {
+        return internal_all_of::all_of_adjacent1<N>(adl::begin(r), astl::pass_fn(pred),
+                                                    astl::size_or_distance(r));
+    }
+
+    template <typename R, typename NaryPred, typename P>
+    ASTL_NODISCARD auto operator()(R &&r, NaryPred pred, P p) const ->
+        typename std::enable_if<(N > 0), bool>::type
+    {
+        return internal_all_of::all_of_adjacent1<N>(
+            adl::begin(r), astl::combine(astl::pass_fn(pred), astl::pass_fn(p)),
+            astl::size_or_distance(r));
+    }
+};
+
 } // namespace internal_all_of
 
 namespace i
@@ -141,50 +179,8 @@ inline constexpr struct {
     }
 } all_of{};
 
-namespace internal_a_adjacent
-{
-template <int N, bool Range> struct all_of_adjacent_t {
-    template <typename FwdIt, typename NaryPred>
-    ASTL_NODISCARD auto operator()(FwdIt first, FwdIt last, NaryPred fn) const ->
-        typename std::enable_if<(N > 0), bool>::type
-    {
-        return internal_all_of::all_of_adjacent1<N>(first, astl::pass_fn(fn),
-                                                    astl::distance(first, last));
-    }
-
-    template <typename FwdIt, typename NaryPred, typename P>
-    ASTL_NODISCARD auto operator()(FwdIt first, FwdIt last, NaryPred pred, P p) const ->
-        typename std::enable_if<(N > 0), bool>::type
-    {
-        return internal_all_of::all_of_adjacent1<N>(
-            first, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)),
-            astl::distance(first, last));
-    }
-};
-
-template <int N> struct all_of_adjacent_t<N, true> {
-    template <typename R, typename NaryPred>
-    ASTL_NODISCARD auto operator()(R &&r, NaryPred pred) const ->
-        typename std::enable_if<(N > 0), bool>::type
-    {
-        return internal_all_of::all_of_adjacent1<N>(adl::begin(r), astl::pass_fn(pred),
-                                                    astl::size_or_distance(r));
-    }
-
-    template <typename R, typename NaryPred, typename P>
-    ASTL_NODISCARD auto operator()(R &&r, NaryPred pred, P p) const ->
-        typename std::enable_if<(N > 0), bool>::type
-    {
-        return internal_all_of::all_of_adjacent1<N>(
-            adl::begin(r), astl::combine(astl::pass_fn(pred), astl::pass_fn(p)),
-            astl::size_or_distance(r));
-    }
-};
-
-} // namespace internal_a_adjacent
-
 template <int N>
-inline constexpr auto all_of_adjacent = internal_a_adjacent::all_of_adjacent_t<N, false>{};
+inline constexpr auto all_of_adjacent = internal_all_of::all_of_adjacent_t<N, false>{};
 
 inline constexpr struct {
     template <typename InIt, typename E>
@@ -379,7 +375,7 @@ inline constexpr struct {
 } all_of{};
 
 template <int N>
-inline constexpr auto all_of_adjacent = i::internal_a_adjacent::all_of_adjacent_t<N, true>{};
+inline constexpr auto all_of_adjacent = internal_all_of::all_of_adjacent_t<N, true>{};
 
 inline constexpr struct {
     template <typename R, typename E>

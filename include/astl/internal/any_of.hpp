@@ -17,28 +17,6 @@
 
 namespace astl
 {
-namespace i
-{
-inline constexpr struct {
-    template <typename InIt>
-    // requires InIt InputIterator
-    ASTL_NODISCARD auto operator()(InIt first, InIt last) const -> bool
-    {
-        return std::find(first, last, true) != last;
-    }
-
-    template <typename InIt, typename UnaryPredicate>
-    ASTL_NODISCARD auto operator()(InIt first, InIt last, UnaryPredicate pred) const -> bool
-    {
-        return std::any_of(first, last, astl::pass_fn(pred));
-    }
-
-    template <typename InIt, typename UnaryPredicate, typename P>
-    ASTL_NODISCARD auto operator()(InIt first, InIt last, UnaryPredicate pred, P p) const -> bool
-    {
-        return std::any_of(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-    }
-} any_of{};
 
 namespace internal_any_of
 {
@@ -79,6 +57,29 @@ template <int N> struct any_of_adjacent_t<N, true> {
 };
 
 } // namespace internal_any_of
+
+namespace i
+{
+inline constexpr struct {
+    template <typename InIt>
+    // requires InIt InputIterator
+    ASTL_NODISCARD auto operator()(InIt first, InIt last) const -> bool
+    {
+        return std::find(first, last, true) != last;
+    }
+
+    template <typename InIt, typename UnaryPredicate>
+    ASTL_NODISCARD auto operator()(InIt first, InIt last, UnaryPredicate pred) const -> bool
+    {
+        return std::any_of(first, last, astl::pass_fn(pred));
+    }
+
+    template <typename InIt, typename UnaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(InIt first, InIt last, UnaryPredicate pred, P p) const -> bool
+    {
+        return std::any_of(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} any_of{};
 
 template <int N>
 inline constexpr auto any_of_adjacent = internal_any_of::any_of_adjacent_t<N, false>{};
@@ -259,7 +260,7 @@ inline constexpr struct {
 } any_of{};
 
 template <int N>
-inline constexpr auto any_of_adjacent = i::internal_any_of::any_of_adjacent_t<N, true>{};
+inline constexpr auto any_of_adjacent = internal_any_of::any_of_adjacent_t<N, true>{};
 
 inline constexpr struct {
     template <typename R, typename E>
