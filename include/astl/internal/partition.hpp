@@ -1085,10 +1085,10 @@ template <typename InRng, typename OutRng, typename Comparator>
 // requires InRng InputIterator range
 // requires OutRng ForwardIterator range
 // requires Comparator is StrictWeakOrdering on the value_type(InRng)
-auto top_n(InRng &&i_r, OutRng &&o_r, Comparator c) -> OutRng
+auto top_n(InRng &&i_r, OutRng &&o_r, Comparator comp) -> OutRng
 {
     return i::top_n(adl::begin(i_r), adl::end(i_r), adl::begin(o_r), adl::end(o_r),
-                    astl::pass_fn(c));
+                    astl::pass_fn(comp));
 }
 
 template <typename InRng, typename OutRng>
@@ -1100,10 +1100,10 @@ auto top_n(InRng &&i_r, OutRng &&o_r) -> OutRng
 }
 
 template <typename InRng, typename OutRng, typename Comparator, typename P>
-auto top_n(InRng &&i_r, OutRng &&o_r, Comparator c, P p) -> OutRng
+auto top_n(InRng &&i_r, OutRng &&o_r, Comparator comp, P p) -> OutRng
 {
     return i::top_n(adl::begin(i_r), adl::end(i_r), adl::begin(o_r), adl::end(o_r),
-                    astl::pass_fn(c), astl::pass_fn(p));
+                    astl::pass_fn(comp), astl::pass_fn(p));
 }
 
 } // namespace r

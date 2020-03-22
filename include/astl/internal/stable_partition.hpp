@@ -63,115 +63,121 @@ auto partition_two_elements(FwdIt first, FwdIt last, UnaryPredicate pred) -> Fwd
 
 namespace i
 {
-template <typename FwdIt, typename UnaryPredicate, typename B>
-// requires FwdIt ForwardIterator
-// requires UnaryPredicate, returns bool, argument value_type(FwdIt)
-// requires B ForwardIterator
-auto stable_partition_buffered(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer) -> FwdIt
-{
-    // precondition: std::distance(first, last) < buffer.size()
-    if (first == last) return first;
 
-    B result_buffer(buffer);
-    FwdIt result(first);
+inline constexpr struct {
 
-    while (first != last) {
-        if (!pred(first)) {
-            *result_buffer = std::move(*first);
-            ++result_buffer;
+    template <typename FwdIt, typename UnaryPredicate, typename B>
+    // requires FwdIt ForwardIterator
+    // requires UnaryPredicate, returns bool, argument value_type(FwdIt)
+    // requires B ForwardIterator
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer) const -> FwdIt
+    {
+        // precondition: std::distance(first, last) < buffer.size()
+        if (first == last) return first;
+
+        B result_buffer(buffer);
+        FwdIt result(first);
+
+        while (first != last) {
+            if (!pred(first)) {
+                *result_buffer = std::move(*first);
+                ++result_buffer;
+            }
+            else {
+                *result = std::move(*first);
+                ++result;
+            }
+            ++first;
         }
-        else {
-            *result = std::move(*first);
-            ++result;
-        }
-        ++first;
+        std::move(buffer, result_buffer, result);
+        return result;
     }
-    std::move(buffer, result_buffer, result);
-    return result;
-}
 
-template <typename FwdIt, typename UnaryPredicate, typename B, typename P>
-auto stable_partition_buffered(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer, P p) -> FwdIt
-{
-    // precondition: std::distance(first, last) < buffer.size()
-    return i::stable_partition_buffered(
-        first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), buffer);
-}
-
-template <typename FwdIt, typename N, typename UnaryPredicate, typename B>
-// requires FwdIt ForwardIterator
-// requires N integral type
-// requires UnaryPredicate, returns bool, argument value_type(FwdIt)
-// requires B ForwardIterator
-auto stable_partition_n_buffered(FwdIt first, N n, UnaryPredicate pred, B buffer)
-    -> std::pair<FwdIt, FwdIt>
-{
-    // precondition: n <= buffer.size()
-    B result_buffer(buffer);
-    FwdIt result(first);
-    while (n != N(0)) {
-        if (!pred(first)) {
-            *result_buffer = std::move(*first);
-            ++result_buffer;
-        }
-        else {
-            *result = std::move(*first);
-            ++result;
-        }
-        ++first;
-        --n;
+    template <typename FwdIt, typename UnaryPredicate, typename B, typename P>
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer, P p) const -> FwdIt
+    {
+        // precondition: std::distance(first, last) < buffer.size()
+        return (*this)(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), buffer);
     }
-    std::move(buffer, result_buffer, result);
-    return std::make_pair(result, first);
-}
+} stable_partition_buffered{};
 
-template <typename FwdIt, typename N, typename UnaryPredicate, typename B, typename P>
-auto stable_partition_n_buffered(FwdIt first, N n, UnaryPredicate pred, B buffer, P p)
-    -> std::pair<FwdIt, FwdIt>
-{
-    // precondition: n <= buffer.size()
-    return i::stable_partition_n_buffered(
-        first, n, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), buffer);
-}
-
-template <typename FwdIt, typename Size, typename UnaryPredicate, typename B, typename N>
-// requires FwdIt ForwardIterator
-// requires Size integral type
-// requires UnaryPredicate, returns bool, argument value_type(FwdIt)
-// requires B ForwardIterator
-// requires N integral type
-auto stable_partition_n_adaptive(FwdIt first, Size n, UnaryPredicate pred, B buffer, N buffer_size)
-    -> FwdIt
-{
-    // precondition n > 0
-    switch (integral_t<N>(n)) {
-    case 0: return first;
-    case 1: return pred(*first) ? first : astl::next(first);
-    case 2: return internal_spartition::partition_two_elements(first, astl::next(first, 2), pred);
-    default: break;
+inline constexpr struct {
+    template <typename FwdIt, typename N, typename UnaryPredicate, typename B>
+    // requires FwdIt ForwardIterator
+    // requires N integral type
+    // requires UnaryPredicate, returns bool, argument value_type(FwdIt)
+    // requires B ForwardIterator
+    auto operator()(FwdIt first, N n, UnaryPredicate pred, B buffer) const
+        -> std::pair<FwdIt, FwdIt>
+    {
+        // precondition: n <= buffer.size()
+        B result_buffer(buffer);
+        FwdIt result(first);
+        while (n != N(0)) {
+            if (!pred(first)) {
+                *result_buffer = std::move(*first);
+                ++result_buffer;
+            }
+            else {
+                *result = std::move(*first);
+                ++result;
+            }
+            0 + ++first;
+            --n;
+        }
+        std::move(buffer, result_buffer, result);
+        return std::make_pair(result, first);
     }
-    using Ct = typename std::common_type<N, Size>::type;
-    if (Ct(n) <= Ct(buffer_size))
-        return i::stable_partition_n_buffered(first, n, pred, buffer).first;
 
-    Size lhs_size(n >> 1);
-    Size rhs_size(n - lhs_size);
-    FwdIt mid(astl::next(first, lhs_size));
+    template <typename FwdIt, typename N, typename UnaryPredicate, typename B, typename P>
+    auto operator()(FwdIt first, N n, UnaryPredicate pred, B buffer, P p) const
+        -> std::pair<FwdIt, FwdIt>
+    {
+        // precondition: n <= buffer.size()
+        return (*this)(first, n, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), buffer);
+    }
+} stable_partition_n_buffered{};
 
-    return i::rotate_adaptive(
-        i::stable_partition_n_adaptive(first, lhs_size, pred, buffer, buffer_size), mid,
-        i::stable_partition_n_adaptive(mid, rhs_size, pred, buffer, buffer_size), buffer,
-        buffer_size);
-}
+inline constexpr struct {
+    template <typename FwdIt, typename Size, typename UnaryPredicate, typename B, typename N>
+    // requires FwdIt ForwardIterator
+    // requires Size integral type
+    // requires UnaryPredicate, returns bool, argument value_type(FwdIt)
+    // requires B ForwardIterator
+    // requires N integral type
+    auto operator()(FwdIt first, Size n, UnaryPredicate pred, B buffer, N buffer_size) const
+        -> FwdIt
+    {
+        // precondition n > 0
+        switch (integral_t<N>(n)) {
+        case 0: return first;
+        case 1: return pred(*first) ? first : astl::next(first);
+        case 2:
+            return internal_spartition::partition_two_elements(first, astl::next(first, 2), pred);
+        default: break;
+        }
+        using Ct = typename std::common_type<N, Size>::type;
+        if (Ct(n) <= Ct(buffer_size))
+            return i::stable_partition_n_buffered(first, n, pred, buffer).first;
 
-template <typename FwdIt, typename Size, typename UnaryPredicate, typename B, typename N,
-          typename P>
-auto stable_partition_n_adaptive(FwdIt first, Size n, UnaryPredicate pred, B buffer, N buffer_size,
-                                 P p) -> FwdIt
-{
-    return i::stable_partition_n_adaptive(
-        first, n, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), buffer, buffer_size);
-}
+        Size lhs_size(n >> 1);
+        Size rhs_size(n - lhs_size);
+        FwdIt mid(astl::next(first, lhs_size));
+
+        return i::rotate_adaptive((*this)(first, lhs_size, pred, buffer, buffer_size), mid,
+                                  (*this)(mid, rhs_size, pred, buffer, buffer_size), buffer,
+                                  buffer_size);
+    }
+
+    template <typename FwdIt, typename Size, typename UnaryPredicate, typename B, typename N,
+              typename P>
+    auto stable_partition_n_adaptive(FwdIt first, Size n, UnaryPredicate pred, B buffer,
+                                     N buffer_size, P p) -> FwdIt
+    {
+        return (*this)(first, n, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), buffer,
+                       buffer_size);
+    }
+} stable_partition_n_adaptive{};
 
 } // namespace i
 namespace internal_spartition
@@ -237,33 +243,36 @@ auto mismatch_partitioned(InIt1 first1, InIt1 last1, InIt2 first2, InIt2 last2, 
 
 namespace i
 {
-template <typename FwdIt, typename UnaryPredicate, typename B>
-// requires FwdIt ForwardIterator
-// requires UnaryPredicate Unary Function, returns in argument value_type(FwdIt)
-// requires B BidirectionalIterator
-auto stable_partition_3way_buffered(FwdIt first, FwdIt last, UnaryPredicate pred, B b_first,
-                                    B b_last) -> std::pair<FwdIt, FwdIt>
-{
-    // precondition std::distance(first, last) <= std::distance(b_first, b_last)
-    if (first == last) return std::make_pair(last, last);
 
-    auto iters(i::partition_3way_move(first, last, first, b_first,
-                                      std::make_reverse_iterator(b_last), astl::pass_fn(pred)));
+inline constexpr struct {
+    template <typename FwdIt, typename UnaryPredicate, typename B>
+    // requires FwdIt ForwardIterator
+    // requires UnaryPredicate Unary Function, returns in argument value_type(FwdIt)
+    // requires B BidirectionalIterator
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, B b_first, B b_last) const
+        -> std::pair<FwdIt, FwdIt>
+    {
+        // precondition std::distance(first, last) <= std::distance(b_first, b_last)
+        if (first == last) return std::make_pair(last, last);
 
-    FwdIt res1(std::get<0>(iters));
-    FwdIt res2(std::move(b_first, std::get<1>(iters), res1));
-    i::reverse_move(std::get<2>(iters).base(), b_last, res2);
-    return std::make_pair(res1, res2);
-}
+        auto iters(i::partition_3way_move(first, last, first, b_first,
+                                          std::make_reverse_iterator(b_last), astl::pass_fn(pred)));
 
-template <typename FwdIt, typename UnaryPredicate, typename B, typename P>
-auto stable_partition_3way_buffered(FwdIt first, FwdIt last, UnaryPredicate pred, B b_first,
-                                    B b_last, P p) -> std::pair<FwdIt, FwdIt>
-{
-    // precondition std::distance(first, last) <= std::distance(b_first, b_last)
-    return i::stable_partition_3way_buffered(
-        first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), b_first, b_last);
-}
+        FwdIt res1(std::get<0>(iters));
+        FwdIt res2(std::move(b_first, std::get<1>(iters), res1));
+        i::reverse_move(std::get<2>(iters).base(), b_last, res2);
+        return std::make_pair(res1, res2);
+    }
+
+    template <typename FwdIt, typename UnaryPredicate, typename B, typename P>
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, B b_first, B b_last, P p) const
+        -> std::pair<FwdIt, FwdIt>
+    {
+        // precondition std::distance(first, last) <= std::distance(b_first, b_last)
+        return (*this)(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), b_first,
+                       b_last);
+    }
+} stable_partition_3way_buffered{};
 
 } // namespace i
 
@@ -332,399 +341,438 @@ auto shrink_range_partion(FwdIt first, FwdIt last, UnaryPredicate pred)
 
 namespace i
 {
-// tests if the first range is a stable partition of the second
-template <typename FwdIt1, typename FwdIt2, typename UnaryPredicate>
-// requires FwdIt1 ForwardIterator
-// requires FwdIt2 ForwardIterator
-// requires UnaryPredicate  , return bool argument value_type(InIt1)
-ASTL_NODISCARD auto is_stable_partitioning(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
-                                           UnaryPredicate pred) -> bool
-{
-    auto p(astl::pass_fn(pred));
-    FwdIt1 m1(std::find_if(first1, last1, p));
-    return std::find_if_not(m1, last1, p) == last1
-        && internal_spartition::mismatch_partitioned(first2, last2, first1, m1, m1, last1, p)
-        == std::tuple<FwdIt2, FwdIt1, FwdIt1>(last2, m1, last1);
-}
 
-// tests if the first range is a stable partition of the second
-template <typename FwdIt1, typename FwdIt2, typename UnaryPredicate, typename P>
-ASTL_NODISCARD auto is_stable_partitioning(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
-                                           UnaryPredicate pred, P p) -> bool
-{
-    return i::is_stable_partitioning(first1, last1, first2, last2,
-                                     astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
-
-template <typename FwdIt, typename UnaryPredicate>
-// requires FwdIt ForwardIterator
-// requires UnaryPredicate, returns bool, argument value_type(FwdIt),
-auto stable_partition(FwdIt first, FwdIt last, UnaryPredicate pred) -> FwdIt
-{
-#if defined(__GNUC__) || defined(_LIBCPP_VERSION)
-    return std::stable_partition(first, last, astl::pass_fn(pred));
-#else  // #if defined(__GNUC__) || defined(_LIBCPP_VERSION)
-    if constexpr (is_bidirectional_it_v<FwdIt>) { // Bidirectional Iterator
-        return std::stable_partition(first, last, astl::pass_fn(pred));
+inline constexpr struct {
+    // tests if the first range is a stable partition of the second
+    template <typename FwdIt1, typename FwdIt2, typename UnaryPredicate>
+    // requires FwdIt1 ForwardIterator
+    // requires FwdIt2 ForwardIterator
+    // requires UnaryPredicate  , return bool argument value_type(InIt1)
+    ASTL_NODISCARD auto operator()(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
+                                   UnaryPredicate pred) const -> bool
+    {
+        auto p(astl::pass_fn(pred));
+        FwdIt1 m1(std::find_if(first1, last1, p));
+        return std::find_if_not(m1, last1, p) == last1
+            && internal_spartition::mismatch_partitioned(first2, last2, first1, m1, m1, last1, p)
+            == std::tuple<FwdIt2, FwdIt1, FwdIt1>(last2, m1, last1);
     }
-    else { // Forward Iterator
-        if (first == last) return last;
 
+    // tests if the first range is a stable partition of the second
+    template <typename FwdIt1, typename FwdIt2, typename UnaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
+                                   UnaryPredicate pred, P p) const -> bool
+    {
+        return (*this)(first1, last1, first2, last2,
+                       astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} is_stable_partitioning{};
+
+inline constexpr struct {
+    template <typename FwdIt, typename UnaryPredicate>
+    // requires FwdIt ForwardIterator
+    // requires UnaryPredicate, returns bool, argument value_type(FwdIt),
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred) const -> FwdIt
+    {
+#if defined(__GNUC__) || defined(_LIBCPP_VERSION)
+        return std::stable_partition(first, last, astl::pass_fn(pred));
+#else  // #if defined(__GNUC__) || defined(_LIBCPP_VERSION)
+        if constexpr (is_bidirectional_it_v<FwdIt>) { // Bidirectional Iterator
+            return std::stable_partition(first, last, astl::pass_fn(pred));
+        }
+        else { // Forward Iterator
+            if (first == last) return last;
+
+            auto pr(astl::pass_fn(pred));
+            first = std::find_if_not(first, last, pr);
+
+            using T = iter_value_type<FwdIt>;
+            inline_temporary_buffer<T> buffer(astl::distance(first, last), *first);
+            return i::stable_partition_n_adaptive(first, buffer.requested_size(), pr,
+                                                  buffer.begin(), buffer.size());
+        }
+#endif //#if defined(__GNUC__) || defined(_LIBCPP_VERSION) #else
+    }
+
+    template <typename FwdIt, typename UnaryPredicate, typename P>
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, P p) const -> FwdIt
+    {
+        return (*this)(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} stable_partition{};
+
+inline constexpr struct {
+    template <typename FwdIt, typename B, typename UnaryPredicate, typename N>
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer, B buffer_end,
+                    N buffer_size) const -> std::pair<FwdIt, FwdIt>
+    {
+        auto p(astl::pass_fn(pred));
+        auto iters(internal_spartition::shrink_range_partion(first, last, p));
+        if (std::get<2>(iters)) return std::make_pair(std::get<0>(iters), std::get<1>(iters));
+
+        auto len(astl::distance(std::get<0>(iters), std::get<1>(iters)));
+        using CommonT = typename std::common_type<decltype(len), N>::type;
+        return internal_spartition::stable_partition_3way_non_empty(
+            std::get<0>(iters), std::get<1>(iters), pred, CommonT(len), buffer, buffer_end,
+            CommonT(buffer_size));
+    }
+
+    template <typename FwdIt, typename B, typename UnaryPredicate, typename N, typename P>
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer, B buffer_end,
+                    N buffer_size, P p) const -> std::pair<FwdIt, FwdIt>
+    {
+        return (*this)(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), buffer,
+                       buffer_end, buffer_size);
+    }
+} stable_partition_3way_adaptive{};
+
+inline constexpr struct {
+    template <typename FwdIt, typename UnaryPredicate>
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred) const -> std::pair<FwdIt, FwdIt>
+    {
+        auto p(astl::pass_fn(pred));
+        auto iters(internal_spartition::shrink_range_partion(first, last, p));
+        if (std::get<2>(iters)) return std::make_pair(std::get<0>(iters), std::get<1>(iters));
+
+        auto len(astl::distance(std::get<0>(iters), std::get<1>(iters)));
+        using T = iter_value_type<FwdIt>;
+        temporary_buffer<T> buffer(len, *iters.first);
+        using CommonT = typename std::common_type<decltype(len), decltype(buffer.size())>::type;
+        return internal_spartition::stable_partition_3way_non_empty(
+            std::get<0>(iters), std::get<1>(iters), p, CommonT(len), buffer.begin(), buffer.end(),
+            CommonT(buffer.size()));
+    }
+
+    template <typename FwdIt, typename UnaryPredicate, typename P>
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, P p) const
+        -> std::pair<FwdIt, FwdIt>
+    {
+        return (*this)(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} stable_partition_3way{};
+
+inline constexpr struct {
+    template <typename FwdIt, typename UnaryPredicate, typename B, typename N>
+    // requires FwdIt ForwardIterator
+    // requires UnaryPredicate, returns bool, argument value_type(FwdIt)
+    // requires B ForwardIterator
+    // requires N integral type
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer, N buffer_size) const
+        -> FwdIt
+    {
         auto pr(astl::pass_fn(pred));
         first = std::find_if_not(first, last, pr);
+        last = internal_spartition::find_last_if(first, last, pr);
+        return i::stable_partition_n_adaptive(first, astl::distance(first, last), pr, buffer,
+                                              buffer_size);
+    }
+
+    template <typename FwdIt, typename UnaryPredicate, typename B, typename N, typename P>
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer, N buffer_size,
+                    P p) const -> FwdIt
+    {
+        return (*this)(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), buffer,
+                       buffer_size);
+    }
+} stable_partition_adaptive{};
+
+inline constexpr struct {
+    // same as stable_partition, guarantees no allocations
+    // complexity  O(N log N) swaps.
+    template <typename FwdIt, typename UnaryPredicate>
+    // requires FwdIt ForwardIterator
+    // requires UnaryPredicate, argument value_type(FwdIt)
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred) const -> FwdIt
+    {
+        auto p(astl::pass_fn(pred));
+        first = std::find_if_not(first, last, p);
+        last = internal_spartition::find_last_if(first, last, p);
+        return internal_spartition::inplace_stable_partition_n(first, astl::distance(first, last),
+                                                               p)
+            .first;
+    }
+
+    template <typename FwdIt, typename UnaryPredicate, typename P>
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred, P p) const -> FwdIt
+    {
+        return (*this)(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} stable_partition_inplace{};
+
+inline constexpr struct {
+    template <typename FwdIt, typename N, typename UnaryPredicate>
+    // requires FwdIt ForwardIterator
+    // requires N integral type
+    // requires UnaryPredicate, returns bool, argument value_type(FwdIt)
+    auto operator()(FwdIt first, N n, UnaryPredicate pred) const -> FwdIt
+    {
+        if (n == N(0)) return first;
+
+        auto pr(astl::pass_fn(pred));
+        std::pair<FwdIt, N> i(i::find_if_not_n(first, n, pr));
 
         using T = iter_value_type<FwdIt>;
-        inline_temporary_buffer<T> buffer(astl::distance(first, last), *first);
-        return i::stable_partition_n_adaptive(first, buffer.requested_size(), pr, buffer.begin(),
-                                              buffer.size());
+        inline_temporary_buffer<T> buffer(i.second, *first);
+        return i::stable_partition_n_adaptive(i.first, i.second, pr, buffer.begin(), buffer.size());
     }
-#endif //#if defined(__GNUC__) || defined(_LIBCPP_VERSION) #else
-}
 
-template <typename FwdIt, typename UnaryPredicate, typename P>
-auto stable_partition(FwdIt first, FwdIt last, UnaryPredicate pred, P p) -> FwdIt
-{
-    return i::stable_partition(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
+    template <typename FwdIt, typename N, typename UnaryPredicate, typename P>
+    auto operator()(FwdIt first, N n, UnaryPredicate pred, P p) const -> FwdIt
+    {
+        return (*this)(first, n, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} stable_partition_n{};
 
-template <typename FwdIt, typename B, typename UnaryPredicate, typename N>
-auto stable_partition_3way_adaptive(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer,
-                                    B buffer_end, N buffer_size) -> std::pair<FwdIt, FwdIt>
-{
-    auto p(astl::pass_fn(pred));
-    auto iters(internal_spartition::shrink_range_partion(first, last, p));
-    if (std::get<2>(iters)) return std::make_pair(std::get<0>(iters), std::get<1>(iters));
+inline constexpr struct {
+    template <typename FwdIt, typename UnaryPredicate>
+    // requires FwdIt ForwardIterator
+    // requires UnaryPredicate, return int, argument value_type(FwdIt)
+    auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred) const -> void
+    {
+        if constexpr (is_random_access_it_v<FwdIt>) // Random Access Iterator
+            i::stable_sort(first, last, std::less{}, astl::pass_fn(pred));
+        else if constexpr (is_bidirectional_it_v<FwdIt>) // Bidirectional Iterator
+            i::merge_sort(first, last, std::less{}, astl::pass_fn(pred));
+        else // Forward Iterator
+            i::binary_insertion_sort(first, last, std::less{}, astl::pass_fn(pred));
+    }
 
-    auto len(astl::distance(std::get<0>(iters), std::get<1>(iters)));
-    using CommonT = typename std::common_type<decltype(len), N>::type;
-    return internal_spartition::stable_partition_3way_non_empty(
-        std::get<0>(iters), std::get<1>(iters), pred, CommonT(len), buffer, buffer_end,
-        CommonT(buffer_size));
-}
-
-template <typename FwdIt, typename B, typename UnaryPredicate, typename N, typename P>
-auto stable_partition_3way_adaptive(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer,
-                                    B buffer_end, N buffer_size, P p) -> std::pair<FwdIt, FwdIt>
-{
-    return i::stable_partition_3way_adaptive(first, last,
-                                             astl::combine(astl::pass_fn(pred), astl::pass_fn(p)),
-                                             buffer, buffer_end, buffer_size);
-}
-
-template <typename FwdIt, typename UnaryPredicate>
-auto stable_partition_3way(FwdIt first, FwdIt last, UnaryPredicate pred) -> std::pair<FwdIt, FwdIt>
-{
-    auto p(astl::pass_fn(pred));
-    auto iters(internal_spartition::shrink_range_partion(first, last, p));
-    if (std::get<2>(iters)) return std::make_pair(std::get<0>(iters), std::get<1>(iters));
-
-    auto len(astl::distance(std::get<0>(iters), std::get<1>(iters)));
-    using T = iter_value_type<FwdIt>;
-    temporary_buffer<T> buffer(len, *iters.first);
-    using CommonT = typename std::common_type<decltype(len), decltype(buffer.size())>::type;
-    return internal_spartition::stable_partition_3way_non_empty(
-        std::get<0>(iters), std::get<1>(iters), p, CommonT(len), buffer.begin(), buffer.end(),
-        CommonT(buffer.size()));
-}
-
-template <typename FwdIt, typename UnaryPredicate, typename P>
-auto stable_partition_3way(FwdIt first, FwdIt last, UnaryPredicate pred, P p)
-    -> std::pair<FwdIt, FwdIt>
-{
-    return i::stable_partition_3way(first, last,
-                                    astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
-
-template <typename FwdIt, typename UnaryPredicate, typename B, typename N>
-// requires FwdIt ForwardIterator
-// requires UnaryPredicate, returns bool, argument value_type(FwdIt)
-// requires B ForwardIterator
-// requires N integral type
-auto stable_partition_adaptive(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer,
-                               N buffer_size) -> FwdIt
-{
-    auto pr(astl::pass_fn(pred));
-    first = std::find_if_not(first, last, pr);
-    last = internal_spartition::find_last_if(first, last, pr);
-    return i::stable_partition_n_adaptive(first, astl::distance(first, last), pr, buffer,
-                                          buffer_size);
-}
-
-template <typename FwdIt, typename UnaryPredicate, typename B, typename N, typename P>
-auto stable_partition_adaptive(FwdIt first, FwdIt last, UnaryPredicate pred, B buffer,
-                               N buffer_size, P p) -> FwdIt
-{
-    return i::stable_partition_adaptive(
-        first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)), buffer, buffer_size);
-}
-
-// same as stable_partition, guarantees no allocations
-// complexity  O(N log N) swaps.
-template <typename FwdIt, typename UnaryPredicate>
-// requires FwdIt ForwardIterator
-// requires UnaryPredicate, argument value_type(FwdIt)
-auto stable_partition_inplace(FwdIt first, FwdIt last, UnaryPredicate pred) -> FwdIt
-{
-    auto p(astl::pass_fn(pred));
-    first = std::find_if_not(first, last, p);
-    last = internal_spartition::find_last_if(first, last, p);
-    return internal_spartition::inplace_stable_partition_n(first, astl::distance(first, last), p)
-        .first;
-}
-
-template <typename FwdIt, typename UnaryPredicate, typename P>
-auto stable_partition_inplace(FwdIt first, FwdIt last, UnaryPredicate pred, P p) -> FwdIt
-{
-    return i::stable_partition_inplace(first, last,
-                                       astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
-
-template <typename FwdIt, typename N, typename UnaryPredicate>
-// requires FwdIt ForwardIterator
-// requires N integral type
-// requires UnaryPredicate, returns bool, argument value_type(FwdIt)
-auto stable_partition_n(FwdIt first, N n, UnaryPredicate pred) -> FwdIt
-{
-    if (n == N(0)) return first;
-
-    auto pr(astl::pass_fn(pred));
-    std::pair<FwdIt, N> i(i::find_if_not_n(first, n, pr));
-
-    using T = iter_value_type<FwdIt>;
-    inline_temporary_buffer<T> buffer(i.second, *first);
-    return i::stable_partition_n_adaptive(i.first, i.second, pr, buffer.begin(), buffer.size());
-}
-
-template <typename FwdIt, typename N, typename UnaryPredicate, typename P>
-auto stable_partition_n(FwdIt first, N n, UnaryPredicate pred, P p) -> FwdIt
-{
-    return i::stable_partition_n(first, n, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
-
-template <typename FwdIt, typename UnaryPredicate>
-// requires FwdIt ForwardIterator
-// requires UnaryPredicate, return int, argument value_type(FwdIt)
-auto stable_partition_n_way(FwdIt first, FwdIt last, UnaryPredicate pred) -> void
-{
-    if constexpr (is_random_access_it_v<FwdIt>) // Random Access Iterator
-        i::stable_sort(first, last, std::less{}, astl::pass_fn(pred));
-    else if constexpr (is_bidirectional_it_v<FwdIt>) // Bidirectional Iterator
-        i::merge_sort(first, last, std::less{}, astl::pass_fn(pred));
-    else // Forward Iterator
-        i::binary_insertion_sort(first, last, std::less{}, astl::pass_fn(pred));
-}
-
-template <typename FwdIt, typename UnaryPredicate, typename P>
-auto stable_partition_n_way(FwdIt first, FwdIt last, UnaryPredicate pred, P p) -> void
-{
-    i::stable_partition_n_way(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
+    template <typename FwdIt, typename UnaryPredicate, typename P>
+    auto stable_partition_n_way(FwdIt first, FwdIt last, UnaryPredicate pred, P p) -> void
+    {
+        (*this)(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} stable_partition_n_way{};
 
 } // namespace i
 
 namespace r
 {
-// tests if the first range is a partition of the second
-template <typename R1, typename R2, typename UnaryPredicate>
-// requires FwdIt1 ForwardIterator
-// requires FwdIt2 ForwardIterator
-// requires UnaryPredicate  , return bool argument value_type(FwdIt1)
-ASTL_NODISCARD auto is_stable_partitioning(R1 &&r1, R2 &&r2, UnaryPredicate pred) -> bool
-{
-    return i::is_stable_partitioning(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
-                                     astl::pass_fn(pred));
-}
 
-// tests if the first range is a partition of the second
-template <typename R1, typename R2, typename UnaryPredicate, typename P>
-ASTL_NODISCARD auto is_stable_partitioning(R1 &&r1, R2 &&r2, UnaryPredicate pred, P p) -> bool
-{
-    return i::is_stable_partitioning(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
-                                     astl::pass_fn(pred), astl::pass_fn(p));
-}
+inline constexpr struct {
+    // tests if the first range is a partition of the second
+    template <typename R1, typename R2, typename UnaryPredicate>
+    // requires FwdIt1 ForwardIterator
+    // requires FwdIt2 ForwardIterator
+    // requires UnaryPredicate  , return bool argument value_type(FwdIt1)
+    ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, UnaryPredicate pred) const -> bool
+    {
+        return i::is_stable_partitioning(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
+                                         astl::pass_fn(pred));
+    }
 
-template <typename R, typename UnaryPredicate>
-// requires R ForwardIterator range
-// requires UnaryPredicate, returns bool, argument value_type(R)
-auto stable_partition(R &&r, UnaryPredicate pred) -> iter_of_range<R>
-{
-    return i::stable_partition(adl::begin(r), adl::end(r), astl::pass_fn(pred));
-}
+    // tests if the first range is a partition of the second
+    template <typename R1, typename R2, typename UnaryPredicate, typename P>
+    ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, UnaryPredicate pred, P p) const -> bool
+    {
+        return i::is_stable_partitioning(adl::begin(r1), adl::end(r1), adl::begin(r2), adl::end(r2),
+                                         astl::pass_fn(pred), astl::pass_fn(p));
+    }
+} is_stable_partitioning{};
 
-template <typename R, typename UnaryPredicate, typename P>
-auto stable_partition(R &&r, UnaryPredicate pred, P p) -> iter_of_range<R>
-{
-    return i::stable_partition(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename UnaryPredicate>
+    // requires R ForwardIterator range
+    // requires UnaryPredicate, returns bool, argument value_type(R)
+    auto operator()(R &&r, UnaryPredicate pred) const -> iter_of_range<R>
+    {
+        return i::stable_partition(adl::begin(r), adl::end(r), astl::pass_fn(pred));
+    }
 
-template <typename R, typename UnaryPredicate>
-// requires R ForwardIterator range
-// requires UnaryPredicate, returns bool, argument value_type(R)
-auto stable_partition_3way(R &&r, UnaryPredicate pred)
-    -> std::pair<iter_of_range<R>, iter_of_range<R>>
-{
-    return i::stable_partition_3way(adl::begin(r), adl::end(r), astl::pass_fn(pred));
-}
+    template <typename R, typename UnaryPredicate, typename P>
+    auto operator()(R &&r, UnaryPredicate pred, P p) const -> iter_of_range<R>
+    {
+        return i::stable_partition(adl::begin(r), adl::end(r), astl::pass_fn(pred),
+                                   astl::pass_fn(p));
+    }
+} stable_partition{};
 
-template <typename R, typename UnaryPredicate, typename P>
-auto stable_partition_3way(R &&r, UnaryPredicate pred, P p)
-    -> std::pair<iter_of_range<R>, iter_of_range<R>>
-{
-    return i::stable_partition_3way(adl::begin(r), adl::end(r), astl::pass_fn(pred),
-                                    astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename UnaryPredicate>
+    // requires R ForwardIterator range
+    // requires UnaryPredicate, returns bool, argument value_type(R)
+    auto operator()(R &&r, UnaryPredicate pred) const
+        -> std::pair<iter_of_range<R>, iter_of_range<R>>
+    {
+        return i::stable_partition_3way(adl::begin(r), adl::end(r), astl::pass_fn(pred));
+    }
 
-template <typename R, typename UnaryPredicate, typename B, typename N>
-// requires R ForwardIterator range
-// requires UnaryPredicate, returns bool, argument value_type(R)
-// requires B ForwardIterator
-// requires N integral type
-auto stable_partition_3way_adaptive(R &&r, UnaryPredicate pred, B buffer, B buffer_end,
-                                    N buffer_size) -> std::pair<iter_of_range<R>, iter_of_range<R>>
-{
-    return i::stable_partition_3way_adaptive(adl::begin(r), adl::end(r), astl::pass_fn(pred),
-                                             buffer, buffer_end, buffer_size);
-}
-
-template <typename R, typename UnaryPredicate, typename B, typename N, typename P>
-auto stable_partition_3way_adaptive(R &&r, UnaryPredicate pred, B buffer, B buffer_end,
-                                    N buffer_size, P p)
-    -> std::pair<iter_of_range<R>, iter_of_range<R>>
-{
-    return i::stable_partition_3way_adaptive(adl::begin(r), adl::end(r), astl::pass_fn(pred),
-                                             buffer, buffer_end, buffer_size, astl::pass_fn(p));
-}
-
-template <typename R, typename UnaryPredicate, typename B>
-// requires R ForwardIterator range
-// requires UnaryPredicate Unary Function, returns in argument value_type(R)
-// requires B BidirectionalIterator
-auto stable_partition_3way_buffered(R &&r, UnaryPredicate pred, B b_first, B b_last)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    // precondition std::distance(first, last) <= std::distance(b_first, b_last)
-    return i::stable_partition_3way_buffered(adl::begin(r), adl::end(r), astl::pass_fn(pred),
-                                             b_first, b_last);
-}
-
-template <typename R, typename UnaryPredicate, typename B, typename P>
-auto stable_partition_3way_buffered(R &&r, UnaryPredicate pred, B b_first, B b_last, P p)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    // precondition r.size() <= std::distance(b_first, b_last)
-    return i::stable_partition_3way_buffered(adl::begin(r), adl::end(r), astl::pass_fn(pred),
-                                             b_first, b_last, astl::pass_fn(p));
-}
-
-template <typename R, typename UnaryPredicate, typename B, typename N>
-// requires R ForwardIterator range
-// requires UnaryPredicate, returns bool, argument value_type(R)
-// requires B ForwardIterator
-// requires N integral type
-auto stable_partition_adaptive(R &&r, UnaryPredicate pred, B buffer, N buffer_size)
-    -> iter_of_range<R>
-{
-    return i::stable_partition_adaptive(adl::begin(r), adl::end(r), astl::pass_fn(pred), buffer,
-                                        buffer_size);
-}
-
-template <typename R, typename UnaryPredicate, typename B, typename N, typename P>
-auto stable_partition_adaptive(R &&r, UnaryPredicate pred, B buffer, N buffer_size, P p)
-    -> iter_of_range<R>
-{
-    return i::stable_partition_adaptive(adl::begin(r), adl::end(r), astl::pass_fn(pred), buffer,
-                                        buffer_size, astl::pass_fn(p));
-}
-
-template <typename R, typename UnaryPredicate, typename B>
-// requires R ForwardIterator range
-// requires UnaryPredicate, returns bool, argument value_type(R)
-// requires B ForwardIterator
-auto stable_partition_buffered(R &&r, UnaryPredicate pred, B buffer) -> iter_of_range<R>
-{
-    return i::stable_partition_buffered(adl::begin(r), adl::end(r), astl::pass_fn(pred), buffer);
-}
-
-template <typename R, typename UnaryPredicate, typename B, typename P>
-auto stable_partition_buffered(R &&r, UnaryPredicate pred, B buffer, P p) -> iter_of_range<R>
-{
-    // precondition: r.size() < buffer.size()
-    return i::stable_partition_buffered(adl::begin(r), adl::end(r), astl::pass_fn(pred), buffer,
+    template <typename R, typename UnaryPredicate, typename P>
+    auto operator()(R &&r, UnaryPredicate pred, P p) const
+        -> std::pair<iter_of_range<R>, iter_of_range<R>>
+    {
+        return i::stable_partition_3way(adl::begin(r), adl::end(r), astl::pass_fn(pred),
                                         astl::pass_fn(p));
-}
+    }
+} stable_partition_3way{};
 
-// same as stable_partition, guarantee that wont allocate
-// complexity  O(N log N) swaps.
-template <typename R, typename UnaryPredicate>
-// requires R ForwardIterator range
-// requires UnaryPredicate, argument value_type(R)
-auto stable_partition_inplace(R &&r, UnaryPredicate pred) -> iter_of_range<R>
-{
-    // precondition: r.size() < buffer.size()
-    return internal_spartition::inplace_stable_partition_n(adl::begin(r), astl::size_or_distance(r),
-                                                           astl::pass_fn(pred))
-        .first;
-}
+inline constexpr struct {
+    template <typename R, typename UnaryPredicate, typename B, typename N>
+    // requires R ForwardIterator range
+    // requires UnaryPredicate, returns bool, argument value_type(R)
+    // requires B ForwardIterator
+    // requires N integral type
+    auto operator()(R &&r, UnaryPredicate pred, B buffer, B buffer_end, N buffer_size) const
+        -> std::pair<iter_of_range<R>, iter_of_range<R>>
+    {
+        return i::stable_partition_3way_adaptive(adl::begin(r), adl::end(r), astl::pass_fn(pred),
+                                                 buffer, buffer_end, buffer_size);
+    }
 
-// same as stable_partition, guarantee no allocations
-// complexity  O(N log N) swaps.
-template <typename R, typename UnaryPredicate, typename P>
-// requires R ForwardIterator range
-// requires UnaryPredicate, argument value_type(R)
-auto stable_partition_inplace(R &&r, UnaryPredicate pred, P p) -> iter_of_range<R>
-{
-    return r::stable_partition_inplace(r, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
-}
+    template <typename R, typename UnaryPredicate, typename B, typename N, typename P>
+    auto operator()(R &&r, UnaryPredicate pred, B buffer, B buffer_end, N buffer_size, P p) const
+        -> std::pair<iter_of_range<R>, iter_of_range<R>>
+    {
+        return i::stable_partition_3way_adaptive(adl::begin(r), adl::end(r), astl::pass_fn(pred),
+                                                 buffer, buffer_end, buffer_size, astl::pass_fn(p));
+    }
+} stable_partition_3way_adaptive{};
 
-template <typename R, typename N, typename UnaryPredicate>
-// requires R ForwardIterator range
-// requires N integral type
-// requires UnaryPredicate, returns bool, argument value_type(R)
-auto stable_partition_n(R &&r, N n, UnaryPredicate pred) -> iter_of_range<R>
-{
-    return i::stable_partition_n(adl::begin(r), n, astl::pass_fn(pred));
-}
+inline constexpr struct {
+    template <typename R, typename UnaryPredicate, typename B>
+    // requires R ForwardIterator range
+    // requires UnaryPredicate Unary Function, returns in argument value_type(R)
+    // requires B BidirectionalIterator
+    auto operator()(R &&r, UnaryPredicate pred, B b_first, B b_last) const
+        -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
+    {
+        // precondition std::distance(first, last) <= std::distance(b_first, b_last)
+        return i::stable_partition_3way_buffered(adl::begin(r), adl::end(r), astl::pass_fn(pred),
+                                                 b_first, b_last);
+    }
 
-template <typename R, typename N, typename UnaryPredicate, typename P>
-auto stable_partition_n(R &&r, N n, UnaryPredicate pred, P p) -> iter_of_range<R>
-{
-    return i::stable_partition_n(adl::begin(r), n, astl::pass_fn(pred), astl::pass_fn(p));
-}
+    template <typename R, typename UnaryPredicate, typename B, typename P>
+    auto operator()(R &&r, UnaryPredicate pred, B b_first, B b_last, P p) const
+        -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
+    {
+        // precondition r.size() <= std::distance(b_first, b_last)
+        return i::stable_partition_3way_buffered(adl::begin(r), adl::end(r), astl::pass_fn(pred),
+                                                 b_first, b_last, astl::pass_fn(p));
+    }
+} stable_partition_3way_buffered{};
 
-template <typename R, typename N, typename UnaryPredicate, typename B>
-// requires R ForwardIterator range
-// requires N integral type
-// requires UnaryPredicate, returns bool, argument value_type(R)
-// requires B ForwardIterator
-auto stable_partition_n_buffered(R &&r, N n, UnaryPredicate pred, B buffer)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    // precondition: n <= buffer.size()
-    return i::stable_partition_n_buffered(adl::begin(r), n, astl::pass_fn(pred), buffer);
-}
+inline constexpr struct {
+    template <typename R, typename UnaryPredicate, typename B, typename N>
+    // requires R ForwardIterator range
+    // requires UnaryPredicate, returns bool, argument value_type(R)
+    // requires B ForwardIterator
+    // requires N integral type
+    auto operator()(R &&r, UnaryPredicate pred, B buffer, N buffer_size) const -> iter_of_range<R>
+    {
+        return i::stable_partition_adaptive(adl::begin(r), adl::end(r), astl::pass_fn(pred), buffer,
+                                            buffer_size);
+    }
 
-template <typename R, typename N, typename UnaryPredicate, typename B, typename P>
-auto stable_partition_n_buffered(R &&r, N n, UnaryPredicate pred, B buffer, P p)
-    -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
-{
-    // precondition: n <= buffer.size()
-    return i::stable_partition_n_buffered(adl::begin(r), n, astl::pass_fn(pred), buffer,
-                                          astl::pass_fn(p));
-}
+    template <typename R, typename UnaryPredicate, typename B, typename N, typename P>
+    auto operator()(R &&r, UnaryPredicate pred, B buffer, N buffer_size, P p) const
+        -> iter_of_range<R>
+    {
+        return i::stable_partition_adaptive(adl::begin(r), adl::end(r), astl::pass_fn(pred), buffer,
+                                            buffer_size, astl::pass_fn(p));
+    }
+} stable_partition_adaptive{};
 
-template <typename R, typename UnaryPredicate>
-// requires R ForwardIterator range
-// requires UnaryPredicate, returns bool, argument value_type(R)
-auto stable_partition_n_way(R &&r, UnaryPredicate pred) -> void
-{
-    i::stable_partition_n_way(adl::begin(r), adl::end(r), astl::pass_fn(pred));
-}
+inline constexpr struct {
+    template <typename R, typename UnaryPredicate, typename B>
+    // requires R ForwardIterator range
+    // requires UnaryPredicate, returns bool, argument value_type(R)
+    // requires B ForwardIterator
+    auto operator()(R &&r, UnaryPredicate pred, B buffer) const -> iter_of_range<R>
+    {
+        return i::stable_partition_buffered(adl::begin(r), adl::end(r), astl::pass_fn(pred),
+                                            buffer);
+    }
 
-template <typename R, typename UnaryPredicate, typename P>
-auto stable_partition_n_way(R &&r, UnaryPredicate pred, P p) -> void
-{
-    i::stable_partition_n_way(adl::begin(r), adl::end(r), astl::pass_fn(pred), astl::pass_fn(p));
-}
+    template <typename R, typename UnaryPredicate, typename B, typename P>
+    auto operator()(R &&r, UnaryPredicate pred, B buffer, P p) const -> iter_of_range<R>
+    {
+        // precondition: r.size() < buffer.size()
+        return i::stable_partition_buffered(adl::begin(r), adl::end(r), astl::pass_fn(pred), buffer,
+                                            astl::pass_fn(p));
+    }
+} stable_partition_buffered{};
+
+inline constexpr struct {
+    // same as stable_partition, guarantee that wont allocate
+    // complexity  O(N log N) swaps.
+    template <typename R, typename UnaryPredicate>
+    // requires R ForwardIterator range
+    // requires UnaryPredicate, argument value_type(R)
+    auto operator()(R &&r, UnaryPredicate pred) const -> iter_of_range<R>
+    {
+        // precondition: r.size() < buffer.size()
+        return internal_spartition::inplace_stable_partition_n(
+                   adl::begin(r), astl::size_or_distance(r), astl::pass_fn(pred))
+            .first;
+    }
+
+    // same as stable_partition, guarantee no allocations
+    // complexity  O(N log N) swaps.
+    template <typename R, typename UnaryPredicate, typename P>
+    // requires R ForwardIterator range
+    // requires UnaryPredicate, argument value_type(R)
+    auto operator()(R &&r, UnaryPredicate pred, P p) const -> iter_of_range<R>
+    {
+        return (*this)(r, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
+    }
+} stable_partition_inplace{};
+
+inline constexpr struct {
+    template <typename R, typename N, typename UnaryPredicate>
+    // requires R ForwardIterator range
+    // requires N integral type
+    // requires UnaryPredicate, returns bool, argument value_type(R)
+    auto operator()(R &&r, N n, UnaryPredicate pred) const -> iter_of_range<R>
+    {
+        return i::stable_partition_n(adl::begin(r), n, astl::pass_fn(pred));
+    }
+
+    template <typename R, typename N, typename UnaryPredicate, typename P>
+    auto operator()(R &&r, N n, UnaryPredicate pred, P p) const -> iter_of_range<R>
+    {
+        return i::stable_partition_n(adl::begin(r), n, astl::pass_fn(pred), astl::pass_fn(p));
+    }
+} stable_partition_n{};
+
+inline constexpr struct {
+    template <typename R, typename N, typename UnaryPredicate, typename B>
+    // requires R ForwardIterator range
+    // requires N integral type
+    // requires UnaryPredicate, returns bool, argument value_type(R)
+    // requires B ForwardIterator
+    auto operator()(R &&r, N n, UnaryPredicate pred, B buffer) const
+        -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
+    {
+        // precondition: n <= buffer.size()
+        return i::stable_partition_n_buffered(adl::begin(r), n, astl::pass_fn(pred), buffer);
+    }
+
+    template <typename R, typename N, typename UnaryPredicate, typename B, typename P>
+    auto operator()(R &&r, N n, UnaryPredicate pred, B buffer, P p) const
+        -> std::pair<astl::iter_of_range<R>, astl::iter_of_range<R>>
+    {
+        // precondition: n <= buffer.size()
+        return i::stable_partition_n_buffered(adl::begin(r), n, astl::pass_fn(pred), buffer,
+                                              astl::pass_fn(p));
+    }
+} stable_partition_n_buffered{};
+
+inline constexpr struct {
+    template <typename R, typename UnaryPredicate>
+    // requires R ForwardIterator range
+    // requires UnaryPredicate, returns bool, argument value_type(R)
+    auto operator()(R &&r, UnaryPredicate pred) const -> void
+    {
+        i::stable_partition_n_way(adl::begin(r), adl::end(r), astl::pass_fn(pred));
+    }
+
+    template <typename R, typename UnaryPredicate, typename P>
+    auto operator()(R &&r, UnaryPredicate pred, P p) const -> void
+    {
+        i::stable_partition_n_way(adl::begin(r), adl::end(r), astl::pass_fn(pred),
+                                  astl::pass_fn(p));
+    }
+} stable_partition_n_way{};
 
 } // namespace r
 } // namespace astl
