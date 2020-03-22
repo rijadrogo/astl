@@ -497,7 +497,7 @@ inline constexpr struct {
     auto operator()(BidiIt first, BidiIt last, OutIt dest) const -> OutIt
     {
         // if first and dest are same type we cant use copy because overlapping
-        if (is_random_access_it_v<BidiIt, OutIt> && !std::is_same_v<BidiIt, OutIt>) {
+        if constexpr (is_random_access_it_v<BidiIt, OutIt> && !std::is_same_v<BidiIt, OutIt>) {
             OutIt dest_first(dest - (last - first));
             i::copy(first, last, dest_first);
             return dest_first;

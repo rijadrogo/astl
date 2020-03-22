@@ -8,8 +8,8 @@
 #include <algorithm>
 #include <utility>
 
-#include "find.hpp"
-#include "search.hpp"
+#include "astl/internal/find.hpp"
+#include "astl/internal/search.hpp"
 
 #include "astl/functional.hpp"
 #include "astl/iterator.hpp"
@@ -70,7 +70,7 @@ inline constexpr struct {
     // requires BinaryPredicate, returns bool, two arguments value_type(FwdIt)
     auto operator()(FwdIt first, FwdIt last, BinaryPredicate pred) const -> FwdIt
     {
-        first = i::adjacent_find(first, last, astl::pass_fn(pred));
+        first = std::adjacent_find(first, last, astl::pass_fn(pred));
         if (first == last) return first;
 
         FwdIt trail(std::next(first));

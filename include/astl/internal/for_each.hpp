@@ -10,6 +10,7 @@
 
 #include "astl/functional.hpp"
 #include "astl/iterator.hpp"
+#include "astl/map_iterator.hpp"
 #include "astl/range_access.hpp"
 
 namespace astl

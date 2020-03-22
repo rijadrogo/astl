@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <utility>
 
+#include "astl/internal/lower_bound.hpp"
+
 #include "astl/functional.hpp"
 #include "astl/iterator.hpp"
 #include "astl/range_access.hpp"

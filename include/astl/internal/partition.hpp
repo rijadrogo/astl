@@ -9,10 +9,11 @@
 #include <memory>
 #include <utility>
 
-#include "find.hpp"
-#include "lower_bound.hpp"
-#include "rotate.hpp"
-#include "sort.hpp"
+#include "astl/internal/copy.hpp"
+#include "astl/internal/find.hpp"
+#include "astl/internal/lower_bound.hpp"
+#include "astl/internal/rotate.hpp"
+#include "astl/internal/sort.hpp"
 
 #include "astl/functional.hpp"
 #include "astl/iterator.hpp"

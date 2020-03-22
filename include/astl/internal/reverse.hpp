@@ -8,9 +8,10 @@
 #include <algorithm>
 #include <utility>
 
-#include "move.hpp"
-#include "rotate.hpp"
-#include "swap.hpp"
+#include "astl/internal/for_each.hpp"
+#include "astl/internal/move.hpp"
+#include "astl/internal/rotate.hpp"
+#include "astl/internal/swap.hpp"
 
 #include "astl/iterator.hpp"
 #include "astl/range_access.hpp"

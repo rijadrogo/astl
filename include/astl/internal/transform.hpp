@@ -11,6 +11,7 @@
 
 #include "astl/functional.hpp"
 #include "astl/iterator.hpp"
+#include "astl/map_iterator.hpp"
 #include "astl/range_access.hpp"
 
 namespace astl
@@ -350,20 +351,21 @@ auto transform_if(InIt first, InIt const last, OutIt dest, UnaryOp op, UnaryPred
 
 template <typename InIt, typename OutIt, typename UnaryOp, typename UnaryPredicate, typename Pop,
           typename Pup>
-auto transform_if(InIt first, InIt last, OutIt dest, UnaryOp op, UnaryPredicate pred, Pop p1, Pup p2)
-    -> OutIt
+auto transform_if(InIt first, InIt last, OutIt dest, UnaryOp op, UnaryPredicate pred, Pop p1,
+                  Pup p2) -> OutIt
 {
     return i::transform_if(first, last, dest, astl::combine(astl::pass_fn(op), astl::pass_fn(p1)),
                            astl::combine(astl::pass_fn(pred), astl::pass_fn(p2)));
 }
 
-template <typename InIt1, typename InIt2, typename OutIt, typename BinaryOp, typename BinaryPredicate>
+template <typename InIt1, typename InIt2, typename OutIt, typename BinaryOp,
+          typename BinaryPredicate>
 // requires InIt InputIterator
 // requires OutIt OutputIterator
 // requires UnaryOp, returns value_type(OutIt), two arguments value_type(InIt)
 // requires UnaryPredicate, returns bool, two arguments value_type(InIt)
-auto transform_if(InIt1 first1, InIt1 last1, InIt2 first2, OutIt dest, BinaryOp op, BinaryPredicate pred)
-    -> OutIt
+auto transform_if(InIt1 first1, InIt1 last1, InIt2 first2, OutIt dest, BinaryOp op,
+                  BinaryPredicate pred) -> OutIt
 {
     while (first1 != last1) {
         if (pred(*first1, *first2)) {
@@ -375,8 +377,8 @@ auto transform_if(InIt1 first1, InIt1 last1, InIt2 first2, OutIt dest, BinaryOp 
     return dest;
 }
 
-template <typename FwdIt1, typename FwdIt2, typename OutIt, typename BinaryOp, typename BinaryPredicate,
-          typename Pbo, typename Pbu>
+template <typename FwdIt1, typename FwdIt2, typename OutIt, typename BinaryOp,
+          typename BinaryPredicate, typename Pbo, typename Pbu>
 auto transform_if(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, OutIt dest, BinaryOp op,
                   BinaryPredicate pred, Pbo p1, Pbu p2) -> OutIt
 {
@@ -586,8 +588,8 @@ auto transform_while(InIt first, InIt const last, OutIt dest, UnaryOp op, UnaryP
 
 template <typename InIt, typename OutIt, typename UnaryOp, typename UnaryPredicate, typename Pop,
           typename Pup>
-auto transform_while(InIt first, InIt last, OutIt dest, UnaryOp op, UnaryPredicate pred, Pop p1, Pup p2)
-    -> std::pair<OutIt, InIt>
+auto transform_while(InIt first, InIt last, OutIt dest, UnaryOp op, UnaryPredicate pred, Pop p1,
+                     Pup p2) -> std::pair<OutIt, InIt>
 {
     return i::transform_while(first, last, dest,
                               astl::combine(astl::pass_fn(op), astl::pass_fn(p1)),
@@ -615,7 +617,8 @@ auto transform_while_n(InIt first, N n, OutIt dest, UnaryOp op, UnaryPredicate p
                                 astl::combine(astl::pass_fn(pred), astl::pass_fn(p2)));
 }
 
-template <typename InIt1, typename InIt2, typename OutIt, typename BinaryOp, typename BinaryPredicate>
+template <typename InIt1, typename InIt2, typename OutIt, typename BinaryOp,
+          typename BinaryPredicate>
 auto transform_while(InIt1 first1, InIt1 last1, InIt2 first2, OutIt dest, BinaryOp op,
                      BinaryPredicate pred) -> OutIt
 {
@@ -627,8 +630,8 @@ auto transform_while(InIt1 first1, InIt1 last1, InIt2 first2, OutIt dest, Binary
     return dest;
 }
 
-template <typename InIt1, typename InIt2, typename OutIt, typename BinaryOp, typename BinaryPredicate,
-          typename Pbo, typename Pbu>
+template <typename InIt1, typename InIt2, typename OutIt, typename BinaryOp,
+          typename BinaryPredicate, typename Pbo, typename Pbu>
 auto transform_while(InIt1 first1, InIt1 last1, InIt2 first2, OutIt dest, BinaryOp op,
                      BinaryPredicate pred, Pbo p1, Pbu p2) -> OutIt
 {
@@ -647,8 +650,8 @@ auto transform_until(InIt first, InIt last, OutIt dest, UnaryOp op, UnaryPredica
 
 template <typename InIt, typename OutIt, typename UnaryOp, typename UnaryPredicate, typename Pop,
           typename Pup>
-auto transform_until(InIt first, InIt const last, OutIt dest, UnaryOp op, UnaryPredicate pred, Pop p1,
-                     Pup p2) -> std::pair<OutIt, InIt>
+auto transform_until(InIt first, InIt const last, OutIt dest, UnaryOp op, UnaryPredicate pred,
+                     Pop p1, Pup p2) -> std::pair<OutIt, InIt>
 {
     return i::transform_while(first, last, dest, astl::pass_fn(op), astl::pass_fn(p1),
                               astl::not_fn(astl::pass_fn(pred)), astl::pass_fn(p2));
@@ -671,7 +674,8 @@ auto transform_until_n(InIt first, N n, OutIt dest, UnaryOp op, UnaryPredicate p
                                 astl::not_fn(astl::pass_fn(pred)), astl::pass_fn(p2));
 }
 
-template <typename InIt1, typename InIt2, typename OutIt, typename BinaryOp, typename BinaryPredicate>
+template <typename InIt1, typename InIt2, typename OutIt, typename BinaryOp,
+          typename BinaryPredicate>
 auto transform_until(InIt1 first1, InIt1 last1, InIt2 first2, OutIt dest, BinaryOp op,
                      BinaryPredicate pred) -> OutIt
 {
@@ -679,8 +683,8 @@ auto transform_until(InIt1 first1, InIt1 last1, InIt2 first2, OutIt dest, Binary
                               astl::not_fn(astl::pass_fn(pred)));
 }
 
-template <typename InIt1, typename InIt2, typename OutIt, typename BinaryOp, typename BinaryPredicate,
-          typename Pbo, typename Pbu>
+template <typename InIt1, typename InIt2, typename OutIt, typename BinaryOp,
+          typename BinaryPredicate, typename Pbo, typename Pbu>
 auto transform_until(InIt1 first1, InIt1 last1, InIt2 first2, OutIt dest, BinaryOp op,
                      BinaryPredicate pred, Pbo p1, Pbu p2) -> OutIt
 {
@@ -992,8 +996,8 @@ auto transform_until(R &&r, OutIt dest, UnaryOp op, UnaryPredicate pred)
 
 template <typename R, typename FwdIt, typename OutIt, typename BinaryOp, typename BinaryPredicate,
           typename Pbo, typename Pbu>
-auto transform_until(R &&r, FwdIt first, OutIt dest, BinaryOp op, BinaryPredicate pred, Pbo p1, Pbu p2)
-    -> OutIt
+auto transform_until(R &&r, FwdIt first, OutIt dest, BinaryOp op, BinaryPredicate pred, Pbo p1,
+                     Pbu p2) -> OutIt
 {
     return i::transform_until(adl::begin(r), adl::end(r), first, dest, astl::pass_fn(op),
                               astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2));
@@ -1041,8 +1045,8 @@ auto transform_while(R &&r, OutIt dest, UnaryOp op, UnaryPredicate pred)
 
 template <typename R, typename FwdIt, typename OutIt, typename BinaryOp, typename BinaryPredicate,
           typename Pbo, typename Pbu>
-auto transform_while(R &&r, FwdIt first, OutIt dest, BinaryOp op, BinaryPredicate pred, Pbo p1, Pbu p2)
-    -> OutIt
+auto transform_while(R &&r, FwdIt first, OutIt dest, BinaryOp op, BinaryPredicate pred, Pbo p1,
+                     Pbu p2) -> OutIt
 {
     return i::transform_while(adl::begin(r), adl::end(r), first, dest, astl::pass_fn(op),
                               astl::pass_fn(pred), astl::pass_fn(p1), astl::pass_fn(p2));

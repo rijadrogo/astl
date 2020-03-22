@@ -9,7 +9,7 @@
 #include <initializer_list>
 #include <iterator>
 
-#include "any_of.hpp"
+#include "astl/internal/any_of.hpp"
 
 #include "astl/functional.hpp"
 

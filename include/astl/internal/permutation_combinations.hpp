@@ -224,7 +224,7 @@ auto combine_discontinuous3(BidIt first1, BidIt last1, iter_diff_type<BidIt> d1,
                             iter_diff_type<BidIt> d3, Function &f) -> bool
 {
     using F = call_combine_discontinuous<Function &, BidIt>;
-    F fbc(first2, last2, d2, first3, last3, d3, f);// BC
+    F fbc(first2, last2, d2, first3, last3, d3, f); // BC
     return internal_pc::combine_discontinuous3_1(first1, last1, d1, first2, last2, d2, first3,
                                                  last3, d3, fbc);
 }
@@ -364,12 +364,10 @@ template <typename Int>
 auto check_non_negative(Int d1, Int d2) ->
     typename std::enable_if<!std::is_unsigned<Int>::value, bool>::type
 {
-    if (d1 < Int(0) || d2 < Int(0)) return false;
-
-    return true;
+    return !static_cast<bool>(d1 < Int(0) || d2 < Int(0));
 }
 
-}// namespace internal_pc
+} // namespace internal_pc
 
 namespace i
 {
@@ -463,7 +461,7 @@ ASTL_NODISCARD auto count_each_permutation(BidIt first, BidIt mid, BidIt last)
     return i::count_each_permutation<std::uintmax_t>(std::distance(first, mid),
                                                      std::distance(mid, last));
 }
-}// namespace i
+} // namespace i
 namespace internal_pc
 {
 // Adapt functor to permute over [first+1, last)
@@ -487,7 +485,7 @@ public:
     }
 };
 
-}// namespace internal_pc
+} // namespace internal_pc
 
 namespace i
 {
@@ -521,7 +519,7 @@ ASTL_NODISCARD auto count_each_circular_permutation(UInt d1, UInt d2) -> optiona
             --d1;
         }
     }
-    else {// functionally equivalent but faster algorithm
+    else { // functionally equivalent but faster algorithm
         if (d1 > std::numeric_limits<UInt>::max() - d2) return nullopt;
         UInt n(d1 + d2);
         r = 1;
@@ -547,7 +545,7 @@ ASTL_NODISCARD auto count_each_circular_permutation(BidIt first, BidIt mid, BidI
     return i::count_each_circular_permutation<std::uintmax_t>(std::distance(first, mid),
                                                               std::distance(mid, last));
 }
-}// namespace i
+} // namespace i
 
 namespace internal_pc
 {
@@ -733,7 +731,7 @@ auto reversible_permutation<Function, Size>::operator()(BidIt first, BidIt last)
     return false;
 }
 
-}// namespace internal_pc
+} // namespace internal_pc
 namespace i
 {
 template <typename BidIt, typename Function>
@@ -781,7 +779,7 @@ ASTL_NODISCARD auto count_each_reversible_permutation(BidIt first, BidIt mid, Bi
     return i::count_each_reversible_permutation<std::uintmax_t>(std::distance(first, mid),
                                                                 std::distance(mid, last));
 }
-}// namespace i
+} // namespace i
 
 namespace internal_pc
 {
@@ -809,7 +807,7 @@ public:
     }
 };
 
-}// namespace internal_pc
+} // namespace internal_pc
 
 namespace i
 {
@@ -853,7 +851,7 @@ ASTL_NODISCARD auto count_each_reversible_circular_permutation(BidIt first, BidI
     return i::count_each_reversible_circular_permutation<std::uintmax_t>(std::distance(first, mid),
                                                                          std::distance(mid, last));
 }
-}// namespace i
-}// namespace astl
+} // namespace i
+} // namespace astl
 
-#endif// ASTL_INCLUDE_PERMUTATION_COMBINATIONS_HPP
+#endif // ASTL_INCLUDE_PERMUTATION_COMBINATIONS_HPP

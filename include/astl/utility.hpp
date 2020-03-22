@@ -28,8 +28,7 @@ public:
                                    && std::is_constructible<T, U &&>::value
                                    && std::is_convertible<U &&, T>::value,
                                bool> = true>
-    // NOLINTNEXTLINE(bugprone-forwarding-reference-overload,
-    // google-explicit-constructor)
+    // NOLINTNEXTLINE(bugprone-forwarding-reference-overload, google-explicit-constructor)
     constexpr singleton(U &&t) noexcept(std::is_nothrow_constructible<T, U>::value)
         : base1(static_cast<U &&>(t))
     {}
@@ -54,16 +53,16 @@ public:
         -> singleton & = default;
 
     // get reference to T
-    ASTL_NODISCARD constexpr auto m1() &noexcept -> T & { return ebo_get(*this); }
+    ASTL_NODISCARD constexpr auto m1() & noexcept -> T & { return ebo_get(*this); }
 
     // get const reference to T
-    ASTL_NODISCARD constexpr auto m1() const &noexcept -> T const & { return ebo_get(*this); }
+    ASTL_NODISCARD constexpr auto m1() const & noexcept -> T const & { return ebo_get(*this); }
 
     // get rvalue reference to T
-    ASTL_NODISCARD constexpr auto m1() &&noexcept -> T && { return ebo_get(std::move(*this)); }
+    ASTL_NODISCARD constexpr auto m1() && noexcept -> T && { return ebo_get(std::move(*this)); }
 
     // get const rvalue reference to T
-    ASTL_NODISCARD constexpr auto m1() const &&noexcept -> T const &&
+    ASTL_NODISCARD constexpr auto m1() const && noexcept -> T const &&
     {
         return ebo_get(std::move(*this));
     }
@@ -71,7 +70,7 @@ public:
 
 #if HAS_DEDUCTION_GUIDES
 
-template <typename T> singleton(T) -> singleton<T>;
+template <typename T> singleton(T)->singleton<T>;
 
 #endif //#if HAS_DEDUCTION_GUIDES
 
@@ -233,37 +232,43 @@ public:
     auto operator=(pair &&) noexcept(is_nt_move_ass::value) -> pair & = default;
 
     // get reference to U
-    ASTL_NODISCARD constexpr auto m1() &noexcept -> T & { return ebo_get<tag1>(*this); }
+    ASTL_NODISCARD constexpr auto m1() & noexcept -> T & { return ebo_get<tag1>(*this); }
 
     // get const reference to U
-    ASTL_NODISCARD constexpr auto m1() const &noexcept -> T const & { return ebo_get<tag1>(*this); }
+    ASTL_NODISCARD constexpr auto m1() const & noexcept -> T const &
+    {
+        return ebo_get<tag1>(*this);
+    }
 
     // get rvalue reference to U
-    ASTL_NODISCARD constexpr auto m1() &&noexcept -> T &&
+    ASTL_NODISCARD constexpr auto m1() && noexcept -> T &&
     {
         return ebo_get<tag1>(std::move(*this));
     }
 
     // get const rvalue reference to U
-    ASTL_NODISCARD constexpr auto m1() const &&noexcept -> T const &&
+    ASTL_NODISCARD constexpr auto m1() const && noexcept -> T const &&
     {
         return ebo_get<tag1>(std::move(*this));
     }
 
     // get reference to U
-    ASTL_NODISCARD constexpr auto m2() &noexcept -> U & { return ebo_get<tag2>(*this); }
+    ASTL_NODISCARD constexpr auto m2() & noexcept -> U & { return ebo_get<tag2>(*this); }
 
     // get const reference to U
-    ASTL_NODISCARD constexpr auto m2() const &noexcept -> U const & { return ebo_get<tag2>(*this); }
+    ASTL_NODISCARD constexpr auto m2() const & noexcept -> U const &
+    {
+        return ebo_get<tag2>(*this);
+    }
 
     // get rvalue reference to U
-    ASTL_NODISCARD constexpr auto m2() &&noexcept -> U &&
+    ASTL_NODISCARD constexpr auto m2() && noexcept -> U &&
     {
         return ebo_get<tag2>(std::move(*this));
     }
 
     // get const rvalue reference to U
-    ASTL_NODISCARD constexpr auto m2() const &&noexcept -> U const &&
+    ASTL_NODISCARD constexpr auto m2() const && noexcept -> U const &&
     {
         return ebo_get<tag2>(std::move(*this));
     }
@@ -271,7 +276,7 @@ public:
 
 #if HAS_DEDUCTION_GUIDES
 
-template <typename T, typename U> pair(T, U) -> pair<T, U>;
+template <typename T, typename U> pair(T, U)->pair<T, U>;
 
 #endif //#if HAS_DEDUCTION_GUIDES
 
@@ -479,55 +484,64 @@ public:
     auto operator=(triple &&) noexcept(is_nt_move_ass::value) -> triple & = default;
 
     // get reference to T
-    ASTL_NODISCARD constexpr auto m1() &noexcept -> T & { return ebo_get<tag1>(*this); }
+    ASTL_NODISCARD constexpr auto m1() & noexcept -> T & { return ebo_get<tag1>(*this); }
 
     // get const reference to T
-    ASTL_NODISCARD constexpr auto m1() const &noexcept -> T const & { return ebo_get<tag1>(*this); }
+    ASTL_NODISCARD constexpr auto m1() const & noexcept -> T const &
+    {
+        return ebo_get<tag1>(*this);
+    }
 
     // get rvalue reference to T
-    ASTL_NODISCARD constexpr auto m1() &&noexcept -> T &&
+    ASTL_NODISCARD constexpr auto m1() && noexcept -> T &&
     {
         return ebo_get<tag1>(std::move(*this));
     }
 
     // get const rvalue reference to T
-    ASTL_NODISCARD constexpr auto m1() const &&noexcept -> T const &&
+    ASTL_NODISCARD constexpr auto m1() const && noexcept -> T const &&
     {
         return ebo_get<tag1>(std::move(*this));
     }
 
     // get reference to U
-    ASTL_NODISCARD constexpr auto m2() &noexcept -> U & { return ebo_get<tag2>(*this); }
+    ASTL_NODISCARD constexpr auto m2() & noexcept -> U & { return ebo_get<tag2>(*this); }
 
     // get const reference to U
-    ASTL_NODISCARD constexpr auto m2() const &noexcept -> U const & { return ebo_get<tag2>(*this); }
+    ASTL_NODISCARD constexpr auto m2() const & noexcept -> U const &
+    {
+        return ebo_get<tag2>(*this);
+    }
 
     // get rvalue reference to U
-    ASTL_NODISCARD constexpr auto m2() &&noexcept -> U &&
+    ASTL_NODISCARD constexpr auto m2() && noexcept -> U &&
     {
         return ebo_get<tag2>(std::move(*this));
     }
 
     // get const rvalue reference to U
-    ASTL_NODISCARD constexpr auto m2() const &&noexcept -> U const &&
+    ASTL_NODISCARD constexpr auto m2() const && noexcept -> U const &&
     {
         return ebo_get<tag2>(std::move(*this));
     }
 
     // get reference to V
-    ASTL_NODISCARD constexpr auto m3() &noexcept -> V & { return ebo_get<tag3>(*this); }
+    ASTL_NODISCARD constexpr auto m3() & noexcept -> V & { return ebo_get<tag3>(*this); }
 
     // get const reference to T
-    ASTL_NODISCARD constexpr auto m3() const &noexcept -> V const & { return ebo_get<tag3>(*this); }
+    ASTL_NODISCARD constexpr auto m3() const & noexcept -> V const &
+    {
+        return ebo_get<tag3>(*this);
+    }
 
     // get rvalue reference to V
-    ASTL_NODISCARD constexpr auto m3() &&noexcept -> V &&
+    ASTL_NODISCARD constexpr auto m3() && noexcept -> V &&
     {
         return ebo_get<tag3>(std::move(*this));
     }
 
     // get const rvalue reference to V
-    ASTL_NODISCARD constexpr auto m3() const &&noexcept -> V const &&
+    ASTL_NODISCARD constexpr auto m3() const && noexcept -> V const &&
     {
         return ebo_get<tag3>(std::move(*this));
     }
@@ -535,7 +549,7 @@ public:
 
 #if HAS_DEDUCTION_GUIDES
 
-template <typename T, typename U, typename V> triple(T, U, V) -> triple<T, U, V>;
+template <typename T, typename U, typename V> triple(T, U, V)->triple<T, U, V>;
 
 #endif //#if HAS_DEDUCTION_GUIDES
 
@@ -806,73 +820,85 @@ public:
     auto operator=(quadriple &&) noexcept(is_nt_move_ass::value) -> quadriple & = default;
 
     // get reference to T
-    ASTL_NODISCARD constexpr auto m1() &noexcept -> T & { return ebo_get<tag1>(*this); }
+    ASTL_NODISCARD constexpr auto m1() & noexcept -> T & { return ebo_get<tag1>(*this); }
 
     // get const reference to T
-    ASTL_NODISCARD constexpr auto m1() const &noexcept -> T const & { return ebo_get<tag1>(*this); }
+    ASTL_NODISCARD constexpr auto m1() const & noexcept -> T const &
+    {
+        return ebo_get<tag1>(*this);
+    }
 
     // get rvalue reference to T
-    ASTL_NODISCARD constexpr auto m1() &&noexcept -> T &&
+    ASTL_NODISCARD constexpr auto m1() && noexcept -> T &&
     {
         return ebo_get<tag1>(std::move(*this));
     }
 
     // get const rvalue reference to T
-    ASTL_NODISCARD constexpr auto m1() const &&noexcept -> T const &&
+    ASTL_NODISCARD constexpr auto m1() const && noexcept -> T const &&
     {
         return ebo_get<tag1>(std::move(*this));
     }
 
     // get reference to U
-    ASTL_NODISCARD constexpr auto m2() &noexcept -> U & { return ebo_get<tag2>(*this); }
+    ASTL_NODISCARD constexpr auto m2() & noexcept -> U & { return ebo_get<tag2>(*this); }
 
     // get const reference to U
-    ASTL_NODISCARD constexpr auto m2() const &noexcept -> U const & { return ebo_get<tag2>(*this); }
+    ASTL_NODISCARD constexpr auto m2() const & noexcept -> U const &
+    {
+        return ebo_get<tag2>(*this);
+    }
 
     // get rvalue reference to U
-    ASTL_NODISCARD constexpr auto m2() &&noexcept -> U &&
+    ASTL_NODISCARD constexpr auto m2() && noexcept -> U &&
     {
         return ebo_get<tag2>(std::move(*this));
     }
 
     // get const rvalue reference to U
-    ASTL_NODISCARD constexpr auto m2() const &&noexcept -> U const &&
+    ASTL_NODISCARD constexpr auto m2() const && noexcept -> U const &&
     {
         return ebo_get<tag2>(std::move(*this));
     }
 
     // get reference to V
-    ASTL_NODISCARD constexpr auto m3() &noexcept -> V & { return ebo_get<tag3>(*this); }
+    ASTL_NODISCARD constexpr auto m3() & noexcept -> V & { return ebo_get<tag3>(*this); }
 
     // get const reference to V
-    ASTL_NODISCARD constexpr auto m3() const &noexcept -> V const & { return ebo_get<tag3>(*this); }
+    ASTL_NODISCARD constexpr auto m3() const & noexcept -> V const &
+    {
+        return ebo_get<tag3>(*this);
+    }
 
     // get rvalue reference to V
-    ASTL_NODISCARD constexpr auto m3() &&noexcept -> V &&
+    ASTL_NODISCARD constexpr auto m3() && noexcept -> V &&
     {
         return ebo_get<tag3>(std::move(*this));
     }
 
     // get const rvalue reference to V
-    ASTL_NODISCARD constexpr auto m3() const &&noexcept -> V const &&
+    ASTL_NODISCARD constexpr auto m3() const && noexcept -> V const &&
     {
         return ebo_get<tag3>(std::move(*this));
     }
 
     // get reference to Z
-    ASTL_NODISCARD constexpr auto m4() &noexcept -> Z & { return ebo_get<tag4>(*this); }
+    ASTL_NODISCARD constexpr auto m4() & noexcept -> Z & { return ebo_get<tag4>(*this); }
 
     // get const reference to Z
-    ASTL_NODISCARD constexpr auto m4() const &noexcept -> Z const & { return ebo_get<tag4>(*this); }
+    ASTL_NODISCARD constexpr auto m4() const & noexcept -> Z const &
+    {
+        return ebo_get<tag4>(*this);
+    }
 
     // get rvalue reference to Z
-    ASTL_NODISCARD constexpr auto m4() &&noexcept -> Z &&
+    ASTL_NODISCARD constexpr auto m4() && noexcept -> Z &&
     {
         return ebo_get<tag4>(std::move(*this));
     }
 
     // get const rvalue reference to Z
-    ASTL_NODISCARD constexpr auto m4() const &&noexcept -> Z const &&
+    ASTL_NODISCARD constexpr auto m4() const && noexcept -> Z const &&
     {
         return ebo_get<tag4>(std::move(*this));
     }
@@ -881,7 +907,7 @@ public:
 #if HAS_DEDUCTION_GUIDES
 
 template <typename T, typename U, typename V, typename Z>
-quadriple(T, U, V, Z) -> quadriple<T, U, V, Z>;
+quadriple(T, U, V, Z)->quadriple<T, U, V, Z>;
 
 #endif //#if HAS_DEDUCTION_GUIDES
 

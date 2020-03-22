@@ -9,7 +9,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "adjacent_find.hpp"
+#include "astl/internal/adjacent_find.hpp"
 
 #include "astl/functional.hpp"
 #include "astl/iterator.hpp"

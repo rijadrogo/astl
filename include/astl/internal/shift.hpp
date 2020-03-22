@@ -7,6 +7,8 @@
 
 #include <algorithm>
 
+#include "astl/internal/all_of.hpp"
+
 #include "astl/iterator.hpp"
 
 namespace astl

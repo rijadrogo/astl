@@ -17,6 +17,8 @@
 #include "astl/optional.hpp"
 #include "astl/temporary_buffer.hpp"
 
+#include "astl/map_iterator.hpp"
+
 // TODO test if memory allocation algorithms are faster then O(n^2) algorithms
 namespace astl
 {
