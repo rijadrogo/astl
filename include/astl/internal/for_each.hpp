@@ -66,6 +66,7 @@ auto for_each_adjacent1(I first, NaryFunction f, iter_diff_type<I> d) -> NaryFun
     }
 
     switch (d) {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     case 3: internal::for_each1(f, first, seq); ++first;
     case 2: internal::for_each1(f, first, seq); ++first;
     case 1: internal::for_each1(f, first, seq);
@@ -100,6 +101,7 @@ auto for_each_adjacent_if1(I first, NaryPred pred, NaryFunction f, iter_diff_typ
     }
 
     switch (d) {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     case 3:
         if (internal::for_each1(pred, first, seq)) internal::for_each1(f, first, seq);
 

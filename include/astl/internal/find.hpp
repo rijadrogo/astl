@@ -46,6 +46,7 @@ auto find_if_adjacent1(FwdIt first, FwdIt last, NaryPred pred, iter_diff_type<Fw
     }
 
     switch (d) {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     case 3:
         if (internal::for_each1(pred, first, seq)) return first;
 
@@ -70,27 +71,27 @@ template <typename InIt, typename T> auto within_limits(InIt, const T &e) -> boo
     using Elem = std::remove_pointer_t<InIt>;
 
     constexpr bool signed_elem(std::is_signed<Elem>::value);
-    constexpr bool signed_T(std::is_signed<T>::value);
+    constexpr bool signed_t(std::is_signed<T>::value);
     constexpr bool any(static_cast<T>(-1) == -1);
 
     if constexpr (std::is_same<T, bool>::value) { return true; }
-    if constexpr (signed_elem && signed_T) {
+    if constexpr (signed_elem && signed_t) {
         // signed Elem, signed T
         return SCHAR_MIN <= e && e <= SCHAR_MAX;
     }
-    if constexpr (signed_elem && !signed_T && any) {
+    if constexpr (signed_elem && !signed_t && any) {
         // signed Elem, unsigned T, -1 == static_cast<T>(-1)
         return e <= SCHAR_MAX || static_cast<T>(SCHAR_MIN) <= e;
     }
-    if constexpr (signed_elem && !signed_T && !any) {
+    if constexpr (signed_elem && !signed_t && !any) {
         // signed Elem, unsigned T, -1 != static_cast<T>(-1)
         return e <= SCHAR_MAX;
     }
-    if constexpr (!signed_elem && signed_T) {
+    if constexpr (!signed_elem && signed_t) {
         // unsigned Elem, signed T
         return 0 <= e && e <= UCHAR_MAX;
     }
-    if constexpr (!signed_elem && !signed_T) {
+    if constexpr (!signed_elem && !signed_t) {
         // unsigned Elem, unsigned T
         return e <= UCHAR_MAX;
     }
@@ -282,7 +283,7 @@ inline constexpr struct {
     template <typename BidiIt, typename T>
     // requires BidiIt BidirectionalIterator
     // requires T, equality comparable with value_type(BidiIt)
-    ASTL_NODISCARD auto operator()(BidiIt first, BidiIt last, T const &e)const -> BidiIt
+    ASTL_NODISCARD auto operator()(BidiIt first, BidiIt last, T const &e) const -> BidiIt
     {
         BidiIt ret(last);
         while (true) {
@@ -581,6 +582,7 @@ inline constexpr struct {
             --trip_count;
         }
         switch (integral_t<N>(n)) {
+        // NOLINTNEXTLINE(bugprone-branch-clone)
         case 3:
             if (pred(*first)) return std::make_pair(first, --n);
 
@@ -829,6 +831,7 @@ inline constexpr struct {
             }
 
             switch (integral_t<N>(n)) {
+            // NOLINTNEXTLINE(bugprone-branch-clone)
             case 3:
                 if (*first == e) return std::make_pair(first, --n);
 
@@ -877,6 +880,7 @@ inline constexpr struct {
         }
 
         switch (integral_t<N>(n)) {
+        // NOLINTNEXTLINE(bugprone-branch-clone)
         case 3:
             if (invoke(p, *first) == e) return std::make_pair(first, --n);
 

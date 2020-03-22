@@ -46,6 +46,7 @@ auto all_of_adjacent1(I first, NaryPred pred, iter_diff_type<I> d) -> bool
     }
 
     switch (d) {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     case 3:
         if (!internal::for_each1(pred, first, seq)) return false;
 
