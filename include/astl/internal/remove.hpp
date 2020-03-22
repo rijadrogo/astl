@@ -68,7 +68,7 @@ inline constexpr struct {
     template <typename FwdIt, typename BinaryPredicate>
     // requires FwdIt ForwardIterator
     // requires BinaryPredicate, returns bool, two arguments value_type(FwdIt)
-    auto operator()(FwdIt first, FwdIt last, BinaryPredicate pred) -> FwdIt
+    auto operator()(FwdIt first, FwdIt last, BinaryPredicate pred) const -> FwdIt
     {
         first = i::adjacent_find(first, last, astl::pass_fn(pred));
         if (first == last) return first;

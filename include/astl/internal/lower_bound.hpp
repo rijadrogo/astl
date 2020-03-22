@@ -87,7 +87,7 @@ inline constexpr struct {
     }
 
     template <typename FwdIt, typename N, typename T, typename Comparator, typename P>
-    ASTL_NODISCARD auto lower_bound_n(FwdIt first, N n, T const &value, Comparator comp, P p)
+    ASTL_NODISCARD auto operator()(FwdIt first, N n, T const &value, Comparator comp, P p) const
         -> std::pair<FwdIt, N>
     {
         // precondition: is_sorted_n(first, n, comp, p)

@@ -312,7 +312,7 @@ constexpr auto size_or_distance1(R &&r, internal_adl::rank<1>) -> decltype(adl::
 } // namespace internal_func_iter
 
 inline constexpr struct {
-    template <typename R> ASTL_NODISCARD constexpr auto operator()(R &&c)
+    template <typename R> ASTL_NODISCARD constexpr auto operator()(R &&c) const
     {
         return internal_func_iter::size_or_distance1(c, internal_adl::rank<1>{});
     }

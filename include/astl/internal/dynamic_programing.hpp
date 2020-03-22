@@ -148,7 +148,8 @@ auto longest_common_subarray1(FwdIt1 first1, N1 m, FwdIt2 first2, N2 n, BinaryPr
     inline_temporary_buffer<iter_diff_type<FwdIt1>> dp_buffer(2 * n, 0);
     if (dp_buffer.size() != dp_buffer.requested_size()) return nullopt;
 
-    return astl::make_optional(internal_dp::lcs_unchecked(first1, m, first2, n, pred, dp_buffer));
+    return astl::make_optional(
+        internal_dp::lcs_unchecked(first1, m, first2, n, pred, dp_buffer.begin()));
 }
 
 template <typename FwdIt1, typename N1, typename FwdIt2, typename N2, typename BinaryPredicate>
@@ -732,7 +733,7 @@ inline constexpr struct {
     // requires R2 ForwardIterator range
     // requires BinaryPredicate, returns bool, arguments ValueType(R1) and ValueType(R2)
     ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, BinaryPredicate pred = BinaryPredicate{}) const
-        -> range_diff_type<R1>
+        -> optional<range_diff_type<R1>>
     {
         return internal_dp::longest_common_subarray1(adl::begin(r1), astl::size_or_distance(r1),
                                                      adl::begin(r2), astl::size_or_distance(r2),
@@ -741,7 +742,7 @@ inline constexpr struct {
 
     template <typename R1, typename R2, typename BinaryPredicate, typename P1, typename P2>
     ASTL_NODISCARD auto operator()(R1 &&r1, R2 &&r2, BinaryPredicate pred, P1 p1, P2 p2) const
-        -> range_diff_type<R1>
+        -> optional<range_diff_type<R1>>
     {
         return internal_dp::longest_common_subarray1(
             adl::begin(r1), astl::size_or_distance(r1), adl::begin(r2), astl::size_or_distance(r2),

@@ -203,7 +203,7 @@ inline constexpr struct {
 inline constexpr struct {
     template <typename FwdIt1, typename FwdIt2, typename Eqv = std::equal_to<>>
     ASTL_NODISCARD auto operator()(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
-                                   Eqv e = Eqv{}) -> bool
+                                   Eqv e = Eqv{}) const -> bool
     {
         if (first1 == last1 || first2 == last2) return false;
 

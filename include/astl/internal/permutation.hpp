@@ -33,7 +33,7 @@ inline constexpr struct {
     template <typename RandIt1, typename RandIt2>
     // requires RandIt1 RandomAccessIterator
     // requires RandIt2 RandomAccessIterator
-    auto apply_permutation(RandIt1 item_first, RandIt1 item_last, RandIt2 ind_first)
+    auto operator()(RandIt1 item_first, RandIt1 item_last, RandIt2 ind_first) const
         -> iter_diff_type<RandIt1>
     {
         using Diff = iter_diff_type<RandIt1>;
@@ -59,8 +59,8 @@ inline constexpr struct {
     template <typename RandIt1, typename RandIt2>
     // requires RandIt1 RandomAccessIterator
     // requires RandIt2 RandomAccessIterator
-    auto apply_permutation(RandIt1 item_first, RandIt1 item_last, RandIt2 ind_first,
-                           RandIt2 ind_last) -> iter_diff_type<RandIt1>
+    auto operator()(RandIt1 item_first, RandIt1 item_last, RandIt2 ind_first,
+                    RandIt2 ind_last) const -> iter_diff_type<RandIt1>
     {
         // precondition: item_last - item_first == ind_last - ind_first
         assert(item_last - item_first == ind_last - ind_first); //-V2528

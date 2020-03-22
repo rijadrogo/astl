@@ -117,7 +117,7 @@ inline constexpr struct {
 
 inline constexpr struct {
     template <typename FwdIt, typename N, typename Comparator = std::less<>>
-    ASTL_NODISCARD auto minmax_element_n(FwdIt first, N n, Comparator comp = Comparator{}) const
+    ASTL_NODISCARD auto operator()(FwdIt first, N n, Comparator comp = Comparator{}) const
         -> std::pair<FwdIt, FwdIt>
     {
         using std::swap;
@@ -237,7 +237,7 @@ inline constexpr struct {
     }
 
     template <typename FwdIt, typename N, typename Comparator, typename P>
-    ASTL_NODISCARD auto select_1_2_n(FwdIt first, N n, Comparator comp, P p) const
+    ASTL_NODISCARD auto operator()(FwdIt first, N n, Comparator comp, P p) const
         -> std::pair<FwdIt, FwdIt>
     {
         return (*this)(first, n, astl::combine(astl::pass_fn(comp), astl::pass_fn(p)));

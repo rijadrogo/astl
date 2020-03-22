@@ -476,7 +476,7 @@ inline constexpr struct {
     // requires InIt InputIterator
     // requires OutIt OutputIterator
     // requires Comparator, StrictWeakOrdering on value_type(InIt)
-    auto copy_until_sorted_n(InIt first, N n, OutIt dest, Comparator comp = Comparator{})
+    auto operator()(InIt first, N n, OutIt dest, Comparator comp = Comparator{}) const
         -> std::pair<OutIt, InIt>
     {
         return i::copy_until_adjacent_check_n(first, n, dest, astl::pass_fn(comp));

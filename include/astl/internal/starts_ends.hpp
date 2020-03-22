@@ -19,8 +19,8 @@ namespace i
 {
 inline constexpr struct {
     template <typename FwdIt1, typename FwdIt2, typename BinaryPredicate = std::equal_to<>>
-    ASTL_NODISCARD auto starts_with(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
-                                    BinaryPredicate pred) const -> bool
+    ASTL_NODISCARD auto operator()(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
+                                   BinaryPredicate pred) const -> bool
     {
         // TODO test if equal is faster than mismatch
         if constexpr (is_random_access_it_v<FwdIt1, FwdIt2>) {
@@ -49,8 +49,8 @@ inline constexpr struct {
 
 inline constexpr struct {
     template <typename FwdIt1, typename FwdIt2, typename BinaryPredicate = std::equal_to<>>
-    ASTL_NODISCARD auto ends_with(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
-                                  BinaryPredicate pred) -> bool
+    ASTL_NODISCARD auto operator()(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2,
+                                   BinaryPredicate pred) const -> bool
     {
         auto const drop(std::distance(first1, last1) - std::distance(first2, last2));
         if (drop < 0) return false;

@@ -481,7 +481,7 @@ public:
 
     auto operator()(BidIt first, BidIt last) -> bool
     {
-        if (s <= 1) return f(first, last);
+        if (s <= 1) return fn(first, last);
         bound_range<Function, BidIt> f(fn, first, last);
         return internal_pc::permute(astl::next(first), last, s - 1, f);
     }

@@ -239,7 +239,7 @@ inline constexpr struct {
 
             if (lhs < buffer.size()) {
                 auto buffer_end(std::move(first, mid, buffer.begin));
-                i::merge_move(buffer, buffer_end, mid, last, first, c);
+                i::merge_move(buffer.begin(), buffer_end, mid, last, first, c);
             }
             internal_in_merge::merge_without_buffer(first, mid, last, lhs, std::distance(mid, last),
                                                     c);

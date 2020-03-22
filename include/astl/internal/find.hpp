@@ -282,7 +282,7 @@ inline constexpr struct {
     template <typename BidiIt, typename T>
     // requires BidiIt BidirectionalIterator
     // requires T, equality comparable with value_type(BidiIt)
-    ASTL_NODISCARD auto find_backward(BidiIt first, BidiIt last, T const &e) -> BidiIt
+    ASTL_NODISCARD auto operator()(BidiIt first, BidiIt last, T const &e)const -> BidiIt
     {
         BidiIt ret(last);
         while (true) {
@@ -647,7 +647,7 @@ inline constexpr struct {
     template <typename FwdIt, typename UnaryPredicate>
     // requires FwdIt ForwardIterator
     // requires UnaryPredicate, returns bool, argument value_type(FwdIt)
-    ASTL_NODISCARD auto find_if_unique(FwdIt first, FwdIt last, UnaryPredicate pred) -> FwdIt
+    ASTL_NODISCARD auto operator()(FwdIt first, FwdIt last, UnaryPredicate pred) const -> FwdIt
     {
         auto p(astl::pass_fn(pred));
         FwdIt find_first(i::find_if(first, last, p));
@@ -658,7 +658,8 @@ inline constexpr struct {
     }
 
     template <typename FwdIt, typename BinaryPredicate, typename P>
-    ASTL_NODISCARD auto find_if_unique(FwdIt first, FwdIt last, BinaryPredicate pred, P p) -> FwdIt
+    ASTL_NODISCARD auto operator()(FwdIt first, FwdIt last, BinaryPredicate pred, P p) const
+        -> FwdIt
     {
         return (*this)(first, last, astl::combine(astl::pass_fn(pred), astl::pass_fn(p)));
     }
@@ -668,7 +669,8 @@ inline constexpr struct {
     template <typename FwdIt, typename N, typename UnaryPredicate>
     // requires FwdIt ForwardIterator
     // requires UnaryPredicate, returns bool, argument value_type(FwdIt)
-    ASTL_NODISCARD auto operator()(FwdIt first, N n, UnaryPredicate pred) -> std::pair<FwdIt, N>
+    ASTL_NODISCARD auto operator()(FwdIt first, N n, UnaryPredicate pred) const
+        -> std::pair<FwdIt, N>
     {
         auto pr(astl::pass_fn(pred));
         using PairType = std::pair<FwdIt, N>;
@@ -902,13 +904,13 @@ inline constexpr struct {
     template <typename InIt, typename T>
     // requires FwdIt ForwardIterator
     // requires T, inequality comparable with value_type(FwdIt)
-    ASTL_NODISCARD auto find_not(InIt first, InIt last, T const &val) -> InIt
+    ASTL_NODISCARD auto operator()(InIt first, InIt last, T const &val) const -> InIt
     {
         return std::find_if(first, last, astl::bind2nd(std::not_equal_to{}, val));
     }
 
     template <typename FwdIt, typename T, typename P>
-    ASTL_NODISCARD auto find_not(FwdIt first, FwdIt last, T const &val, P p) -> FwdIt
+    ASTL_NODISCARD auto operator()(FwdIt first, FwdIt last, T const &val, P p) const -> FwdIt
     {
         return std::find_if(first, last,
                             [p(astl::pass_fn(p)), &val](auto &&x) { return invoke(p, x) != val; });
@@ -920,13 +922,13 @@ inline constexpr struct {
     // requires FwdIt ForwardIterator
     // requires N integral type
     // requires T, inequality comparable with value_type(FwdIt)
-    ASTL_NODISCARD auto find_not_n(FwdIt first, N n, T const &val) -> std::pair<FwdIt, N>
+    ASTL_NODISCARD auto operator()(FwdIt first, N n, T const &val) const -> std::pair<FwdIt, N>
     {
         return i::find_if_n(first, n, astl::bind2nd(std::not_equal_to{}, val));
     }
 
     template <typename FwdIt, typename N, typename T, typename P>
-    ASTL_NODISCARD auto find_not_n(FwdIt first, N n, T const &val, P p) -> std::pair<FwdIt, N>
+    ASTL_NODISCARD auto operator()(FwdIt first, N n, T const &val, P p) const -> std::pair<FwdIt, N>
     {
         return i::find_if_n(first, n,
                             [&val, p(astl::pass_fn(p))](auto &&x) { return invoke(p, x) != val; });

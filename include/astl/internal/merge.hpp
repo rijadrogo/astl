@@ -44,7 +44,7 @@ inline constexpr struct {
     // requires Comparator StrictWeakOrdering, arguments value_type(FwdIt1) and
     // value_type(FwdIt2)
     auto operator()(FwdIt1 first1, FwdIt1 last1, FwdIt2 first2, FwdIt2 last2, OutIt dest,
-                    Comparator comp = Comparator{}) -> OutIt
+                    Comparator comp = Comparator{}) const -> OutIt
     {
         // precondition is_sorted(first1, last1, comp)
         // precondition is_sorted(first2, last2, comp)
