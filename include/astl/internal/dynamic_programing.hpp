@@ -88,7 +88,7 @@ auto lcs_unchecked(FwdIt1 first1, N1 m, FwdIt2 first2, N2 n, BinaryPredicate pre
 {
     iter_diff_type<FwdIt1> result(0);
     N1 i(1);
-    char row(0);
+    int row(0);
     while (i < m) {
         FwdIt2 it(first2);
         N2 j(1);
