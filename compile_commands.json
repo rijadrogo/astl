@@ -1,7 +1,7 @@
 [
-{
-  "directory": "C:/Users/User/CLionProjects/astl/cmake-build-debug",
-  "command": "C:\\PROGRA~2\\MINGW-~1\\I686-8~1.0-P\\mingw32\\bin\\G__~1.EXE     -std=c++17 -Wall -Wextra -Wno-attributes -Wduplicated-cond         -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wdouble-promotion         -Wno-unknown-pragmas -Wreorder -Wzero-as-null-pointer-constant -fdiagnostics-show-template-tree         -IC:/Users/User/CLionProjects/astl/include -Wsuggest-attribute=pure         -Wsuggest-attribute=const -Wsuggest-attribute=noreturn -Wsuggest-final-types -Wsuggest-final-methods         -Wsuggest-override -ggdb   -std=gnu++17 -o CMakeFiles\\astl.dir\\main.cpp.obj -c C:\\Users\\User\\CLionProjects\\astl\\main.cpp",
-  "file": "C:/Users/User/CLionProjects/astl/main.cpp"
-}
+  {
+    "directory": "/home/riki/CLionProjects/astl/cmake-build-clang-debug",
+    "command": "/bin/clang++     -std=c++2a -Wall -Wextra -Wno-attributes                  -fsanitize=address -fsanitize=undefined -Wnull-dereference -Wdouble-promotion                 -Wno-unknown-pragmas -Wreorder -Wzero-as-null-pointer-constant -fdiagnostics-show-template-tree                 -I//home/riki/CLionProjects/astl/include -g   -std=gnu++2a -o CMakeFiles/astl.dir/main.cpp.o -c /home/riki/CLionProjects/astl/main.cpp",
+    "file": "/home/riki/CLionProjects/astl/main.cpp"
+  }
 ]

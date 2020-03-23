@@ -1,0 +1,7 @@
+[
+{
+  "directory": "C:/Users/User/CLionProjects/astl/build",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\clang-cl.exe  /nologo -TP   /std:c++latest /IC:/Users/User/CLionProjects/astl/include /W4 /EHsc                 /Zc:__cplusplus /permissive- /MDd /Zi /Ob0 /Od /RTC1   -std:c++latest /FoCMakeFiles\\astl.dir\\main.cpp.obj /FdTARGET_COMPILE_PDB -c C:\\Users\\User\\CLionProjects\\astl\\main.cpp",
+  "file": "C:/Users/User/CLionProjects/astl/main.cpp"
+}
+]

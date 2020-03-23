@@ -1125,229 +1125,241 @@ inline constexpr struct {
 
 } is_sorted{};
 
-template <typename R, typename N, typename Comparator = std::less<>>
-// requires R ForwardIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto is_sorted_n(R &&r, N n, Comparator comp = Comparator{}) -> bool
-{
-    return i::is_sorted_n(adl::begin(r), n, astl::pass_fn(comp));
-}
+inline constexpr struct {
+    template <typename R, typename N, typename Comparator = std::less<>>
+    // requires R ForwardIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, N n, Comparator comp = Comparator{}) const -> bool
+    {
+        return i::is_sorted_n(adl::begin(r), n, astl::pass_fn(comp));
+    }
 
-template <typename R, typename N, typename Comparator, typename P>
-auto is_sorted_n(R &&r, N n, Comparator comp, P p) -> bool
-{
-    return i::is_sorted_n(adl::begin(r), n, astl::pass_fn(comp), astl::pass_fn(p));
-}
+    template <typename R, typename N, typename Comparator, typename P>
+    auto operator()(R &&r, N n, Comparator comp, P p) const -> bool
+    {
+        return i::is_sorted_n(adl::begin(r), n, astl::pass_fn(comp), astl::pass_fn(p));
+    }
+} is_sortred_n{};
 
-template <typename R, typename Comparator, typename P>
-// requires R ForwardIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto is_sorted_until(R &&r, Comparator comp, P p) -> bool
-{
-    return i::is_sorted_until(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename Comparator, typename P>
+    // requires R ForwardIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, Comparator comp, P p) const -> bool
+    {
+        return i::is_sorted_until(adl::begin(r), adl::end(r), astl::pass_fn(comp),
+                                  astl::pass_fn(p));
+    }
 
-template <typename R, typename Comparator>
-// requires R ForwardIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto is_sorted_until(R &&r, Comparator comp) -> bool
-{
-    return i::is_sorted_until(adl::begin(r), adl::end(r), astl::pass_fn(comp));
-}
+    template <typename R, typename Comparator = std::less<>>
+    // requires R ForwardIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> bool
+    {
+        return i::is_sorted_until(adl::begin(r), adl::end(r), astl::pass_fn(comp));
+    }
+} is_sorted_until{};
 
-template <typename R>
-// requires R ForwardIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto is_sorted_until(R &&r) -> bool
-{
-    return i::is_sorted_until(adl::begin(r), adl::end(r));
-}
+inline constexpr struct {
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> void
+    {
+        i::merge_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
+    }
 
-template <typename R, typename Comparator, typename P>
-auto merge_sort(R &&r, Comparator comp, P p) -> void
-{
-    i::merge_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+    template <typename R, typename Comparator = std::less<>>
+    // requires R BidirectionalIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> void
+    {
+        i::merge_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
+    }
+} merge_sort{};
 
-template <typename R, typename Comparator = std::less<>>
-// requires R BidirectionalIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto merge_sort(R &&r, Comparator comp = Comparator{}) -> void
-{
-    i::merge_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
-}
+inline constexpr struct {
 
-template <typename R, typename N, typename Comparator, typename B>
-// requires R is ForwardIterator range
-// requires N is integral type
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto merge_sort_n(R &&r, N n, Comparator comp, B buffer, N buffer_size) -> iter_of_range<R>
-{
-    return i::merge_sort_n(adl::begin(r), n, astl::pass_fn(comp), buffer, buffer_size);
-}
+    template <typename R, typename N, typename Comparator, typename B>
+    // requires R is ForwardIterator range
+    // requires N is integral type
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, N n, Comparator comp, B buffer, N buffer_size) const -> iter_of_range<R>
+    {
+        return i::merge_sort_n(adl::begin(r), n, astl::pass_fn(comp), buffer, buffer_size);
+    }
 
-template <typename R, typename N, typename Comparator, typename B, typename P>
-auto merge_sort_n(R &&r, N n, Comparator comp, B buffer, N buffer_size, P p) -> iter_of_range<R>
-{
-    return i::merge_sort_n(adl::begin(r), n, astl::pass_fn(comp), buffer, buffer_size,
-                           astl::pass_fn(p));
-}
+    template <typename R, typename N, typename Comparator, typename B, typename P>
+    auto operator()(R &&r, N n, Comparator comp, B buffer, N buffer_size, P p) const
+        -> iter_of_range<R>
+    {
+        return i::merge_sort_n(adl::begin(r), n, astl::pass_fn(comp), buffer, buffer_size,
+                               astl::pass_fn(p));
+    }
 
-template <typename R, typename N, typename Comparator = std::less<>>
-// requires R is ForwardIterator range
-// requires N is integral type
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto merge_sort_n(R &&r, N n, Comparator comp = Comparator{}) -> iter_of_range<R>
-{
-    return i::merge_sort_n(adl::begin(r), n, astl::pass_fn(comp));
-}
+    template <typename R, typename N, typename Comparator = std::less<>>
+    // requires R is ForwardIterator range
+    // requires N is integral type
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, N n, Comparator comp = Comparator{}) const -> iter_of_range<R>
+    {
+        return i::merge_sort_n(adl::begin(r), n, astl::pass_fn(comp));
+    }
 
-template <typename R, typename N, typename Comparator, typename P>
-auto merge_sort_n(R &&r, N n, Comparator comp, P p) -> iter_of_range<R>
-{
-    return i::merge_sort_n(adl::begin(r), n, astl::pass_fn(comp), astl::pass_fn(p));
-}
+    template <typename R, typename N, typename Comparator, typename P>
+    auto operator()(R &&r, N n, Comparator comp, P p) const -> iter_of_range<R>
+    {
+        return i::merge_sort_n(adl::begin(r), n, astl::pass_fn(comp), astl::pass_fn(p));
+    }
 
-template <typename R, typename RandIt, typename Comparator, typename P>
-auto partial_sort(R &&r, RandIt middle, Comparator comp, P p) -> void
-{
-    i::partial_sort(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+} merge_sort_n{};
 
-template <typename R, typename RandIt, typename Comparator>
-// requires R RandomAccessIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto partial_sort(R &&r, RandIt middle, Comparator comp) -> void
-{
-    i::partial_sort(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp));
-}
+inline constexpr struct {
+    template <typename R, typename RandIt, typename Comparator, typename P>
+    auto operator()(R &&r, RandIt middle, Comparator comp, P p) const -> void
+    {
+        i::partial_sort(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
+    }
 
-template <typename R, typename RandIt> auto partial_sort(R &&r, RandIt middle) -> void
-{
-    i::partial_sort(adl::begin(r), middle, adl::end(r));
-}
+    template <typename R, typename RandIt, typename Comparator = std::less<>>
+    // requires R RandomAccessIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, RandIt middle, Comparator comp = Comparator{}) const -> void
+    {
+        i::partial_sort(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp));
+    }
 
-template <typename InRng, typename OutRng, typename Comparator>
-// requires InRng InputIterator range
-// requires OutRng RandomAccessIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(InRng)
-auto partial_sort_copy(InRng &&i_r, OutRng &&o_r, Comparator comp) -> OutRng
-{
-    return i::partial_sort_copy(adl::begin(i_r), adl::end(i_r), adl::begin(o_r), adl::end(o_r),
-                                astl::pass_fn(comp));
-}
+} partial_sort{};
 
-template <typename InRng, typename OutRng>
-// requires InRng InputIterator range
-// requires OutRng RandomAccessIterator range
-auto partial_sort_copy(InRng &&i_r, OutRng &&o_r) -> OutRng
-{
-    return i::partial_sort_copy(adl::begin(i_r), adl::end(i_r), adl::begin(o_r), adl::end(o_r));
-}
+inline constexpr struct {
 
-template <typename InRng, typename OutRng, typename Comparator, typename P>
-auto partial_sort_copy(InRng &&i_r, OutRng &&o_r, Comparator comp, P p) -> OutRng
-{
-    return i::partial_sort_copy(adl::begin(i_r), adl::end(i_r), adl::begin(o_r), adl::end(o_r),
-                                astl::pass_fn(comp), astl::pass_fn(p));
-}
+    template <typename InRng, typename OutRng, typename Comparator = std::less<>>
+    // requires InRng InputIterator range
+    // requires OutRng RandomAccessIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(InRng)
+    auto operator()(InRng &&i_r, OutRng &&o_r, Comparator comp = Comparator{}) const -> OutRng
+    {
+        return i::partial_sort_copy(adl::begin(i_r), adl::end(i_r), adl::begin(o_r), adl::end(o_r),
+                                    astl::pass_fn(comp));
+    }
 
-template <typename R, typename RandIt, typename Comparator, typename P>
-// requires R RandomAccessIterator range
-// requires RandIt RandomAccessIterator
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto partial_sort_left(R &&r, RandIt middle, Comparator comp, P p) -> void
-{
-    i::partial_sort_left(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+    template <typename InRng, typename OutRng, typename Comparator, typename P>
+    auto operator()(InRng &&i_r, OutRng &&o_r, Comparator comp, P p) const -> OutRng
+    {
+        return i::partial_sort_copy(adl::begin(i_r), adl::end(i_r), adl::begin(o_r), adl::end(o_r),
+                                    astl::pass_fn(comp), astl::pass_fn(p));
+    }
 
-template <typename R, typename RandIt, typename Comparator = std::less<>>
-auto partial_sort_left(R &&r, RandIt middle, Comparator comp = Comparator{}) -> void
-{
-    i::partial_sort_left(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp));
-}
+} partial_sort_copy{};
 
-template <typename R, typename RandIt, typename Comparator, typename P>
-auto partial_sort_move(R &&r, RandIt d_first, RandIt d_last, Comparator comp, P p) -> RandIt
-{
-    return i::partial_sort_move(adl::begin(r), adl::end(r), d_first, d_last, astl::pass_fn(comp),
-                                astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename RandIt, typename Comparator, typename P>
+    // requires R RandomAccessIterator range
+    // requires RandIt RandomAccessIterator
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, RandIt middle, Comparator comp, P p) const -> void
+    {
+        i::partial_sort_left(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp),
+                             astl::pass_fn(p));
+    }
 
-template <typename R, typename RandIt, typename Comparator>
-// requires R InputIterator range
-// requires RandIt RandomAccessIterator
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto partial_sort_move(R &&r, RandIt d_first, RandIt d_last, Comparator comp) -> RandIt
-{
-    return i::partial_sort_move(adl::begin(r), adl::end(r), d_first, d_last, astl::pass_fn(comp));
-}
+    template <typename R, typename RandIt, typename Comparator = std::less<>>
+    auto operator()(R &&r, RandIt middle, Comparator comp = Comparator{}) const -> void
+    {
+        i::partial_sort_left(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp));
+    }
+} partial_sort_left{};
 
-template <typename R, typename RandIt>
-// requires R InputIterator range
-// requires RandIt RandomAccessIterator
-auto partial_sort_move(R &&r, RandIt d_first, RandIt d_last) -> RandIt
-{
-    return i::partial_sort_move(adl::begin(r), adl::end(r), d_first, d_last);
-}
+inline constexpr struct {
+    template <typename R, typename RandIt, typename Comparator, typename P>
+    auto operator()(R &&r, RandIt d_first, RandIt d_last, Comparator comp, P p) const -> RandIt
+    {
+        return i::partial_sort_move(adl::begin(r), adl::end(r), d_first, d_last,
+                                    astl::pass_fn(comp), astl::pass_fn(p));
+    }
 
-template <typename R, typename RandIt, typename Comparator, typename P>
-auto partial_sort_right(R &&r, RandIt middle, Comparator comp, P p) -> void
-{
-    i::partial_sort_right(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp),
-                          astl::pass_fn(p));
-}
+    template <typename R, typename RandIt, typename Comparator>
+    // requires R InputIterator range
+    // requires RandIt RandomAccessIterator
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, RandIt d_first, RandIt d_last, Comparator comp) const -> RandIt
+    {
+        return i::partial_sort_move(adl::begin(r), adl::end(r), d_first, d_last,
+                                    astl::pass_fn(comp));
+    }
 
-template <typename R, typename RandIt, typename Comparator = std::less<>>
-// requires R RandomAccessIterator range
-// requires RandIt RandomAccessIterator
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto partial_sort_right(R &&r, RandIt middle, Comparator comp = Comparator{}) -> void
-{
-    i::partial_sort_right(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp));
-}
+    template <typename R, typename RandIt>
+    // requires R InputIterator range
+    // requires RandIt RandomAccessIterator
+    auto operator()(R &&r, RandIt d_first, RandIt d_last) const -> RandIt
+    {
+        return i::partial_sort_move(adl::begin(r), adl::end(r), d_first, d_last);
+    }
+} partial_sort_move{};
 
-template <typename R, typename Comparator, typename P>
-auto quicksort(R &&r, Comparator comp, P p) -> void
-{
-    i::quicksort(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename RandIt, typename Comparator, typename P>
+    auto operator()(R &&r, RandIt middle, Comparator comp, P p) const -> void
+    {
+        i::partial_sort_right(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp),
+                              astl::pass_fn(p));
+    }
 
-template <typename R, typename Comparator = std::less<>>
-// requires R ForwardIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto quicksort(R &&r, Comparator comp = Comparator{}) -> void
-{
-    i::quicksort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
-}
+    template <typename R, typename RandIt, typename Comparator = std::less<>>
+    // requires R RandomAccessIterator range
+    // requires RandIt RandomAccessIterator
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, RandIt middle, Comparator comp = Comparator{}) const -> void
+    {
+        i::partial_sort_right(adl::begin(r), middle, adl::end(r), astl::pass_fn(comp));
+    }
+} partial_sort_right{};
 
-template <typename R, typename Comparator, typename P>
-auto selection_sort(R &&r, Comparator comp, P p) -> void
-{
-    i::selection_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> void
+    {
+        i::quicksort(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
+    }
 
-template <typename R, typename Comparator = std::less<>>
-// requires R ForwardIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto selection_sort(R &&r, Comparator comp = Comparator{}) -> void
-{
-    i::selection_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
-}
+    template <typename R, typename Comparator = std::less<>>
+    // requires R ForwardIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> void
+    {
+        i::quicksort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
+    }
+} quicksort{};
 
-template <typename R, typename Comparator, typename P>
-auto shell_sort(R &&r, Comparator comp, P p) -> void
-{
-    i::shell_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> void
+    {
+        i::selection_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
+    }
 
-template <typename R, typename Comparator = std::less<>>
-// requires R RandomAccessIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto shell_sort(R &&r, Comparator comp = Comparator{}) -> void
-{
-    i::shell_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
-}
+    template <typename R, typename Comparator = std::less<>>
+    // requires R ForwardIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> void
+    {
+        i::selection_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
+    }
+} selection_sort{};
+
+inline constexpr struct {
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> void
+    {
+        i::shell_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
+    }
+
+    template <typename R, typename Comparator = std::less<>>
+    // requires R RandomAccessIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> void
+    {
+        i::shell_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
+    }
+} shell_sort{};
 
 namespace internal_s
 {
@@ -1375,157 +1387,151 @@ template <typename Cont> auto sort1(Cont &&comp, internal_adl::rank<0>) -> void
 }
 } // namespace internal_s
 
-template <typename R, typename Comparator, typename P>
-auto sort(R &&r, Comparator comp, P p) -> void
-{
-    internal_s::sort1(r, astl::combine(astl::pass_fn(comp), astl::pass_fn(p)),
-                      internal_adl::rank<1>{});
-}
+inline constexpr struct {
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> void
+    {
+        internal_s::sort1(r, astl::combine(astl::pass_fn(comp), astl::pass_fn(p)),
+                          internal_adl::rank<1>{});
+    }
 
-template <typename R, typename Comparator>
-// requires R RandomAccessIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort(R &&r, Comparator comp) -> void
-{
-    internal_s::sort1_c(r, astl::pass_fn(comp), internal_adl::rank<1>{});
-}
+    template <typename R, typename Comparator>
+    // requires R RandomAccessIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, Comparator comp) const -> void
+    {
+        internal_s::sort1_c(r, astl::pass_fn(comp), internal_adl::rank<1>{});
+    }
+} sort{};
 
-template <typename R>
-// requires R RandomAccessIterator range
-auto sort(R &&r) -> void
-{
-    internal_s::sort1(r, internal_adl::rank<1>{});
-}
+inline constexpr struct {
+    template <typename R, typename Comparator = std::less<>>
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> unsigned
+    {
+        return i::sort2(adl::begin(r), astl::pass_fn(comp));
+    }
 
-template <typename R, typename Comparator = std::less<>>
-auto sort2(R &&r, Comparator comp = Comparator{}) -> unsigned
-{
-    return i::sort2(adl::begin(r), astl::pass_fn(comp));
-}
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> unsigned
+    {
+        return i::sort2(adl::begin(r), astl::combine(astl::pass_fn(comp), astl::pass_fn(p)));
+    }
+} sort2{};
 
-template <typename R, typename Comparator, typename P>
-auto sort2(R &&r, Comparator comp, P p) -> unsigned
-{
-    return i::sort2(adl::begin(r), astl::combine(astl::pass_fn(comp), astl::pass_fn(p)));
-}
+inline constexpr struct {
+    template <typename R, typename Comparator = std::less<>>
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> unsigned
+    {
+        return i::sort3(adl::begin(r), astl::pass_fn(comp));
+    }
 
-template <typename R, typename Comparator = std::less<>>
-// requires R ForwardIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort3(R &&r, Comparator comp = Comparator{}) -> unsigned
-{
-    return i::sort3(adl::begin(r), astl::pass_fn(comp));
-}
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> unsigned
+    {
+        return i::sort3(adl::begin(r), astl::combine(astl::pass_fn(comp), astl::pass_fn(p)));
+    }
+} sort3{};
 
-template <typename R, typename Comparator, typename P>
-auto sort3(R &&r, Comparator comp, P p) -> unsigned
-{
-    return i::sort3(adl::begin(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename Comparator = std::less<>>
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> unsigned
+    {
+        return i::sort4(adl::begin(r), astl::pass_fn(comp));
+    }
 
-template <typename R, typename Comparator = std::less<>>
-// requires R ForwardIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort4(R &&r, Comparator comp = Comparator{}) -> unsigned
-{
-    return i::sort4(adl::begin(r), astl::pass_fn(comp));
-}
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> unsigned
+    {
+        return i::sort4(adl::begin(r), astl::combine(astl::pass_fn(comp), astl::pass_fn(p)));
+    }
+} sort4{};
 
-template <typename R, typename Comparator, typename P>
-auto sort4(R &&r, Comparator comp, P p) -> unsigned
-{
-    return i::sort4(adl::begin(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename Comparator = std::less<>>
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> unsigned
+    {
+        return i::sort5(adl::begin(r), astl::pass_fn(comp));
+    }
 
-template <typename R, typename Comparator = std::less<>>
-// requires R ForwardIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort5(R &&r, Comparator comp = Comparator{}) -> unsigned
-{
-    return i::sort5(adl::begin(r), astl::pass_fn(comp));
-}
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> unsigned
+    {
+        return i::sort5(adl::begin(r), astl::combine(astl::pass_fn(comp), astl::pass_fn(p)));
+    }
+} sort5{};
 
-template <typename R, typename Comparator, typename P>
-auto sort5(R &&r, Comparator comp, P p) -> unsigned
-{
-    return i::sort5(adl::begin(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+inline constexpr struct {
+    template <typename R, typename Comparator = std::less<>>
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> unsigned
+    {
+        return i::sort6(adl::begin(r), astl::pass_fn(comp));
+    }
 
-template <typename R, typename Comparator = std::less<>>
-// requires R ForwardIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort6(R &&r, Comparator comp = Comparator{}) -> unsigned
-{
-    return i::sort6(adl::begin(r), astl::pass_fn(comp));
-}
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> unsigned
+    {
+        return i::sort6(adl::begin(r), astl::combine(astl::pass_fn(comp), astl::pass_fn(p)));
+    }
+} sort6{};
 
-template <typename R, typename Comparator, typename P>
-auto sort6(R &&r, Comparator comp, P p) -> unsigned
-{
-    return i::sort6(adl::begin(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+inline constexpr struct {
 
-template <typename R, typename Comparator, typename P>
-auto sort_and_unique(R &&r, Comparator comp, P p) -> iter_of_range<R>
-{
-    return i::sort_and_unique(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> iter_of_range<R>
+    {
+        return i::sort_and_unique(adl::begin(r), adl::end(r), astl::pass_fn(comp),
+                                  astl::pass_fn(p));
+    }
 
-template <typename R, typename Comparator = std::less<>>
-// requires R RandomAccessIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort_and_unique(R &&r, Comparator comp = Comparator{}) -> iter_of_range<R>
-{
-    return i::sort_and_unique(adl::begin(r), adl::end(r), astl::pass_fn(comp));
-}
+    template <typename R, typename Comparator = std::less<>>
+    // requires R RandomAccessIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> iter_of_range<R>
+    {
+        return i::sort_and_unique(adl::begin(r), adl::end(r), astl::pass_fn(comp));
+    }
 
-template <typename R, typename RandIt, typename Comparator, typename P>
-auto sort_subrange(R &&r, RandIt sub_f, RandIt sub_l, Comparator comp, P p)
-    -> std::pair<RandIt, RandIt>
-{
-    return i::sort_subrange(adl::begin(r), adl::end(r), sub_f, sub_l, astl::pass_fn(comp),
-                            astl::pass_fn(p));
-}
+} sort_and_unique{};
 
-template <typename R, typename RandIt, typename Comparator>
-// requires R RandomAccessIterator range
-// requires RandIt RandomAccessIterator
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto sort_subrange(R &&r, RandIt sub_f, RandIt sub_l, Comparator comp) -> std::pair<RandIt, RandIt>
-{
-    // precondition r.begin() <= sub_f <= sub_l <= r.end()
-    return i::sort_subrange(adl::begin(r), adl::end(r), sub_f, sub_l, astl::pass_fn(comp));
-}
+inline constexpr struct {
 
-template <typename R, typename RandIt>
-// R RandomAccessIterator range
-// RandIt RandomAccessIterator
-auto sort_subrange(R &&r, RandIt sub_f, RandIt sub_l) -> std::pair<RandIt, RandIt>
-{
-    // precondition r.begin() <= sub_f <= sub_l <= r.end()
-    return i::sort_subrange(adl::begin(r), adl::end(r), sub_f, sub_l);
-}
+    template <typename R, typename RandIt, typename Comparator, typename P>
+    auto operator()(R &&r, RandIt sub_f, RandIt sub_l, Comparator comp, P p) const
+        -> std::pair<RandIt, RandIt>
+    {
+        return i::sort_subrange(adl::begin(r), adl::end(r), sub_f, sub_l, astl::pass_fn(comp),
+                                astl::pass_fn(p));
+    }
 
-template <typename R, typename Comparator, typename P>
-auto stable_sort(R &&r, Comparator comp, P p) -> void
-{
-    i::stable_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
-}
+    template <typename R, typename RandIt, typename Comparator = std::less<>>
+    // requires R RandomAccessIterator range
+    // requires RandIt RandomAccessIterator
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, RandIt sub_f, RandIt sub_l, Comparator comp = Comparator{}) const
+        -> std::pair<RandIt, RandIt>
+    {
+        // precondition r.begin() <= sub_f <= sub_l <= r.end()
+        return i::sort_subrange(adl::begin(r), adl::end(r), sub_f, sub_l, astl::pass_fn(comp));
+    }
 
-template <typename R, typename Comparator>
-// requires R RandomAccessIterator range
-// requires Comparator is StrictWeakOrdering on the value_type(R)
-auto stable_sort(R &&r, Comparator comp) -> void
-{
-    i::stable_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
-}
+} sort_subrange{};
 
-template <typename R>
-// requires R RandomAccessIterator range
-auto stable_sort(R &&r) -> void
-{
-    i::stable_sort(adl::begin(r), adl::end(r));
-}
+inline constexpr struct {
+    template <typename R, typename Comparator, typename P>
+    auto operator()(R &&r, Comparator comp, P p) const -> void
+    {
+        i::stable_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp), astl::pass_fn(p));
+    }
+
+    template <typename R, typename Comparator = std::less<>>
+    // requires R RandomAccessIterator range
+    // requires Comparator is StrictWeakOrdering on the value_type(R)
+    auto operator()(R &&r, Comparator comp = Comparator{}) const -> void
+    {
+        i::stable_sort(adl::begin(r), adl::end(r), astl::pass_fn(comp));
+    }
+
+} stable_sort{};
 
 } // namespace r
 } // namespace astl

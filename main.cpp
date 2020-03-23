@@ -5,6 +5,9 @@
 #include <cassert>
 #include <cmath>
 
+#include "astl/internal/lower_bound.hpp"
+#include "astl/optional.hpp"
+#include "astl/range_access.hpp"
 #include "slot_map.hpp"
 #include <functional>
 #include <iostream>
@@ -47,5 +50,5 @@ auto main() -> int
 
     std::vector v{0, 1, 2, 3, 4, 5, 6, 1, 7, 8, 9, 10, 11};
 
-    std::cout << *astl::i::first_repeating_element(v.begin(), v.end());
+    std::cout << *astl::i::first_repeating_element(v.begin(), v.end()) << "\n";
 }

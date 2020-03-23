@@ -1,7 +1,7 @@
 [
 {
-  "directory": "C:/Users/User/CLionProjects/astl/build",
-  "command": "C:\\PROGRA~1\\LLVM\\bin\\clang-cl.exe  /nologo -TP   /std:c++latest /IC:/Users/User/CLionProjects/astl/include /W4 /EHsc                 /Zc:__cplusplus /permissive- /MDd /Zi /Ob0 /Od /RTC1   -std:c++latest /FoCMakeFiles\\astl.dir\\main.cpp.obj /FdTARGET_COMPILE_PDB -c C:\\Users\\User\\CLionProjects\\astl\\main.cpp",
-  "file": "C:/Users/User/CLionProjects/astl/main.cpp"
+  "directory": "/home/riki/CLionProjects/astl/build",
+  "command": "/bin/clang++-9     -std=c++2a -Wall -Wextra -Wno-attributes                  -fsanitize=address -fsanitize=undefined -Wnull-dereference -Wdouble-promotion                 -Wno-unknown-pragmas -Wreorder -Wzero-as-null-pointer-constant -fdiagnostics-show-template-tree                 -I//home/riki/CLionProjects/astl/include -g   -std=gnu++2a -o CMakeFiles/astl.dir/main.cpp.o -c /home/riki/CLionProjects/astl/main.cpp",
+  "file": "/home/riki/CLionProjects/astl/main.cpp"
 }
 ]
